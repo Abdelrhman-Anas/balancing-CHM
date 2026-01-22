@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js" defer></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        packages: {'[+]': ['mhchem']}
+      },
+      loader: {
+        load: ['[tex]/mhchem']
+      }
+    };
+  </script>
+
+  <title>balancing CHM</title>
+  <!-- \( \rightarrow \) -->
+  <link rel="stylesheet" href="style/index.css">
+</head>
+<body>
+  <div class="main">
+    <div class="cntrol-section">
+      <div class="input-section">
+        <div class="reactant-input">
+          
+        </div>
+        <div class="reactant-input">
+          
+        </div>
+      </div>
+      <div class="buttons-section">
+        <button class="submiting">Result</button>
+      </div>
+    </div>
+    <div class="result-div">
+      <div class="the-result">
+        \( 2Na + Cl_2  \rightarrow  2NaCl \) 
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="scripts/main.js"></script>
+</body>
+</html>
