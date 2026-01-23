@@ -78,6 +78,7 @@ export function electronConfiguration(config) {
       };
     };
   };
+  //exceptions
   if (atomicNum === 41 || atomicNum === 44 || atomicNum === 45) {
     finalData[lastKey] ++;
     finalData[BTLastKey] --;
@@ -88,10 +89,11 @@ export function electronConfiguration(config) {
     finalData[lastKey] ++;
     finalData[BBTLastKey] --;
   }; 
-  console.table(finalData);
+  //console.table(finalData);
+  return finalData;
 };
 //41   Niobium Nb 4d   [Kr] 5s² 4d³ =>  [Kr] 5s¹ 4d⁴   Avoids low d occupancy; promotion effect
-  //44   Ruthenium Ru 4d  [Kr] 5s² 4d⁶ =>  [Kr] 5s¹ 4d⁷   Preference for d⁷ over d⁶ + s²
-  //45   Rhodium Rh 4d   [Kr] 5s² 4d⁷ =>  [Kr] 5s¹ 4d⁸   Stability adjustment in 4d series
-  //46   Palladium Pd 4d  [Kr] 5s² 4d⁸ =>  [Kr] 4d¹⁰ (5s⁰)   Fully filled 4d¹⁰ (no 5s electron)
-  //78   Platinum Pt 5d   [Xe] 6s² 4f¹⁴ 5d⁸ =>  [Xe] 6s¹ 4f¹⁴ 5d⁹   Relativistic effects + d stability
+//44   Ruthenium Ru 4d  [Kr] 5s² 4d⁶ =>  [Kr] 5s¹ 4d⁷   Preference for d⁷ over d⁶ + s²
+//45   Rhodium Rh 4d   [Kr] 5s² 4d⁷ =>  [Kr] 5s¹ 4d⁸   Stability adjustment in 4d series
+//46   Palladium Pd 4d  [Kr] 5s² 4d⁸ =>  [Kr] 4d¹⁰ (5s⁰)   Fully filled 4d¹⁰ (no 5s electron)
+//78   Platinum Pt 5d   [Xe] 6s² 4f¹⁴ 5d⁸ =>  [Xe] 6s¹ 4f¹⁴ 5d⁹   Relativistic effects + d stability

@@ -1,24 +1,55 @@
-export function is_it_possible(config1, config2, electronConfiguration) {
+const categories = [
+  'nonmetal',
+  'Alkali',
+  'Alkaline',
+  'Metalloids',
+  'halogen',
+  'Post-transition',
+  'Transition'
+];
+export function is_it_possible(element1, element2, electronConfiguration) {
   const resultList = {
     possible: true,
     needEnergy: true
   };
-  // configurate the elements electrons
-  const frist_config = electronConfiguration(config1);
-  const fsecond_config = electronConfiguration(config2);
+  //frist element info
+  const fristEName = element1.name;
+  const fristECategory = element1.category;
+  const fristEGroup =element1.group;
+  const frist_config = electronConfiguration(element1);
+  //second element info
+  const secondEName = element2.name;
+  const secondECategory = element2.category;
+  const secondEGroup = element2.group;
+  const fsecond_config = electronConfiguration(element2);
+
+  console.table(frist_config);
+  console.table(fsecond_config);
+
+  const sameGroup = filterByGroup(fristEGroup, secondEGroup);
+  console.log(sameGroup);
 }
+// true => a reaction can occur, false => reaction can't occur
+function filterByGroup(fristEGroup, secondEGroup, fristECategory, secondECategory) {
+  if (fristEGroup === secondEGroup) {
+    if (fristECategory === secondECategory && fristECategory === 'halogen') {
+      return true;
+    } else if (fristECategory === secondECategory && fristECategory === 'Transition') {
+      return true;
+    } else {
+      return false;
+    };
+  } else {
+    return true;
+  };
+}
+// true => a reaction can occur, false => reaction can't occur
+function filterByCategory(frisEtCategory, secondECategory) {
+  let fristEIdintity;
+  let secondEIdintity;
+  categories.forEach((cat) => {
+    if (frisEtCategory ===) {
 
-
-
-
-
-
-
-
-
-
-//// steps of finding if its possible for making a reaction or not \\\\
-// 1) if the elements are too stable
-// 2) if the product of the reaction is less stable 
-// 3) if both are metals => their is no reaction will occur
-// s s p s p s d p s d p s f d p s f d p
+    }
+  });
+}

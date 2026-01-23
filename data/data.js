@@ -7,7 +7,7 @@ export const periodic_table = {
     group: '1A',
     period: 1,
     category: "nonmetal",
-    job: 'both'
+    reactivity: 1
   },
   Li: {
     symbol: "Li",
@@ -17,7 +17,7 @@ export const periodic_table = {
     group: '1A',
     period: 2,
     category: "Alkali",
-    job: 'gain'
+    reactivity: 1
   },
   Be: {
     symbol: "Be",
@@ -27,6 +27,7 @@ export const periodic_table = {
     group: '2A',
     period: 2,
     category: "Alkaline",
+    reactivity: 1
   },
   B: {
     symbol: "B",
@@ -35,7 +36,8 @@ export const periodic_table = {
     atomicWeight: 10.5,
     group: '3A',
     period: 2,
-    category: "Metalloids"
+    category: "Metalloids",
+    reactivity: 0.5
   },
   C: {
     symbol: "C",
@@ -44,7 +46,8 @@ export const periodic_table = {
     atomicWeight: 12,
     group: '4A',
     period: 2,
-    category: "nonmetal"
+    category: "nonmetal",
+    reactivity: 0.5
   },
   N: {
     symbol: "N",
@@ -53,7 +56,8 @@ export const periodic_table = {
     atomicWeight: 14,
     group: '5A',
     period: 2,
-    category: "nonmetal"
+    category: "nonmetal",
+    reactivity: 0.5
   },
   O: {
     symbol: "O",
@@ -62,7 +66,8 @@ export const periodic_table = {
     atomicWeight: 16,
     group: '6A',
     period: 2,
-    category: "nonmetal"
+    category: "nonmetal",
+    reactivity: 0.5
   },
   F: {
     symbol: "F",
@@ -71,7 +76,8 @@ export const periodic_table = {
     atomicWeight: 19,
     group: '7A',
     period: 2,
-    category: "nonmetal"
+    category: "halogen",
+    reactivity: 1
   },
   Na: {
     symbol: "Na",
@@ -80,7 +86,8 @@ export const periodic_table = {
     atomicWeight: 23,
     group: '1A',
     period: 3,
-    category: "Alkali"
+    category: "Alkali",
+    reactivity: 1
   },
   Mg: {
     symbol: "Mg",
@@ -89,7 +96,8 @@ export const periodic_table = {
     atomicWeight: 24,
     group: '2A',
     period: 3,
-    category: "Alkaline"
+    category: "Alkaline",
+    reactivity: 1
   },
   Al: {
     symbol: "Al",
@@ -98,7 +106,8 @@ export const periodic_table = {
     atomicWeight: 27,
     group: '3A',
     period: 3,
-    category: "Post-transition"
+    category: "Post-transition",
+    reactivity: 0.5
   },
   Si: {
     symbol: "si",
@@ -107,7 +116,8 @@ export const periodic_table = {
     atomicWeight: 28,
     group: '4A',
     period: 3,
-    category: "Metalloids"
+    category: "Metalloids",
+    reactivity: 0.5
   },
   P: {
     symbol: "P",
@@ -116,7 +126,8 @@ export const periodic_table = {
     atomicWeight: 31,
     group: '5A',
     period: 3,
-    category: "nonmetal"
+    category: "nonmetal",
+    reactivity: 0.5
   },
   S: {
     symbol: "S",
@@ -134,7 +145,7 @@ export const periodic_table = {
     atomicWeight: 35.5,
     group: '7A',
     period: 3,
-    category: "nonmetal"
+    category: "halogen"
   },
   K: {
     symbol: "K",
@@ -287,7 +298,7 @@ export const periodic_table = {
     atomicWeight: 80,
     group: '7A',
     period: 4,
-    category: "nonmetal"
+    category: "halogen"
   },
   Rb: {
     symbol: "Rb",
@@ -440,7 +451,7 @@ export const periodic_table = {
     atomicWeight: 127,
     group: '7A',
     period: 5,
-    category: "nonmetal"
+    category: "halogen"
   },
   Cs: {
     symbol: "CS",
@@ -593,7 +604,7 @@ export const periodic_table = {
     atomicWeight: 210,
     group: '7A',
     period: 6,
-    category: "Post-transition"
+    category: "halogen"
   },
   Fr: {
     symbol: "Fr",
