@@ -1,0 +1,26 @@
+{
+  "name": "balancing-chm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/scripts/main.js",
+  "scripts": {
+    "start": "node src/scripts/server.js",
+    "dev": "node src/scripts/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abdelrhman-Anas/balancing-CHM.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Abdelrhman-Anas/balancing-CHM/issues"
+  },
+  "homepage": "https://github.com/Abdelrhman-Anas/balancing-CHM#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "periodic-table": "^0.0.8"
+  }
+}
