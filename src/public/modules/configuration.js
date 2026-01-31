@@ -1,4 +1,4 @@
-export function electronConfiguration(config) {
+export function electronConfiguration(num) {
   const finalData = {
     S_1: 0,
     S_2: 0,
@@ -20,7 +20,7 @@ export function electronConfiguration(config) {
     D_6: 0,
     P_7: 0,
   };
-  const atomicNum = config.atomicNumber;
+  const atomicNum = num;
   const keys =  Object.keys(finalData);
   let position = 0;
   for (let i = 0; i < atomicNum; i++) {
