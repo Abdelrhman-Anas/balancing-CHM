@@ -9,6 +9,6 @@ html, body {
   justify-content: center;
   flex-direction: column;
 }
-.input-section {
-  
+.the-result {
+  font-size: 30px;
 }
