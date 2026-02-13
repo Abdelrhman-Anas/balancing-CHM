@@ -9,6 +9,33 @@ html, body {
   justify-content: center;
   flex-direction: column;
 }
+.header {
+  position: fixed;
+  top: 0;
+  height: 80px;
+  right: 0;
+  left: 0;
+
+  background-color:  transparent;
+  backdrop-filter: blur(2px);
+  border: none;
+
+  z-index: 200;
+}
 .the-result {
   font-size: 30px;
+}
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(25px); /* Start 20px down */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* End at original position */
+  }
+}
+
+.your-element {
+  animation: fadeInUp 0.8s ease forwards;
 }

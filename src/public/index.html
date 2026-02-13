@@ -1,47 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js" defer></script>
-  <script>
-    window.MathJax = {
-      tex: {
-        packages: {'[+]': ['mhchem']}
-      },
-      loader: {
-        load: ['[tex]/mhchem']
-      }
-    };
-  </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js" defer></script>
+    <script>
+      window.MathJax = {
+        tex: {
+          packages: {'[+]': ['mhchem']}
+        },
+        loader: {
+          load: ['[tex]/mhchem']
+        }
+      };
+    </script>
 
-  <title>balancing CHM</title>
-  <!-- \( \rightarrow \) -->
-  <link rel="stylesheet" href="style/index.css">
-</head>
-<body>
-  <div class="main">
-    <div class="cntrol-section">
-      <div class="input-section">
-        <div class="reactant-input">
-          
-        </div>
-        <div class="reactant-input">
-          
+    <title>balancing CHM</title>
+    <!-- \( \rightarrow \) -->
+    <link rel="stylesheet" href="style/index.css">
+  </head>
+  <body>
+    <div class="header">
+      <div class="page-title">
+        <div class="the-title">
+          Chemistry equations balancer
         </div>
       </div>
-      <div class="buttons-section">
-        <button class="submiting">Result</button>
-      </div>
     </div>
-    <div class="result-div">
-      <div class="the-result">
-        \( 2Na + Cl_2 \rightarrow 2NaCl \)
+    <div class="main">
+      <h1 class="your-element">Welcome to My Site</h1>
+      <p class="your-element">This fades and moves up too</p>
+      <div class="control-section">
+        <button class="submiting"></button>
       </div>
-    </div>
-  </div>
-
-  <script type="module" src="./main.js"></script>
-</body>
+    <script type="module" src="./main.js"></script>
+  </body>
 </html>

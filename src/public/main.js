@@ -1,6 +1,9 @@
 import is_it_possible from './modules/ele-reaction/testing.js';
+import {} from './modules/ele-reaction/elements.js'
 import filterByVelance from './modules/utils/filterByVelance.js';
 import getTheCategory from './modules/utils/getTheCategory.js';
+import allMetals from '../data/metals-data.js';
+
 
 
 
@@ -23,15 +26,18 @@ async function getFetch(element) {
     console.error(error);
   };
 };
-const submitElement = document.querySelector('.submiting');
+const submitElement1 = document.querySelector('.submiting');
 const resultElement = document.querySelector('.the-result');
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM ready! This should work');
-  submitElement.addEventListener('click', () => {
-    gittingEq();
+
+  submitElement1.addEventListener('click', () => {
+    buttonActivaton();
   });
+
 });
+
 
 
 function renderChemicalEquation(formula) {
@@ -42,12 +48,19 @@ function renderChemicalEquation(formula) {
 };
 
 
-const element1 = 'Al';
-const element2 = 'Na';
-const infoElement1 = await getFetch(element1);
+const element1 = 'Ag';
+const element2 = 'Al';
+const infoElement1 = getMetalData(element1);
 const infoElement2 = await getFetch(element2);
 console.log(infoElement1);
 console.log(infoElement2);
 const testingResult = is_it_possible(infoElement1, infoElement2, getTheCategory);
 console.log(testingResult);
+
+
+function buttonActivaton() {
+  if (true) {
+
+  }
+}
 

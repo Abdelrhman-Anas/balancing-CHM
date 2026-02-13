@@ -1,0 +1,110 @@
+const allMetals = {
+  "Li": { radius: 152, en: 0.98, structure: "BCC", config: "[He] 2s1", d: 0, group: 1, period: 2 },
+  "Na": { radius: 186, en: 0.93, structure: "BCC", config: "[Ne] 3s1", d: 0, group: 1, period: 3 },
+  "K":  { radius: 227, en: 0.82, structure: "BCC", config: "[Ar] 4s1", d: 0, group: 1, period: 4 },
+  "Rb": { radius: 248, en: 0.82, structure: "BCC", config: "[Kr] 5s1", d: 0, group: 1, period: 5 },
+  "Cs": { radius: 265, en: 0.79, structure: "BCC", config: "[Xe] 6s1", d: 0, group: 1, period: 6 },
+  "Fr": { radius: 270, en: 0.70, structure: "BCC", config: "[Rn] 7s1", d: 0, group: 1, period: 7 },
+
+  "Be": { radius: 112, en: 1.57, structure: "HCP", config: "[He] 2s2", d: 0, group: 2, period: 2 },
+  "Mg": { radius: 160, en: 1.31, structure: "HCP", config: "[Ne] 3s2", d: 0, group: 2, period: 3 },
+  "Ca": { radius: 197, en: 1.00, structure: "FCC", config: "[Ar] 4s2", d: 0, group: 2, period: 4 },
+  "Sr": { radius: 215, en: 0.95, structure: "FCC", config: "[Kr] 5s2", d: 0, group: 2, period: 5 },
+  "Ba": { radius: 222, en: 0.89, structure: "BCC", config: "[Xe] 6s2", d: 0, group: 2, period: 6 },
+  "Ra": { radius: 220, en: 0.90, structure: "BCC", config: "[Rn] 7s2", d: 0, group: 2, period: 7 },
+
+  "Sc": { radius: 162, en: 1.36, structure: "HCP", config: "[Ar] 3d1 4s2", d: 1, group: 3, period: 4 },
+  "Y":  { radius: 180, en: 1.22, structure: "HCP", config: "[Kr] 4d1 5s2", d: 1, group: 3, period: 5 },
+  "La": { radius: 187, en: 1.10, structure: "HCP", config: "[Xe] 5d1 6s2", d: 1, group: 3, period: 6 },
+    
+  "Ce": { radius: 182, en: 1.12, structure: "FCC", config: "[Xe] 4f1 5d1 6s2", d: 1, f: 1, group: 3, period: 6 },
+  "Pr": { radius: 182, en: 1.13, structure: "HCP", config: "[Xe] 4f3 6s2", d: 0, f: 3, group: 3, period: 6 },
+  "Nd": { radius: 182, en: 1.14, structure: "HCP", config: "[Xe] 4f4 6s2", d: 0, f: 4, group: 3, period: 6 },
+  "Pm": { radius: 181, en: 1.13, structure: "HCP", config: "[Xe] 4f5 6s2", d: 0, f: 5, group: 3, period: 6 },
+  "Sm": { radius: 180, en: 1.17, structure: "RHL", config: "[Xe] 4f6 6s2", d: 0, f: 6, group: 3, period: 6 },
+  "Eu": { radius: 208, en: 1.20, structure: "BCC", config: "[Xe] 4f7 6s2", d: 0, f: 7, group: 3, period: 6 },
+  "Gd": { radius: 180, en: 1.20, structure: "HCP", config: "[Xe] 4f7 5d1 6s2", d: 1, f: 7, group: 3, period: 6 },
+  "Tb": { radius: 177, en: 1.22, structure: "HCP", config: "[Xe] 4f9 6s2", d: 0, f: 9, group: 3, period: 6 },
+  "Dy": { radius: 177, en: 1.23, structure: "HCP", config: "[Xe] 4f10 6s2", d: 0, f: 10, group: 3, period: 6 },
+  "Ho": { radius: 176, en: 1.24, structure: "HCP", config: "[Xe] 4f11 6s2", d: 0, f: 11, group: 3, period: 6 },
+  "Er": { radius: 175, en: 1.24, structure: "HCP", config: "[Xe] 4f12 6s2", d: 0, f: 12, group: 3, period: 6 },
+  "Tm": { radius: 174, en: 1.25, structure: "HCP", config: "[Xe] 4f13 6s2", d: 0, f: 13, group: 3, period: 6 },
+  "Yb": { radius: 194, en: 1.25, structure: "FCC", config: "[Xe] 4f14 6s2", d: 0, f: 14, group: 3, period: 6 },
+  "Lu": { radius: 173, en: 1.27, structure: "HCP", config: "[Xe] 4f14 5d1 6s2", d: 1, f: 14, group: 3, period: 6 },
+
+  "Ti": { radius: 147, en: 1.54, structure: "HCP", config: "[Ar] 3d2 4s2", d: 2, group: 4, period: 4 },
+  "Zr": { radius: 160, en: 1.33, structure: "HCP", config: "[Kr] 4d2 5s2", d: 2, group: 4, period: 5 },
+  "Hf": { radius: 159, en: 1.30, structure: "HCP", config: "[Xe] 4f14 5d2 6s2", d: 2, group: 4, period: 6 },
+  "Rf": { radius: 150, en: 1.30, structure: "HCP", config: "[Rn] 5f14 6d2 7s2", d: 2, group: 4, period: 7 },
+
+  "V":  { radius: 134, en: 1.63, structure: "BCC", config: "[Ar] 3d3 4s2", d: 3, group: 5, period: 4 },
+  "Nb": { radius: 146, en: 1.60, structure: "BCC", config: "[Kr] 4d4 5s1", d: 4, group: 5, period: 5 },
+  "Ta": { radius: 146, en: 1.50, structure: "BCC", config: "[Xe] 4f14 5d3 6s2", d: 3, group: 5, period: 6 },
+  "Db": { radius: 139, en: 1.50, structure: "BCC", config: "[Rn] 5f14 6d3 7s2", d: 3, group: 5, period: 7 },
+
+  "Cr": { radius: 128, en: 1.66, structure: "BCC", config: "[Ar] 3d5 4s1", d: 5, group: 6, period: 4 },
+  "Mo": { radius: 139, en: 2.16, structure: "BCC", config: "[Kr] 4d5 5s1", d: 5, group: 6, period: 5 },
+  "W":  { radius: 139, en: 2.36, structure: "BCC", config: "[Xe] 4f14 5d4 6s2", d: 4, group: 6, period: 6 },
+  "Sg": { radius: 128, en: 2.20, structure: "BCC", config: "[Rn] 5f14 6d4 7s2", d: 4, group: 6, period: 7 },
+
+  "Mn": { radius: 127, en: 1.55, structure: "BCC", config: "[Ar] 3d5 4s2", d: 5, group: 7, period: 4 },
+  "Tc": { radius: 136, en: 1.90, structure: "HCP", config: "[Kr] 4d5 5s2", d: 5, group: 7, period: 5 },
+  "Re": { radius: 137, en: 1.90, structure: "HCP", config: "[Xe] 4f14 5d5 6s2", d: 5, group: 7, period: 6 },
+  "Bh": { radius: 128, en: 1.90, structure: "HCP", config: "[Rn] 5f14 6d5 7s2", d: 5, group: 7, period: 7 },
+
+  "Fe": { radius: 126, en: 1.83, structure: "BCC", config: "[Ar] 3d6 4s2", d: 6, group: 8, period: 4 },
+  "Ru": { radius: 134, en: 2.20, structure: "HCP", config: "[Kr] 4d7 5s1", d: 7, group: 8, period: 5 },
+  "Os": { radius: 135, en: 2.20, structure: "HCP", config: "[Xe] 4f14 5d6 6s2", d: 6, group: 8, period: 6 },
+  "Hs": { radius: 126, en: 2.20, structure: "HCP", config: "[Rn] 5f14 6d6 7s2", d: 6, group: 8, period: 7 },
+
+  "Co": { radius: 125, en: 1.88, structure: "HCP", config: "[Ar] 3d7 4s2", d: 7, group: 9, period: 4 },
+  "Rh": { radius: 134, en: 2.28, structure: "FCC", config: "[Kr] 4d8 5s1", d: 8, group: 9, period: 5 },
+  "Ir": { radius: 136, en: 2.20, structure: "FCC", config: "[Xe] 4f14 5d7 6s2", d: 7, group: 9, period: 6 },
+  "Mt": { radius: 126, en: 2.20, structure: "FCC", config: "[Rn] 5f14 6d7 7s2", d: 7, group: 9, period: 7 },
+
+  "Ni": { radius: 124, en: 1.91, structure: "FCC", config: "[Ar] 3d8 4s2", d: 8, group: 10, period: 4 },
+  "Pd": { radius: 137, en: 2.20, structure: "FCC", config: "[Kr] 4d10", d: 10, group: 10, period: 5 },
+  "Pt": { radius: 139, en: 2.28, structure: "FCC", config: "[Xe] 4f14 5d9 6s1", d: 9, group: 10, period:6 },
+  "Ds": { radius: 128, en: 2.20, structure: "FCC", config: "[Rn] 5f14 6d8 7s2", d: 8, group: 10, period: 7},
+
+  "Cu": { radius: 128, en: 1.90, structure: "FCC", config: "[Ar] 3d10 4s1", d: 10, group: 11, period: 4 },
+  "Ag": { radius: 144, en: 1.93, structure: "FCC", config: "[Kr] 4d10 5s1", d: 10, group: 11, period: 5 },
+  "Au": { radius: 144, en: 2.54, structure: "FCC", config: "[Xe] 4f14 5d10 6s1", d: 10, group: 11,period:6},
+  "Rg": { radius: 138, en: 2.00, structure: "FCC", config: "[Rn] 5f14 6d9 7s2", d: 9, group: 11, period: 7},
+
+  "Zn": { radius: 134, en: 1.65, structure: "HCP", config: "[Ar] 3d10 4s2", d: 10, group: 12, period: 4 },
+  "Cd": { radius: 151, en: 1.69, structure: "HCP", config: "[Kr] 4d10 5s2", d: 10, group: 12, period: 5 },
+  "Hg": { radius: 151, en: 2.00, structure: "RHL", config: "[Xe] 4f14 5d10 6s2", d: 10, group: 12, period: 6 },
+  "Cn": { radius: 147, en: 2.00, structure: "HCP", config: "[Rn] 5f14 6d10 7s2", d: 10, group: 12, period: 7 },
+
+  "Al": { radius: 143, en: 1.61, structure: "FCC", config: "[Ne] 3s2 3p1", d: 0, group: 13, period: 3 },
+  "Ga": { radius: 135, en: 1.81, structure: "ORC", config: "[Ar] 3d10 4s2 4p1", d: 10, group: 13, period: 4 },
+  "In": { radius: 167, en: 1.78, structure: "TET", config: "[Kr] 4d10 5s2 5p1", d: 10, group: 13, period: 5 },
+  "Tl": { radius: 170, en: 1.80, structure: "HCP", config: "[Xe] 4f14 5d10 6s2 6p1", d: 10, group: 13, period: 6 },
+
+  "Sn": { radius: 151, en: 1.96, structure: "TET", config: "[Kr] 4d10 5s2 5p2", d: 10, group: 14, period: 5 },
+  "Pb": { radius: 175, en: 2.33, structure: "FCC", config: "[Xe] 4f14 5d10 6s2 6p2", d: 10, group: 14, period: 6 },
+  "Fl": { radius: 160, en: 2.00, structure: "FCC", config: "[Rn] 5f14 6d10 7s2 7p2", d: 10, group: 14, period: 7 },
+
+  "Bi": { radius: 170, en: 2.02, structure: "RHL", config: "[Xe] 4f14 5d10 6s2 6p3", d: 10, group: 15, period: 6 },
+  "Mc": { radius: 160, en: 2.00, structure: "RHL", config: "[Rn] 5f14 6d10 7s2 7p3", d: 10, group: 15, period: 7 },
+
+  "Po": { radius: 168, en: 2.00, structure: "CUB", config: "[Xe] 4f14 5d10 6s2 6p4", d: 10, group: 16, period: 6 },
+
+  "Ac": { radius: 195, en: 1.10, structure: "FCC", config: "[Rn] 6d1 7s2", d: 1, f: 0, group: 3, period: 7 },
+  "Th": { radius: 180, en: 1.30, structure: "FCC", config: "[Rn] 6d2 7s2", d: 2, f: 0, group: 3, period: 7 },
+  "Pa": { radius: 163, en: 1.50, structure: "TET", config: "[Rn] 5f2 6d1 7s2", d: 1, f: 2, group: 3, period: 7 },
+  "U":  { radius: 156, en: 1.38, structure: "ORC", config: "[Rn] 5f3 6d1 7s2", d: 1, f: 3, group: 3, period: 7 },
+  "Np": { radius: 155, en: 1.36, structure: "ORC", config: "[Rn] 5f4 6d1 7s2", d: 1, f: 4, group: 3, period: 7 },
+  "Pu": { radius: 159, en: 1.28, structure: "MON", config: "[Rn] 5f6 7s2", d: 0, f: 6, group: 3, period: 7 },
+  "Am": { radius: 173, en: 1.30, structure: "HCP", config: "[Rn] 5f7 7s2", d: 0, f: 7, group: 3, period: 7 },
+  "Cm": { radius: 174, en: 1.30, structure: "HCP", config: "[Rn] 5f7 6d1 7s2", d: 1, f: 7, group: 3, period: 7 },
+  "Bk": { radius: 170, en: 1.30, structure: "HCP", config: "[Rn] 5f9 7s2", d: 0, f: 9, group: 3, period: 7 },
+  "Cf": { radius: 169, en: 1.30, structure: "HCP", config: "[Rn] 5f10 7s2", d: 0, f: 10, group: 3, period: 7 },
+  "Es": { radius: 168, en: 1.30, structure: "HCP", config: "[Rn] 5f11 7s2", d: 0, f: 11, group: 3, period: 7 },
+  "Fm": { radius: 167, en: 1.30, structure: "HCP", config: "[Rn] 5f12 7s2", d: 0, f: 12, group: 3, period: 7 },
+  "Md": { radius: 166, en: 1.30, structure: "HCP", config: "[Rn] 5f13 7s2", d: 0, f: 13, group: 3, period: 7 },
+  "No": { radius: 166, en: 1.30, structure: "HCP", config: "[Rn] 5f14 7s2", d: 0, f: 14, group: 3, period: 7 },
+  "Lr": { radius: 162, en: 1.30, structure: "HCP", config: "[Rn] 5f14 7s2 7p1", d: 0, f: 14, group: 3, period: 7 }
+};
+export default allMetals;
