@@ -1,4 +1,4 @@
-const metals = ['alkali metal', 'alkaline earth metal', 'transition metal', 'Post-transition Metal', 'metal'];
+const metals = ['alkali metal', 'alkaline earth metal', 'transition metal', 'Post-transition Metal', 'metal', 'actinoid', 'lanthanoid'];
 const nonmetals = ['halogen', 'nonmetal'];
 function getTheCategory(elegroupBlock) {
   let eleCategory;

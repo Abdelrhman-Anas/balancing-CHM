@@ -3,13 +3,14 @@ const covelantMetals = ['Be', 'B', 'Al', 'Si'];
 const tetra = ['Phosphorus', 'Arsenic', 'Antimony'];
 const octa = ['Sulfur ' ,'Selenium ', 'Tellurium '];
 
-function is_it_possible(element1, element2, getTheCategory) {
+function is_it_possible(element1, element2, getTheCategory, filterByVelance, allMetals) {
   const resultList = {
     possible: true,
     normal: true,
     bothDiatomic: false,
     sameElement:  false,
     alloy: false,
+    nonAlloyNorBond: false,
     reaction: {
       type: '',
       element1Type: '',
@@ -25,23 +26,25 @@ function is_it_possible(element1, element2, getTheCategory) {
   //frist element data
   const ele1Name = element1.name;
   const ele1Electronegativity = Math.abs(element1.electronegativity);
+  const ele1Velance = element1.oxidationStates;
   const ele1groupBlock = element1.groupBlock;
+  const ele1symbol = element1.symbol
 
   //second element data
   const ele2Name = element2.name;
   const ele2Electronegativity = Math.abs(element2.electronegativity);
+    const ele2Velance = element2.oxidationStates;
   const ele2groupBlock = element2.groupBlock;
+  const ele2symbol = element2.symbol
+
 
   // step zero => determine whether one of the elements is noble gas or not
-  if (ele1groupBlock === 'noble gas') {
+  if (ele1groupBlock === 'noble gas' || ele2groupBlock === 'noble gas') {
     resultList.possible  = false;
     resultList.normal = false;
     return resultList;
   };
-  if (ele2groupBlock === 'noble gas') {
-
-  }
-
+  
   // frist step => determine whether the elements are the same or not
   if (ele1Name === ele2Name) {
     for (let i = 0; i < diatomic.length; i++) {
@@ -75,7 +78,7 @@ function is_it_possible(element1, element2, getTheCategory) {
     }
   };
 
-  //second step => determine whether the elements are both metals
+  //second step => getting the Category of both elements
   const ele1Category = getTheCategory(ele1groupBlock);
   const ele2Category = getTheCategory(ele2groupBlock);
   console.log(ele1Category);
@@ -110,17 +113,123 @@ function is_it_possible(element1, element2, getTheCategory) {
       resultList.reaction.type = bond;
     }else {
       resultList.reaction.type = 'ionic';
-    }
-    
-
+    };
   };
 
-  if (ele1Category === ele2Category && ele1Category === 'metal') {
-    resultList.possible = false;
-    resultList.alloy = true;
+  if (ele1Category === ele2Category && ele2Category === 'metal') {
+    console.log('metals');
+    resultList.info.first = 'mono';
+    resultList.info.second = 'mono';
+    resultList.reaction.element1Type = 'metal';
+    resultList.reaction.element2Type = 'metal';
     resultList.normal = false;
     resultList.reaction.type = 'metallic';
-  }
+    //--variables--
+    let EN = false ;
+    let states = false;
+    let velance = false;
+    let dBand = false;
+    
+    const metalConfig1 = allMetals[ele1symbol];
+    const metalConfig2 = allMetals[ele2symbol];
+
+    // the diffrence in electronegativity
+    if (deltaEN > 0.2) {
+      EN = true;
+    };
+    // diff. in size 
+    const ele1Radius = metalConfig1.radius;
+    const ele2Radius = metalConfig2.radius;
+    const bigRadius = Math.max(ele1Radius, ele2Radius);
+    const smalRadius = Math.min(ele1Radius, ele2Radius);
+    const deltaR = ( Math.abs(bigRadius - smalRadius) / smalRadius ) *100;
+    console.group(deltaR);
+    // getting the structure of the elements
+    const ele1State = metalConfig1.structure;
+    const ele2State = metalConfig2.structure;
+    if (ele1State === ele2State) {
+      if (deltaEN > 0.4) {
+        states = true;
+      };
+    }else if (ele1State !== ele2State) {
+      states = true;
+    }
+    // same velance or not 
+    const velanceResult = filterByVelance(ele1Velance, ele2Velance);
+    if (!(velanceResult.length === 0)) {
+      velance = true;
+    };
+    // same d filling or oppistie filling
+    if (ele1groupBlock === ele2groupBlock && ele2groupBlock === 'transition metal') {
+      const theDConfig1 = metalConfig1.d;
+      const theDConfig2 = metalConfig2.d;
+      const dSum = theDConfig1 + theDConfig2;
+      if (dSum <= 10) {
+        dBand = true;
+      };
+    };
+    
+    if (deltaR > 15) {
+      if (EN) {
+        if (ele1groupBlock === ele2groupBlock && ele2groupBlock === 'transition metal') {
+          if (dBand) {
+            resultList.possible = true;
+            resultList.alloy = false;
+            resultList.nonAlloyNorBond = false;
+            return resultList;
+          } else {
+            resultList.possible = false;
+            resultList.alloy = true;
+            resultList.nonAlloyNorBond = false;
+            return resultList;
+          };
+        }else {
+          resultList.possible = true;
+          resultList.alloy = false;
+          resultList.nonAlloyNorBond = false;
+          return resultList;
+        }
+      }else {
+        resultList.possible = false;
+        resultList.alloy = false;
+        resultList.nonAlloyNorBond = true;
+        return resultList;
+      };
+    } else if (deltaR <= 15) {
+      if (EN) {
+        resultList.possible = true;
+        resultList.alloy = false;
+        resultList.nonAlloyNorBond = false;
+        return resultList;
+      } else {
+        if (states) {
+          resultList.possible = true;
+          resultList.alloy = false;
+          resultList.nonAlloyNorBond = false;
+          return resultList;
+        } else {
+          if (ele1groupBlock === ele2groupBlock && ele2groupBlock === 'transition metal') {
+            if (dBand) {
+              resultList.possible = true;
+              resultList.alloy = false;
+              resultList.nonAlloyNorBond = false;
+              return resultList;
+            } else {
+              resultList.possible = false;
+              resultList.alloy = true;
+              resultList.nonAlloyNorBond = false;
+              return resultList;
+            };
+          }else {
+            resultList.possible = false;
+            resultList.alloy = true;
+            resultList.nonAlloyNorBond = false;
+            return resultList;
+          };
+        };
+      };
+    };
+  };
    
   // forth step => determine the type of the reactant
   if (ele1Category === ele2Category && ele1Category === 'nonmetal') {
@@ -146,9 +255,6 @@ function is_it_possible(element1, element2, getTheCategory) {
 
     resultList.reaction.element1Type = 'metalloid';
     resultList.reaction.element2Type = 'metalloid';
-    resultList.reaction.possible = false;
-    resultList.normal = false;
-    return resultList;
 
   } else if ((ele1Category === 'metalloid' && ele2Category === 'metal')
   ||         (ele1Category === 'metal' && ele2Category === 'metalloid')) {
@@ -177,7 +283,7 @@ function is_it_possible(element1, element2, getTheCategory) {
     };
   };
 
-  //detreminting the atomic structure of each reactant
+  //detreminting the element normal shape of each reactant
   let ele1;
   let ele2;
   diatomic.forEach((ele) => {

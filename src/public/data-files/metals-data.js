@@ -1,4 +1,4 @@
-const allMetals = {
+export const allMetals = {
   "Li": { radius: 152, en: 0.98, structure: "BCC", config: "[He] 2s1", d: 0, group: 1, period: 2 },
   "Na": { radius: 186, en: 0.93, structure: "BCC", config: "[Ne] 3s1", d: 0, group: 1, period: 3 },
   "K":  { radius: 227, en: 0.82, structure: "BCC", config: "[Ar] 4s1", d: 0, group: 1, period: 4 },
@@ -107,4 +107,3 @@ const allMetals = {
   "No": { radius: 166, en: 1.30, structure: "HCP", config: "[Rn] 5f14 7s2", d: 0, f: 14, group: 3, period: 7 },
   "Lr": { radius: 162, en: 1.30, structure: "HCP", config: "[Rn] 5f14 7s2 7p1", d: 0, f: 14, group: 3, period: 7 }
 };
-export default allMetals;

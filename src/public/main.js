@@ -1,8 +1,8 @@
 import is_it_possible from './modules/ele-reaction/testing.js';
-import {} from './modules/ele-reaction/elements.js'
+import reactionByElement from './modules/ele-reaction/elements.js'
 import filterByVelance from './modules/utils/filterByVelance.js';
 import getTheCategory from './modules/utils/getTheCategory.js';
-import allMetals from '../data/metals-data.js';
+import { allMetals } from './data-files/metals-data.js';
 
 
 
@@ -42,25 +42,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function renderChemicalEquation(formula) {
   if (resultElement && window.MathJax) {
-    resultElement.innerHTML = `\\(\\ce{${formula}}\\)`;
+    resultElement.innerHTML = formula;
     MathJax.typesetPromise([resultElement]);
   };
 };
 
 
-const element1 = 'Ag';
-const element2 = 'Al';
-const infoElement1 = getMetalData(element1);
+const element1 = 'Si';
+const element2 = 'As';
+const infoElement1 = await getFetch(element1);
 const infoElement2 = await getFetch(element2);
 console.log(infoElement1);
 console.log(infoElement2);
-const testingResult = is_it_possible(infoElement1, infoElement2, getTheCategory);
+const testingResult = is_it_possible(infoElement1, infoElement2, getTheCategory, filterByVelance, allMetals);
 console.log(testingResult);
 
 
 function buttonActivaton() {
   if (true) {
-
+    const theReaction = reactionByElement(element1, element2, is_it_possible, getTheCategory, filterByVelance, allMetals);
+    console.log(theReaction);
   }
 }
 
