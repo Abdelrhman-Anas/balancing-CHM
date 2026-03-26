@@ -1,4 +1,4 @@
-function filterByVelance(ele1OxidationStates, ele2OxidationStates) {
+export function filterByVelance(ele1OxidationStates, ele2OxidationStates) {
   let le1OxidationArray = [];
   let le2OxidationArray = [];
   let result = [];
@@ -52,7 +52,14 @@ function filterByVelance(ele1OxidationStates, ele2OxidationStates) {
       };
     };
   }
-  console.log(result);
   return result;
 };
-export default filterByVelance;
+export function gettingVelance(element) {
+  let result = [];
+  if (typeof element === 'string') {
+    result = element.split(', ').map(Number);
+  }else if (typeof element === 'number') {
+    result = [element];
+  };
+  return result;
+};

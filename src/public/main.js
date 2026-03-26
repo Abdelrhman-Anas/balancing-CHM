@@ -1,6 +1,6 @@
-import is_it_possible from './modules/ele-reaction/testing.js';
-import reactionByElement from './modules/ele-reaction/elements.js'
-import filterByVelance from './modules/utils/filterByVelance.js';
+import is_it_possible from './modules/combination-reaction/testing.js';
+import reactionByElement from './modules/combination-reaction/combination.js'
+import { filterByVelance, gettingVelance } from './modules/utils/filterByVelance.js';
 import getTheCategory from './modules/utils/getTheCategory.js';
 import { allMetals } from './data-files/metals-data.js';
 
@@ -30,7 +30,7 @@ const submitElement1 = document.querySelector('.submiting');
 const resultElement = document.querySelector('.the-result');
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM ready! This should work');
+  console.log('DOM ready!');
 
   submitElement1.addEventListener('click', () => {
     buttonActivaton();
@@ -48,20 +48,18 @@ function renderChemicalEquation(formula) {
 };
 
 
-const element1 = 'Si';
-const element2 = 'As';
+const element1 = 'F';
+const element2 = 'Cl';
 const infoElement1 = await getFetch(element1);
 const infoElement2 = await getFetch(element2);
 console.log(infoElement1);
 console.log(infoElement2);
-const testingResult = is_it_possible(infoElement1, infoElement2, getTheCategory, filterByVelance, allMetals);
-console.log(testingResult);
 
-
+buttonActivaton();
 function buttonActivaton() {
   if (true) {
-    const theReaction = reactionByElement(element1, element2, is_it_possible, getTheCategory, filterByVelance, allMetals);
-    console.log(theReaction);
-  }
-}
+    const theReaction = reactionByElement(infoElement1, infoElement2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals);
+    
+  };
+};
 

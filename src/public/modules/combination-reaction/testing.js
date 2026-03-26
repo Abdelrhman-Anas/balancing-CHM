@@ -1,7 +1,7 @@
 const diatomic = ['Oxygen', 'Chlorine', 'Hydrogen', 'Iodine', 'Bromine', 'Fluorine', 'Nitrogen'];
 const covelantMetals = ['Be', 'B', 'Al', 'Si'];
 const tetra = ['Phosphorus', 'Arsenic', 'Antimony'];
-const octa = ['Sulfur ' ,'Selenium ', 'Tellurium '];
+const octa = ['Sulfur' ,'Selenium', 'Tellurium'];
 
 function is_it_possible(element1, element2, getTheCategory, filterByVelance, allMetals) {
   const resultList = {
@@ -10,6 +10,11 @@ function is_it_possible(element1, element2, getTheCategory, filterByVelance, all
     bothDiatomic: false,
     sameElement:  false,
     alloy: false,
+    electronegativity: {
+      deltaEN: 0,
+      frist: 0,
+      second: 0
+    },
     nonAlloyNorBond: false,
     reaction: {
       type: '',
@@ -81,32 +86,32 @@ function is_it_possible(element1, element2, getTheCategory, filterByVelance, all
   //second step => getting the Category of both elements
   const ele1Category = getTheCategory(ele1groupBlock);
   const ele2Category = getTheCategory(ele2groupBlock);
-  console.log(ele1Category);
-  console.log(ele2Category);
   
 
   //third step => determine the type of the reaction bond by delta Electronegativity
   const deltaEN = Math.abs(ele1Electronegativity - ele2Electronegativity);
-  console.log(deltaEN);
+  resultList.electronegativity.deltaEN = deltaEN;
+  resultList.electronegativity.frist = ele1Electronegativity;
+  resultList.electronegativity.second = ele2Electronegativity;
   if (deltaEN >= 0 && deltaEN <= 0.4) {
-    resultList.reaction.type = 'nonpolar covalent';
+    resultList.reaction.type = 'covalent';
     resultList.normal = false;
   } else if (deltaEN > 0.4 && deltaEN <= 1.7) {
-    resultList.reaction.type = 'polar covalent';
+    resultList.reaction.type = 'covalent';
   } else if (deltaEN > 1.7) {
     if (deltaEN > 2) {
       let bond = 'ionic';
       if (ele1Category === 'metal' || ele1Category === 'metalloid') {
         covelantMetals.forEach((ele) => {
           if (ele === element1.symbol) {
-            bond  = 'polar covalent'
+            bond  = ' covalent'
           }
         });
       };
       if (ele2Category === 'metal' || ele2Category === 'metalloid') {
         covelantMetals.forEach((ele) => {
           if (ele === element2.symbol) {
-            bond  = 'polar covalent'
+            bond  = 'covalent'
           }
         });
       };
@@ -117,13 +122,12 @@ function is_it_possible(element1, element2, getTheCategory, filterByVelance, all
   };
 
   if (ele1Category === ele2Category && ele2Category === 'metal') {
-    console.log('metals');
-    resultList.info.first = 'mono';
-    resultList.info.second = 'mono';
+    resultList.info.first = 1;
+    resultList.info.second = 1;
     resultList.reaction.element1Type = 'metal';
     resultList.reaction.element2Type = 'metal';
     resultList.normal = false;
-    resultList.reaction.type = 'metallic';
+    resultList.reaction.type = 'intermetallic';
     //--variables--
     let EN = false ;
     let states = false;
@@ -143,7 +147,7 @@ function is_it_possible(element1, element2, getTheCategory, filterByVelance, all
     const bigRadius = Math.max(ele1Radius, ele2Radius);
     const smalRadius = Math.min(ele1Radius, ele2Radius);
     const deltaR = ( Math.abs(bigRadius - smalRadius) / smalRadius ) *100;
-    console.group(deltaR);
+  
     // getting the structure of the elements
     const ele1State = metalConfig1.structure;
     const ele2State = metalConfig2.structure;
@@ -288,33 +292,33 @@ function is_it_possible(element1, element2, getTheCategory, filterByVelance, all
   let ele2;
   diatomic.forEach((ele) => {
     if (ele === ele1Name) {
-      ele1 = 'diatomic';
+      ele1 = 2;
     }
     if (ele === ele2Name) {
-      ele2 = 'diatomic';
+      ele2 = 2;
     };
   });
   tetra.forEach((ele) => {
     if (ele === ele1Name) {
-      ele1 = 'tetra';
+      ele1 = 3;
     }
     if (ele === ele2Name) {
-      ele2 = 'tetra';
+      ele2 = 3;
     };
   });
   octa.forEach((ele) => {
     if (ele === ele1Name) {
-      ele1 = 'octa';
+      ele1 = 8;
     }
     if (ele === ele2Name) {
-      ele2 = 'octa';
+      ele2 = 8;
     };
   });
   if (!ele1) {
-    ele1 = 'mono'
+    ele1 = 1;
   };
   if (!ele2) {
-    ele2 = 'mono'
+    ele2 = 1;
   }
   resultList.info.first = ele1;
   resultList.info.second = ele2;
