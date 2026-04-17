@@ -1,9 +1,6 @@
-const diatomic = ['Oxygen', 'Chlorine', 'Hydrogen', 'Iodine', 'Bromine', 'Fluorine', 'Nitrogen'];
 const covelantMetals = ['Be', 'B', 'Al', 'Si'];
-const tetra = ['Phosphorus', 'Arsenic', 'Antimony'];
-const octa = ['Sulfur' ,'Selenium', 'Tellurium'];
 
-function is_it_possible(element1, element2, getTheCategory, filterByVelance, allMetals) {
+function is_it_possible(element1, element2, getTheCategory, filterByVelance, allMetals, atomicLength) {
   const resultList = {
     possible: true,
     normal: true,
@@ -26,6 +23,9 @@ function is_it_possible(element1, element2, getTheCategory, filterByVelance, all
       second: ''
     }
   };
+  const diatomic = atomicLength[0];
+  const tetra = atomicLength[1];
+  const octa = atomicLength[2];
 
 
   //frist element data
@@ -319,7 +319,7 @@ function is_it_possible(element1, element2, getTheCategory, filterByVelance, all
   };
   if (!ele2) {
     ele2 = 1;
-  }
+  };
   resultList.info.first = ele1;
   resultList.info.second = ele2;
 

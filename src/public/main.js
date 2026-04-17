@@ -4,15 +4,48 @@ import { filterByVelance, gettingVelance } from './modules/utils/filterByVelance
 import getTheCategory from './modules/utils/getTheCategory.js';
 import { allMetals } from './data-files/metals-data.js';
 
+import decompositionReaction from './modules/decomposition-reaction/decomposition.js';
+import { ammoniumProductPraser, ammoniumExceptionProduct } from './data-files/decomposition-utils.js';
+import commonOxidationStates from './data-files/commonOxidations.js';
+import decomRules from './data-files/decomposition-rules.js'
+
+const atomicLength = [
+  ['Oxygen', 'Chlorine', 'Hydrogen', 'Iodine', 'Bromine', 'Fluorine', 'Nitrogen'],
+  ['Phosphorus', 'Arsenic', 'Antimony'],
+  ['Sulfur' ,'Selenium', 'Tellurium']
+];
 
 
+async function getCompound(compound, formula) {
+  
+  //const data = await response.json();
+  //console.log(data.PC_Compounds[0]);
+  if (formula === 'name') {
+    try{
+      const response = await fetch(`https://molexa-api.vercel.app/api/pubchem/compound/name/${compound}/JSON`);
+      if (!response.ok) {
+        throw new Error("couldn't fetch data from the molexa API");
+      } else {
+        return await response.json();
+      };
+    }catch(error){
+      console.error(error);
+    };
+  } else if (formula === 'symbol' && false) {
 
-async function getFetch(element) {
+  } else {
+    console.error("could't identitfy the formula of the compound")
+  }
+  
+};
+console.log(await getCompound('Chlorous acid', 'name'));
+
+async function getElement(element) {
   try{
     const response = await fetch("/api/elements");
     let data;
     if (!response.ok) {
-      throw new Error("couldn't fetch data");
+      throw new Error("couldn't fetch data from the Periodic Table API");
     } else {
       const elements = await response.json();
       elements.forEach((ele) => {
@@ -48,18 +81,19 @@ function renderChemicalEquation(formula) {
 };
 
 
-const element1 = 'F';
-const element2 = 'Cl';
-const infoElement1 = await getFetch(element1);
-const infoElement2 = await getFetch(element2);
+const element1 = 'Al';
+const element2 = 'Mg';
+const infoElement1 = await getElement(element1);
+const infoElement2 = await getElement(element2);
 console.log(infoElement1);
 console.log(infoElement2);
 
 buttonActivaton();
 function buttonActivaton() {
-  if (true) {
-    const theReaction = reactionByElement(infoElement1, infoElement2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals);
-    
+  if (false) { // combination reaction
+    const combination = reactionByElement(infoElement1, infoElement2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength);
+  } else if (true) { // decomposition reaction
+    const decomposition = decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength,getElement,getTheCategory, decomRules);
   };
 };
 

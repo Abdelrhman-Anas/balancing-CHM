@@ -1,4 +1,4 @@
-function reactionByElement(element1, element2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals) {
+function reactionByElement(element1, element2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength) {
   //--element 1 info--//
   const eleSymbol1 = element1.symbol;
   const oxidationStates1 = gettingVelance( element1.oxidationStates );
@@ -8,7 +8,7 @@ function reactionByElement(element1, element2, is_it_possible, getTheCategory, f
   const oxidationStates2 = gettingVelance( element2.oxidationStates );
   const elementState2 = element2.standardState
 
-  const reactionTesting = is_it_possible(element1, element2, getTheCategory, filterByVelance, allMetals);
+  const reactionTesting = is_it_possible(element1, element2, getTheCategory, filterByVelance, allMetals, atomicLength);
   console.log(reactionTesting);
   
   const products = getAllProducts(oxidationStates1, oxidationStates2, reactionTesting);
@@ -24,7 +24,7 @@ function getAllProducts(oxidations1, oxidations2, reactionTesting) {
   const oxidationOneNe = oxidations1.filter(oxi => oxi < 0);
   const oxidationTwoPo = oxidations2.filter(oxi => oxi > 0);
   const oxidationTwoNe = oxidations2.filter(oxi => oxi < 0);
-
+  console.log(oxidationOnePo, oxidationOneNe);   console.log(oxidationTwoPo, oxidationTwoNe);
   const reactionInfo = reactionTesting.reaction;
 
   const positiveByNig = posNig(oxidationOnePo, oxidationTwoNe);
@@ -40,7 +40,7 @@ function getAllProducts(oxidations1, oxidations2, reactionTesting) {
     
   } else if (reactionInfo.type === 'covalent' || reactionInfo.type === 'intermetallic') {
 
-    if (reactionTesting.electronegativity.deltaEN < 1) {
+    if (reactionTesting.electronegativity.deltaEN < 0.5) {
       result.push(...positiveByNig, ...nigativeByPos);
     } else {
       if (reactionTesting.electronegativity.frist < reactionTesting.electronegativity.second) {
