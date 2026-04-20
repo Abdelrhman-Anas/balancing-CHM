@@ -1,5 +1,6 @@
-const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength, getElement, getTheCategory, symbolicShape) => {
-  return [{
+const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength, getElement, getTheCategory, symbolicShape) => {
+  return [
+    {
     name: 'metal carbonate',
     formula: 'MCO3',
     products: [
@@ -11,7 +12,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'M', charge: undefined}, 
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        qunatities: {
+          'M': 2,
+          'O': undefined
+        }
       },{
         name: 'carbon dioxide',
         formula: 'CO2',
@@ -19,7 +24,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'C', charge: 4},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        qunatities: {
+          'C': 1,
+          'O': 2
+        }
       }
     ], 
     method: 'thermal',
@@ -36,7 +45,12 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           3,
           {symbol: 'M', charge: undefined},
           {symbol: 'CO3', charge: -1},
-        ]
+        ],
+        qunatities: {
+          'M': undefined,
+          'C': 1,
+          'O': 3
+        }
       },{
         name: 'water',
         formula: 'H2O',
@@ -44,7 +58,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'H', charge: 1},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        qunatities: {
+          'H': 2,
+          'O': 1
+        }
       },{
         name: 'carbon dioxide',
         formula: 'CO2',
@@ -52,55 +70,73 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'C', charge: 4},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        qunatities: {
+          'C': 1,
+          'O': 2
+        }
       }
     ],
     method: 'thermal',
     exceptions: ''
   },{
-    name: 'metal chlorate',
-    formula: 'MClO3',
+    name: 'metal halate',
+    formula: 'MXO3',
     products: [
       2,
       {
-        name: 'metal chloride',
-        formula: 'MCl',
+        name: 'metal halide',
+        formula: 'MX',
         elements: [
           2,
           {symbol: 'M', charge: undefined},
-          {symbol: 'Cl', charge: -1}
-        ]
+          {symbol: 'X', charge: -1}
+        ],
+        qunatities: {
+          'M': 1,
+          'X': undefined
+        }
       },{
         name: 'oxygen molecule',
         formula: 'O2',
         elements: [
           1,
           {symbol: 'O', charge: 0}
-        ]
+        ],
+        qunatities: {
+          'O': 2
+        }
       }
     ],
     method: 'thermal',
     exceptions: ''
   },{
-    name: 'metal perchlorate',
-    formula: 'MClO4',
+    name: 'metal perholorate',
+    formula: 'MXO4',
     products: [
       2,
       {
-        name: 'metal chloride',
+        name: 'metal halide',
         formula: 'MCl',
         elements: [
           2,
           {symbol: 'M', charge: undefined},
-          {symbol: 'Cl', charge: -1}
-        ]
+          {symbol: 'X', charge: -1}
+        ],
+        qunatities: {
+          'M': 1,
+          'X': undefined
+        }
       },{
         name: 'oxygen molecule',
         formula: 'O2',
         elements: [
           1,
           {symbol: 'O', charge: 0}
-        ]
+        ],
+        qunatities: {
+          'O': 2
+        }
       }
     ],
     method: 'thermal',
@@ -117,7 +153,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'M', charge: undefined},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        qunatities: {
+          'M': 2,
+          'O': undefined,
+        }
       },{
         name: 'nitrogen dioxide',
         symbol: 'NO2',
@@ -125,14 +165,21 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'N', charge: 2},
           {symbol: 'O', charge: -1}
-        ]
+        ],
+        qunatities: {
+          'N': 1,
+          'O': 2
+        }
       },{
         name: 'oxygen molecule',
         formula: 'O2',
         elements: [
           1,
           {symbol: 'O', charge: 0},
-        ]
+        ],
+        qunatities: {
+          'O': 2
+        }
       }
     ],
     method: 'thermal',
@@ -146,17 +193,27 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
             name: 'metal nitrite',
             formula: 'MNO2',
             elements: [
-              3,
+              2,
               {symbol: 'M', charge: undefined},
               {symbol: 'NO2', charge: -1}
-            ]
+            ],
+            qunatities: {
+              'M': 1,
+              'NO2': [undefined, {
+                'N': 1,
+                'O': 2
+              }]
+            }
           },{
             name: 'oxygen molecule',
             formula: 'O2',
             elements: [
               1,
               {symbol: 'O', charge: 0},
-            ]
+            ],
+            qunatities: {
+              'O': 2
+            }
           }
         ]
       },{
@@ -166,7 +223,10 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           {
             name: 'metal',
             formula: 'M',
-            elements: [1, {symbol: 'M', charge: undefined}]
+            elements: [1, {symbol: 'M', charge: undefined}],
+            qunatities: {
+              'M': 1
+            }
           },{
             name: 'nitrogen dioxide',
             symbol: 'NO2',
@@ -174,14 +234,21 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
               2,
               {symbol: 'N', charge: 2},
               {symbol: 'O', charge: -1}
-            ]
+            ],
+            qunatities: {
+              'N': 1,
+              'O': 2
+            }
           },{
             name: 'oxygen molecule',
             formula: 'O2',
             elements: [
               1,
               {symbol: 'O', charge: 0},
-            ]
+            ],
+            qunatities: {
+              'O': 2
+            }
           }
         ]
       }
@@ -198,7 +265,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'M', charge: undefined},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        qunatities: {
+          'M': 2,
+          'O': undefined
+        }
       },{
         name: 'water',
         formula: 'H2O',
@@ -206,7 +277,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'H', charge: 1},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        qunatities: {
+          'H': 2,
+          'O': 1
+        }
       }
     ],
     method: 'thermal',
@@ -225,18 +300,21 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
     formula: 'MO',
     products: [
       2,
-      {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}]},
+      {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}], quantities: {'M': 1}},
       {
         name: 'oxygen molecule',
         formula: 'O2',
         elements: [
           1,
           {symbol: 'O', charge: 0},
-        ] 
+        ],
+        quantities: {
+          'O': 2
+        }
       }
     ],
     method: 'thermal',
-    exeptions: ''
+    exceptions: ''
   },{
     name: 'metal sulfate',
     formula: 'MSO4',
@@ -249,7 +327,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'M', charge: undefined},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        quantities: {
+          'M': 2,
+          'O': undefined
+        }
       },{
         name: 'sulfur trioxide',
         formula: 'SO3',
@@ -257,7 +339,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'S', charge: 6},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        quantities: {
+          'S': 1,
+          'O': 3
+        }
       }
     ],
     method: 'thermal',
@@ -274,7 +360,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'M', charge: undefined},
           {symbol: 'O', charge: -2}
-        ] 
+        ],
+        quantities: {
+          'M': 2,
+          'O': undefined
+        }
       },{
         name: 'sulfur dioxide',
         formula: 'SO2',
@@ -282,7 +372,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'S', charge: 4},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        quantities: {
+          'S': 1,
+          'O': 2
+        }
       }
     ],
     method: 'thermal',
@@ -301,14 +395,17 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
         elements: ['Au', 'Pt', 'Ir', 'Rh', 'Os', 'Ru', 'Pd', 'Ag'],
         products: [
           2,
-          {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}]},
+          {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}],quantities: {'M': 1}},
           {
             name: 'sulfur',
             formula: 'S8',
             elements: [
               1,
               {symbol: 'S', charge: 0}
-            ]
+            ],
+            quantities: {
+              'S': 8
+            }
           }
         ]
       }
@@ -318,14 +415,17 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
     formula: 'MH',
     products: [
       2,
-      {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}]},
+      {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}], quantities: {'M': 1}},
       {
         name: 'hydrogen molecule',
         formula: 'H2',
         elements: [
           1,
           {symbol: 'H', charge: 0}
-        ]
+        ],
+        quantities: {
+          'H': 2
+        }
       }
     ],
     method: 'thermal',
@@ -335,14 +435,17 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
     formula: 'MN3',
     products: [
       2,
-      {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}]},
+      {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}], quantities: {'M': 1}},
       {
         name: 'nitrogen molecule',
         formula: 'N2',
         elements: [
           1,
           {symbol: 'N', charge: 0}
-        ]
+        ],
+        quantities: {
+          'N': 2
+        }
       }
     ],
     method: 'thermal',
@@ -359,14 +462,21 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'M', charge: undefined}, 
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        quantities: {
+          'M': 2,
+          'O': undefined
+        }
       },{
         name: 'oxygen molecule',
         formula: 'O2',
         elements: [
           1,
           {symbol: 'O', charge: 0}
-        ]
+        ],
+        quantities: {
+          'O': 2
+        }
       }
     ],
     method: 'thermal',
@@ -383,7 +493,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'M', charge: undefined}, 
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        quantities: {
+          'M': 2,
+          "O": undefined
+        }
       },{
         name: 'carbon monoxide',
         formula: 'CO',
@@ -391,21 +505,25 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'C', charge: 1},
           {symbol: 'O', charge: -1}
-        ]
+        ],
+        quantities: {
+          'C': 1,
+          'O': 1
+        }
       }
     ],
     method: 'thermal',
     exceptions: ''
   },{
     name: 'ammonium salt',
-    formula: 'NO4X',
-    products: ammoniumProductPraser(commonOxidationStates, atomicLength, getElement, getTheCategory, symbolicShape),
+    formula: 'NH4Z',
+    products: await ammoniumProductPraser(commonOxidationStates, atomicLength, getElement, getTheCategory, symbolicShape),
     method: 'thermal',
     exceptions: [
       2,
       {
         elements: ['SO4', 'PO4', 'BO3', 'SiO4', 'AsO4', 'SeO4'],
-        products: ammoniumExceptionProduct(symbolicShape)
+        products: await ammoniumExceptionProduct(symbolicShape)
       },{
         elements: ['CO3'],
         products: [
@@ -449,7 +567,10 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
         elements: [
           1,
           {symbol: 'O', charge: 0}
-        ]
+        ],
+        quantities: {
+          'O': 2
+        }
       },{
         name: undefined,
         formula: 'HX',
@@ -457,7 +578,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'H', charge: 1},
           {symbol: 'X', charge: -1}
-        ]
+        ],
+        quantities: {
+          'H': 1,
+          'X': 1
+        }
       }
     ],
     method: 'thermal',
@@ -470,9 +595,33 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
       {
         name: 'hypohalous acid',
         formula: 'XOH',
+        elements: [
+          2,
+          {symbol: 'X',charge: 1},
+          {symbol: 'OH', charge: -1}
+        ],
+        quantities: {
+          'X': 1,
+          'OH': [1, {
+            'O': 1,
+            'H': 1
+          }]
+        }
       },{
         name: 'halic acid',
         formula: 'XHO3',
+        elements: [
+          2,
+          {symbol: 'X', charge: 1},
+          {symbol: 'HO3', charge: -1}
+        ],
+        quantities: {
+          'X': 1,
+          'HO3': [1, {
+            'H': 1,
+            'O': 3
+          }]
+        }
       }
     ],
     method: 'thermal',
@@ -485,9 +634,30 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
       {
         name: 'perhalic acid',
         formula: 'XHO4',
+        elements: [
+          2,
+          {symbol: 'X', charge: 1},
+          {symbol: 'HO4', charge: -1}
+        ],
+        quantities: {
+          'X': 1,
+          'HO4': [1, {
+            'H': 1,
+            'O': 4
+          }]
+        }
       },{
         name: 'halogen dioxide',
-        formula: 'XO2'
+        formula: 'XO2',
+        elements: [
+          2,
+          {symbol: 'X', charge: 2},
+          {symbol: 'O', charge: -1}
+        ],
+        quantities: {
+          'X': 1,
+          'O': 2
+        }
       },{
         name: 'water',
         formula: 'H2O',
@@ -495,7 +665,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'H', charge: 1},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        quantities: {
+          'H': 2,
+          'O': 1
+        }
       }
     ],
     method: 'thermal',
@@ -506,19 +680,25 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
     products: [
       3,
       {
-        name: 'chlorine molecule',
-        formula: 'Cl2',
+        name: 'halogen molecule',
+        formula: 'X2',
         elements: [
           1,
-          {symbol: 'Cl', charge: 0}
-        ]
+          {symbol: 'X', charge: 0}
+        ],
+        quantities: {
+          'X': 2
+        }
       },{
         name: 'oxygen molecule',
         formula: 'O2',
         elements: [
           1,
           {symbol: 'O', charge: 0}
-        ]
+        ], 
+        quantities: {
+          'O': 2
+        }
       },{
         name: 'water',
         formula: 'H2O',
@@ -526,7 +706,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'H', charge: 1},
           {symbol: 'O', charge: -2}
-        ]
+        ], 
+        quantities: {
+          'H': 2,
+          'O': 1
+        }
       }
     ],
     method: 'thermal',
@@ -536,28 +720,31 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
     formula: 'MX',
     products: [
       2,
-      {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}]},
-      {name: 'halogen', formula: 'X', elements: [1, {symbol: 'X', charge: undefined}]},
+      {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}], quantities: {'M': 1}},
+      {name: 'halogen', formula: 'X', elements: [1, {symbol: 'X', charge: -1}], quantities: {'X': 1}},
     ],
     method: 'electrolysis',
     exceptions: ''
-  }, {
+  },{
     name: 'metal oxide',
     formula: 'MO',
     products: [
       2,
-      {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}]},
+      {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}], quantities: {'M': 1}},
       {
         name: 'oxygen molecule',
         formula: 'O2',
         elements: [
           1,
           {symbol: 'O', charge: 0},
-        ] 
+        ],
+        quantities: {
+          'O': 2
+        }
       }
     ],
     method: 'electrolysis',
-    exeptions: ''
+    exceptions: ''
   },{
     name: 'water',
     formula: 'H2O',
@@ -569,14 +756,20 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
         elements: [
           1,
           {symbol: 'O', charge: 0}
-        ]
+        ],
+        quantities: {
+          'O': 2
+        }
       },{
         name: 'hydrogen molecule',
         formula: 'H2',
         elements: [
           1,
           {symbol: 'H', charge: 0}
-        ]
+        ],
+        quantities: {
+          'H': 2
+        }
       }
     ],
     method: 'electrolysis',
@@ -593,7 +786,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'M', charge: undefined},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        quantities: {
+          'M': 2,
+          'O': undefined
+        }
       },{
         name: 'water',
         formula: 'H2O',
@@ -601,7 +798,11 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'H', charge: 1},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        quantities: {
+          'H': 2,
+          'O': 1
+        }
       }
     ],
     method: 'electrolysis',
@@ -618,14 +819,21 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
           2,
           {symbol: 'H', charge: 1},
           {symbol: 'O', charge: -2}
-        ]
+        ],
+        quantities: {
+          'H': 2,
+          'O': 1
+        }
       },{
         name: 'oxygen molecule',
         formula: 'O2',
         elements: [
           1,
           {symbol: 'O', charge: 0}
-        ]
+        ],
+        quantities: {
+          'O': 2
+        }
       }
     ],
     method: 'catalytic',
@@ -641,15 +849,22 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
         elements: [
           2,
           {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}]},
-          {name: 'halogen', formula: 'X', elements: [1, {symbol: 'X', charge: undefined}]}
-        ]
+          {name: 'halogen', formula: 'X', elements: [1, {symbol: 'X', charge: -1}]}
+        ],
+        quantities: {
+          'M': 1,
+          'X': undefined
+        }
       },{
         name: 'oxygen molecule',
         formula: 'O2',
         elements: [
           1,
           {symbol: 'O', charge: 0}
-        ]
+        ],
+        quantities: {
+          'O': 2
+        }
       }
     ],
     method: 'catalytic',
@@ -665,19 +880,25 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
         elements: [
           1,
           {symbol: 'N', charge: 0}
-        ]
+        ],
+        quantities: {
+          'N': 2
+        }
       },{
         name: 'hydrogen molecule',
         symbol: 'H2',
         elements: [
           1,
           {symbol: 'H', charge: 0}
-        ]
+        ],
+        quantities: {
+          'H': 2
+        }
       }
     ],
     method: 'catalytic',
     exceptions: ''
-  }, {
+  },{
     name: 'hydrazine',
     formula: 'N2H4',
     products: [
@@ -688,14 +909,20 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
         elements: [
           1,
           {symbol: 'N', charge: 0}
-        ]
+        ],
+        quantities: {
+          'N': 2
+        }
       },{
         name: 'hydrogen molecule',
         symbol: 'H2',
         elements: [
           1,
           {symbol: 'H', charge: 0}
-        ]
+        ],
+        quantities: {
+          'H': 2
+        }
       }
     ],
     method: 'catalytic',
@@ -711,9 +938,15 @@ const decomRules = (ammoniumProductPraser, ammoniumExceptionProduct, commonOxida
         elements: [
           1,
           {symbol: 'N', charge: 0}
-        ]
-      },{name: 'halogen', formula: 'X', elements: [1, {symbol: 'X', charge: undefined}]}
-    ]
+        ],
+        quantities: {
+          'N': 2
+        }
+      },
+      {name: 'halogen', formula: 'X', elements: [1, {symbol: 'X', charge: -1}], quantities: {'X': 1}}
+    ],
+    method: 'catalytic',
+    exceptions: ''
   }];
 };
 
