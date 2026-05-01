@@ -6,8 +6,8 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
   acidArray.forEach((le, index) => {
     acidArray[index] = isNaN(Number(le)) ? le : Number(le);
   });
-  console.log(acidArray);
-  const elements = getElements(acidArray);
+
+  const elements = getElements(symbolicShape, acidArray, 1);
 
   for (let i = 1; i < elements.length;i++) {
     const element = elements[i];
@@ -40,7 +40,7 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
     const elementData = await getElement(element.symbol);
     elementsData.push(elementData);
   };
-  
+
   for(let i = 0;i < elements.length;i++) {
     const theElement = elements[i + 1];
     if (typeof theElement === 'number') {
@@ -77,6 +77,8 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
     const centralElement = elements[elements[0]]
     const centralElementData = elementsData[elements[0] -1];
     const centralCategory = getTheCategory(centralElementData.groupBlock);
+    const centralSymbol = centralElement.symbol;
+    const centralCharge = centralElement.oxidation;
     if (centralCategory === 'metal') {
       theProduct = [
         3,
@@ -85,16 +87,23 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
           symbol: `MO`,
           elements: [
             2,
-            {symbol: `${centralElement.symbol}`, charge: centralElement.oxidation},
+            {symbol: `${centralSymbol}`, charge: centralElement.oxidation},
             {symbol: 'O', charge: -2}
-          ]
+          ],
+          quantities: {
+            [centralSymbol]: 2,
+            'O': centralCharge
+          }
         },{
           name: 'nitrogen molecule',
           symbol: 'N2',
           elements: [
             1,
             {symbol: 'N', charge: 0}
-          ]
+          ],
+          quantities: {
+            'N': 2
+          }
         },{
           name: 'water',
           formula: 'H2O',
@@ -103,6 +112,10 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
             {symbol: 'H', charge: 1},
             {symbol: 'O', charge: -2}
           ],
+          quantities: {
+            'H': 2,
+            'O': 1
+          }
         }
       ]
     } else {
@@ -131,8 +144,6 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
           "can't be decomposed"
         ];
       };
-      console.log(elements);
-      console.log('this one');
       theProduct = [
         4,
         {
@@ -141,21 +152,30 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
           elements: [
             1,
             {symbol: 'N', charge: 0}
-          ]
+          ],
+          quantities: {
+            'N': 2
+          }
         },{
           name: `${elements[elements[0]].name}`,
           formula: `${elements[elements[0]].symbol}${elements[elements[0]].length === 1 ? '' : elements[elements[0]].length}`,
           elements: [
             1,
             {symbol: `${elements[elements[0]].symbol}`, charge: 0}
-          ]
+          ],
+          quantities: {
+            [elements[elements[0]].symbol]: elements[elements[0]].length
+          }
         },{
           name: 'oxygen molecule',
           formula: 'O2',
           elements: [
             1,
             {symbol: 'O', charge: 0},
-          ]
+          ],
+          quantities: {
+            'O': 2
+          }
         },{
           name: 'water',
           formula: 'H2O',
@@ -164,6 +184,10 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
             {symbol: 'H', charge: 1},
             {symbol: 'O', charge: -2}
           ],
+          quantities: {
+            'H': 2,
+            'O': 1
+          }
         }
       ];
       if (elements[elements.length -2].productCode === 2) {
@@ -171,7 +195,7 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
       };
     };
   } else {
-    theProduct = ammoniumExceptionProduct(symbolicShape);
+    theProduct = ammoniumExceptionProduct(symbolicShape, getElement, commonOxidationStates);
   }
   return theProduct;
 };
@@ -179,15 +203,20 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
 //--------------------------------------------------------------------------------------------------------------------------------------//
 //--------------------------------------------------------------------------------------------------------------------------------------//
 
-function getElements(compoundArray) {
+export function getElements(symbolicShape, compoundArray, oneOrTwo) {
   const result = [
     undefined,
   ];
 
   let currentElement = '';
-  compoundArray.forEach((letter, index) => {
+  
+  for (let index = 0; index< compoundArray.length;index++) {
+    const letter = compoundArray[index];
     const letter2 = compoundArray[index + 1];
     const letter3 = compoundArray[index + 2];
+    if (letter === '(' || letter === ')') {
+      continue;
+    }
   
     if (typeof letter === 'string' && letter === letter.toUpperCase()) {
       currentElement = letter;
@@ -213,13 +242,17 @@ function getElements(compoundArray) {
         result.push({symbol: currentElement, quantity: 1});
       };
     };
-  });
-
-  if (typeof compoundArray[0] === 'number') {
-    result.push(-compoundArray[0]);
+  };
+  if (symbolicShape.includes('NH4')) {
+    if (typeof compoundArray[0] === 'number') {
+      result.push(-compoundArray[0]);
+    } else {
+      result.push(-1);
+    }
   } else {
-    result.push(-1);
+    result.push(0);
   }
+  
   let theSmallest = {value: 100, index: 0};
 
   for (let i = 1;i < result.length;i++) {
@@ -237,7 +270,7 @@ function getElements(compoundArray) {
 //--------------------------------------------------------------------------------------------------------------------------------------//
 //--------------------------------------------------------------------------------------------------------------------------------------//
 //--------------------------------------------------------------------------------------------------------------------------------------//
-export function ammoniumExceptionProduct(symbolicShape) {
+export async function ammoniumExceptionProduct(symbolicShape, getElement, commonOxidationStates) {
   let result;
 
   const acid = symbolicShape.replace('(', '').replace(')', '').replace('NH4', '');
@@ -247,7 +280,20 @@ export function ammoniumExceptionProduct(symbolicShape) {
     acidArray[index] = isNaN(Number(le)) ? le : Number(le);
   });
 
-  const elements = getElements(acidArray);
+  const elements = getElements(symbolicShape, acidArray);
+  for (let i = 1;i < elements.length -1;i++) {
+    const theElement = elements[i];
+    const elementData = await getElement(elements[i].symbol);
+    const elementComState = commonOxidationStates[elements[i].symbol].com;
+    if (elementData === undefined || elementComState === undefined) {
+      elements[i].name = '';
+      elements[i].oxidation = elementComState;
+      continue;
+    };
+    elements[i].name = elementData.name;
+    elements[i].oxidation = elementComState;
+  };
+
   const cenrtalElement = elements[elements[0]];
   const ammoniumQuantity = (elements[elements.length -1] * -1 ) - 1;
   let compinatedAcid = 'H';
@@ -273,16 +319,35 @@ export function ammoniumExceptionProduct(symbolicShape) {
         2,
         {symbol: 'N', charge: 3},
         {symbol: 'H', charge: -1}
-      ]
+      ],
+      quantities: {
+        'N': 1,
+        'H': 3
+      }
     },{
-      name: undefined,
+      name: 'ammonium acid',
       formula: (ammoniumQuantity <= 0 ? '': `(NH4)${ammoniumQuantity}`) + compinatedAcid,
       elements: [
-        undefined
-      ]
+        undefined,
+        {symbol: 'NH4', charge: 1},
+        {symbol: `${compinatedAcid}`, charge: ammoniumQuantity}
+      ],
+      quantities: {
+        'NH4': [ammoniumQuantity, {
+          'N': 1,
+          'H': 4
+        }],
+        [compinatedAcid]: [1, {
+          'H': 1
+        }]
+      }
     }
   ]
 
+  for (let i = 1; i< elements.length -1;i++) {
+    const element = elements[i];
+    result[2].quantities[compinatedAcid][1][element.symbol] = element.quantity;
+  };
   return result;
 }
 

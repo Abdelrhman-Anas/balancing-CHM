@@ -13,7 +13,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'M', charge: undefined}, 
           {symbol: 'O', charge: -2}
         ],
-        qunatities: {
+        quantities: {
           'M': 2,
           'O': undefined
         }
@@ -25,7 +25,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'C', charge: 4},
           {symbol: 'O', charge: -2}
         ],
-        qunatities: {
+        quantities: {
           'C': 1,
           'O': 2
         }
@@ -44,12 +44,14 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
         elements: [
           3,
           {symbol: 'M', charge: undefined},
-          {symbol: 'CO3', charge: -1},
+          {symbol: 'CO3', charge: -2},
         ],
-        qunatities: {
-          'M': undefined,
-          'C': 1,
-          'O': 3
+        quantities: {
+          'M': 2,
+          'CO3': [undefined, {
+            'C': 1,
+            'O': 3
+          }]
         }
       },{
         name: 'water',
@@ -59,7 +61,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'H', charge: 1},
           {symbol: 'O', charge: -2}
         ],
-        qunatities: {
+        quantities: {
           'H': 2,
           'O': 1
         }
@@ -71,7 +73,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'C', charge: 4},
           {symbol: 'O', charge: -2}
         ],
-        qunatities: {
+        quantities: {
           'C': 1,
           'O': 2
         }
@@ -92,7 +94,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'M', charge: undefined},
           {symbol: 'X', charge: -1}
         ],
-        qunatities: {
+        quantities: {
           'M': 1,
           'X': undefined
         }
@@ -103,7 +105,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           1,
           {symbol: 'O', charge: 0}
         ],
-        qunatities: {
+        quantities: {
           'O': 2
         }
       }
@@ -123,7 +125,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'M', charge: undefined},
           {symbol: 'X', charge: -1}
         ],
-        qunatities: {
+        quantities: {
           'M': 1,
           'X': undefined
         }
@@ -134,7 +136,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           1,
           {symbol: 'O', charge: 0}
         ],
-        qunatities: {
+        quantities: {
           'O': 2
         }
       }
@@ -154,7 +156,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'M', charge: undefined},
           {symbol: 'O', charge: -2}
         ],
-        qunatities: {
+        quantities: {
           'M': 2,
           'O': undefined,
         }
@@ -166,7 +168,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'N', charge: 2},
           {symbol: 'O', charge: -1}
         ],
-        qunatities: {
+        quantities: {
           'N': 1,
           'O': 2
         }
@@ -177,7 +179,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           1,
           {symbol: 'O', charge: 0},
         ],
-        qunatities: {
+        quantities: {
           'O': 2
         }
       }
@@ -197,7 +199,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
               {symbol: 'M', charge: undefined},
               {symbol: 'NO2', charge: -1}
             ],
-            qunatities: {
+            quantities: {
               'M': 1,
               'NO2': [undefined, {
                 'N': 1,
@@ -211,7 +213,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
               1,
               {symbol: 'O', charge: 0},
             ],
-            qunatities: {
+            quantities: {
               'O': 2
             }
           }
@@ -224,7 +226,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
             name: 'metal',
             formula: 'M',
             elements: [1, {symbol: 'M', charge: undefined}],
-            qunatities: {
+            quantities: {
               'M': 1
             }
           },{
@@ -235,7 +237,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
               {symbol: 'N', charge: 2},
               {symbol: 'O', charge: -1}
             ],
-            qunatities: {
+            quantities: {
               'N': 1,
               'O': 2
             }
@@ -246,7 +248,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
               1,
               {symbol: 'O', charge: 0},
             ],
-            qunatities: {
+            quantities: {
               'O': 2
             }
           }
@@ -266,7 +268,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'M', charge: undefined},
           {symbol: 'O', charge: -2}
         ],
-        qunatities: {
+        quantities: {
           'M': 2,
           'O': undefined
         }
@@ -278,7 +280,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'H', charge: 1},
           {symbol: 'O', charge: -2}
         ],
-        qunatities: {
+        quantities: {
           'H': 2,
           'O': 1
         }
@@ -385,28 +387,28 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
     name: 'metal sulfide',
     formula: 'MS',
     products: [
-      0,
-      "can't be decomposed"
+      2,
+      {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}],quantities: {'M': 1}},
+      {
+        name: 'sulfur',
+        formula: 'S',
+        elements: [
+          1,
+          {symbol: 'S', charge: 0}
+        ],
+        quantities: {
+          'S': 8
+        }
+      }
     ],
     method: 'thermal',
     exceptions: [
       1,
       {
-        elements: ['Au', 'Pt', 'Ir', 'Rh', 'Os', 'Ru', 'Pd', 'Ag'],
+        elements: ['Na', 'K', 'Li', 'Ba'],
         products: [
-          2,
-          {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}],quantities: {'M': 1}},
-          {
-            name: 'sulfur',
-            formula: 'S8',
-            elements: [
-              1,
-              {symbol: 'S', charge: 0}
-            ],
-            quantities: {
-              'S': 8
-            }
-          }
+          0,
+          "can't be decomposed"
         ]
       }
     ]
@@ -523,7 +525,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
       2,
       {
         elements: ['SO4', 'PO4', 'BO3', 'SiO4', 'AsO4', 'SeO4'],
-        products: await ammoniumExceptionProduct(symbolicShape)
+        products: await ammoniumExceptionProduct(symbolicShape, getElement, commonOxidationStates)
       },{
         elements: ['CO3'],
         products: [
@@ -558,7 +560,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
     ]
   },{
     name: 'hypohalous acid',
-    formula: 'XOH',
+    formula: 'HXO',
     products: [
       2,
       {
@@ -589,12 +591,12 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
     exceptions: ''
   },{
     name: 'halous acid',
-    formula: 'XHO2',
+    formula: 'HXO2',
     products: [
       2,
       {
         name: 'hypohalous acid',
-        formula: 'XOH',
+        formula: 'HXO',
         elements: [
           2,
           {symbol: 'X',charge: 1},
@@ -609,7 +611,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
         }
       },{
         name: 'halic acid',
-        formula: 'XHO3',
+        formula: 'HXO3',
         elements: [
           2,
           {symbol: 'X', charge: 1},
@@ -628,12 +630,12 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
     exceptions: ''
   },{
     name: 'halic acid',
-    formula: 'XHO3',
+    formula: 'HXO3',
     products: [
       3,
       {
         name: 'perhalic acid',
-        formula: 'XHO4',
+        formula: 'HXO4',
         elements: [
           2,
           {symbol: 'X', charge: 1},
@@ -676,7 +678,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
     exceptions: ''
   },{
     name: 'perhalic acid',
-    formula: 'XHO4',
+    formula: 'HXO4',
     products: [
       3,
       {
@@ -809,7 +811,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
     exceptions: ''
   },{
     name: 'hydrogen peroxide',
-    formula: 'H2O2',
+    formula: 'HO',
     products: [
       2,
       {
