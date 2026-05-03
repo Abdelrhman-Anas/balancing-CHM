@@ -537,7 +537,11 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
               2,
               {symbol: 'N', charge: 3},
               {symbol: 'H', charge: -1}
-            ]
+            ],
+            quantities: {
+              'N': 1,
+              'H': 3
+            }
           },{
             name: 'carbon dioxide',
             formula: 'CO2',
@@ -545,7 +549,11 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
               2,
               {symbol: 'C', charge: 4},
               {symbol: 'O', charge: -2}
-            ]
+            ],
+            quantities: {
+              'C': 1,
+              'O': 2
+            }
           },{
             name: 'water',
             formula: 'H2O',
@@ -554,6 +562,10 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
               {symbol: 'H', charge: 1},
               {symbol: 'O', charge: -2}
             ],
+            quantities: {
+              'H': 2,
+              'O': 1
+            }
           }
         ]
       }

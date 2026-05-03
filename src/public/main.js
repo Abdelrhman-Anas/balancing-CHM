@@ -2,12 +2,14 @@ import is_it_possible from './modules/combination-reaction/testing.js';
 import reactionByElement from './modules/combination-reaction/combination.js'
 import { filterByVelance, gettingVelance } from './modules/utils/filterByVelance.js';
 import getTheCategory from './modules/utils/getTheCategory.js';
+import { toPubChemFormula } from './modules/utils/prasingFormula.js';
+import { balancingEquations } from './modules/utils/balancing.js';
 import { allMetals } from './data-files/metals-data.js';
 
 import decompositionReaction from './modules/decomposition-reaction/decomposition.js';
 import { ammoniumProductPraser, ammoniumExceptionProduct, getElements } from './data-files/decomposition-utils.js';
 import commonOxidationStates from './data-files/commonOxidations.js';
-import decomRules from './data-files/decomposition-rules.js'
+import decomRules from './data-files/decomposition-rules.js';
 
 const atomicLength = [
   ['Oxygen', 'Chlorine', 'Hydrogen', 'Iodine', 'Bromine', 'Fluorine', 'Nitrogen'],
@@ -16,7 +18,7 @@ const atomicLength = [
 ];
 
 
-async function getCompound(formula) {
+async function getCompound(formula, formula2) {
   try {
 
     const response = await fetch(
@@ -25,10 +27,23 @@ async function getCompound(formula) {
 
     if (!response.ok) {
       const response2 = await fetch(
-        `/api/pubchem/compound/name/${formula}/JSON`
+        `/api/pubchem/compound/name/${formula2}/JSON`
       );
       if (!response2.ok) {
-        return {success: false , data: `HTTP: ${response2.status}`}
+        const response3 = await fetch(
+          `/api/pubchem/compound/fastformula/${formula2}/JSON`
+        );
+        if (!response3.ok) {
+          return {success: false , data: `HTTP: ${response3.status}`}
+        };
+
+        const data3 = await response3.json();
+
+        if (!data2.PC_Compounds || data2.PC_Compounds.length === 0) {
+          return { success: false, data: "No compounds found for this formula" };
+        };
+        
+        return { success: true, data: data3 };
       };
 
       const data2 = await response2.json();
@@ -123,11 +138,13 @@ function renderChemicalEquation(formula) {
   };
 };
 
-console.log(await getRREF([
-  [2, -2, 0],
-  [1, 0, -1],
-  [3, -1, -2]
-]));
+//console.log(await getRREF([
+//  [2, -2, 0],
+//  [1, 0, -1],
+//  [3, -1, -2]
+//]));
+//console.log(toPubChemFormula('(NH4)2CO3'));
+balancingEquations(getRREF);
 const element1 = 'Al';
 const element2 = 'Mg';
 const infoElement1 = await getElement(element1);
@@ -139,8 +156,8 @@ buttonActivaton();
 function buttonActivaton() {
   if (false) { // combination reaction
     const combination = reactionByElement(infoElement1, infoElement2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength);
-  } else if (true) { // decomposition reaction
-    const decomposition = decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength,getElement,getTheCategory, decomRules, getElements, allMetals,getCompound);
+  } else if (false) { // decomposition reaction
+    const decomposition = decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength,getElement,getTheCategory, decomRules, getElements, allMetals,getCompound, toPubChemFormula, getRREF, balancingEquations);
   };
 };
 

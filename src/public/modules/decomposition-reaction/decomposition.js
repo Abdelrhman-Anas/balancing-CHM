@@ -1,6 +1,6 @@
-async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength, getElement, getTheCategory, decomRules, getElements, allMetals, getCompound) {
+async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength, getElement, getTheCategory, decomRules, getElements, allMetals, getCompound, toPubChemFormula, getRREF, balancingEquations) {
 
-  let symbolicShape = 'Na2CO3';
+  let symbolicShape = 'NaClO4';
   
   const symbolicShapeArray = symbolicShape.split('');
 
@@ -9,10 +9,19 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
   });
 
   const symbolicShapeElements = getElements(symbolicShape, symbolicShapeArray);
-
+  const symbolicShapeElementsOr = getElements(symbolicShape, symbolicShapeArray);
   let modifiedFormula = '';
   if (symbolicShape.includes('NH4')) {
     modifiedFormula = 'NH4Z';
+    if (isNaN(Number(symbolicShape.replace('(', '').replace(')', '').replace('NH4', '')[0])) === false) {
+      symbolicShapeElementsOr[1].quantity = 
+        symbolicShapeElementsOr[1].quantity * Number(symbolicShape.replace('(', '').replace(')', '').replace('NH4', '')[0])
+      ;
+      symbolicShapeElementsOr[2].quantity = 
+        symbolicShapeElementsOr[2].quantity * Number(symbolicShape.replace('(', '').replace(')', '').replace('NH4', '')[0])
+      ;
+    };
+    console.log(symbolicShapeElementsOr);
   } else {
     for (let i = 1;i < symbolicShapeElements.length -1; i++) {
       const element = symbolicShapeElements[i].symbol;
@@ -270,7 +279,7 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
       
       for (let q = 1; q < aProductElements.length;q++) {
         const element = aProductElements[q];
-
+        console.log(allTheProducts[j]);
         if (allTheProducts[j].quantities[element.symbol] === undefined || allTheProducts[j].quantities[element.symbol][0] === undefined) {
 
           if (aProductElements[q + 1] === undefined) {
@@ -369,7 +378,7 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
 
       const theproduct = allTheProducts[j];
 
-      const compoundData1 = await getCompound(theproduct.formula);
+      const compoundData1 = await getCompound(toPubChemFormula(theproduct.formula), theproduct.formula);
       if (compoundData1.success === false) {
         return compoundData.data
       };
@@ -383,14 +392,14 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
           const section = compoundData.props[h];
 
           if (section.urn.label === 'IUPAC Name') {
-            equationsProducts[i].products[j].name = (section.value.sval).replace(';', ' ');
+            equationsProducts[i].products[j].name = (section.value.sval).replaceAll(';', ' ');
             break;
           };
         };
       }
 
     };
-    const compoundData1 = await getCompound(symbolicShape);
+    const compoundData1 = await getCompound(toPubChemFormula(symbolicShape), symbolicShape);
     if (compoundData1.success === false) {
       return compoundData1.data;
     }
@@ -401,18 +410,18 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
     } else {
       equationsProducts[i].reactantData = {
         cid: compoundData.id.id.cid,
-
+        formula: symbolicShape
       };
       for (let h = 0;h < compoundData.props.length;h++) {
         const section = compoundData.props[h];
         if (section.urn.label === 'IUPAC Name') {
-          equationsProducts[i].reactantData.name = (section.value.sval).replace(';', ' ');
+          equationsProducts[i].reactantData.name = (section.value.sval).replaceAll(';', ' ');
           break;
         };
       };
     };
     let reactantQuantities = {};
-    const symbolicShapeElementsOr = getElements(symbolicShape, symbolicShapeArray);
+    
     for (let i = 1; i < symbolicShapeElementsOr.length - 1;i++) {
       const theElement = symbolicShapeElementsOr[i];
       reactantQuantities[theElement.symbol] = theElement.quantity;
@@ -421,6 +430,85 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
   };
   console.log(equationsProducts);
 
+  const onlyQuantites = [];
+  for (let i = 0; i < equationsProducts.length;i++) {
+
+    const theProducts = equationsProducts[i].products;
+    const reactantQuantities = equationsProducts[i].reactantData.quantities;
+    onlyQuantites.push(reactantQuantities);
+
+    for (let j = 1; j < theProducts.length;j++) {
+      const aProductElements = theProducts[j].elements;
+      
+      const productEntries = [];
+      for (let u = 1; u < aProductElements.length;u++) {
+        const anElement = aProductElements[u];
+        productEntries.push(anElement.symbol);
+      };
+
+      let finalObject = {};
+      for (let u = 0; u < productEntries.length;u++) {
+        const entry = productEntries[u];
+
+        if (typeof theProducts[j].quantities[entry] === 'object') {
+          const quantitiesArray = theProducts[j].quantities[entry];
+          const allQuantity = Object.fromEntries(
+            Object.entries(quantitiesArray[1]).map(([key, value]) => [key, value * quantitiesArray[0]])
+          );
+          const allQuantityArray = Object.entries(allQuantity);
+          const finalObjectArray = Object.entries(finalObject);
+          console.log(finalObject);
+          for (let q = 0; q < allQuantityArray.length;q++) {
+            const aQuantity = allQuantityArray[q];
+            console.log(aQuantity);
+            let thereOrNot = false;
+            finalObjectArray.forEach((finalQuantity) => {
+              if (finalQuantity[0] === aQuantity[0]) {
+                thereOrNot = true;
+              };
+            });
+           if (thereOrNot === false) {
+              finalObject[aQuantity[0]] = aQuantity[1];
+            } else {
+              finalObject[aQuantity[0]] = finalObject[aQuantity[0]] + aQuantity[1];
+            };
+          };
+        } else {
+          if (finalObject[entry] === undefined) {
+            finalObject[entry] = theProducts[j].quantities[entry];
+          } else {
+            
+            finalObject[entry] = theProducts[j].quantities[entry] + finalObject[entry];
+          };
+          
+        };
+      };
+      onlyQuantites.push(finalObject);
+    };
+  };
+  console.log(onlyQuantites);
+  const balancingMatrix = [];
+  let currentRow = [];
   
+  for (let i = 1; i < symbolicShapeElementsOr.length -1;i++) {
+    const elementSymbol = symbolicShapeElementsOr[i].symbol;
+
+    for (let j = 0; j < onlyQuantites.length;j++) {
+      const quantitiesQroup = onlyQuantites[j];
+
+      if (j === 0) {
+        currentRow.push((quantitiesQroup[elementSymbol] === undefined ? 0 : quantitiesQroup[elementSymbol]));
+        continue;
+      };
+      currentRow.push((quantitiesQroup[elementSymbol] === undefined ? 0 : -quantitiesQroup[elementSymbol]));
+
+    };
+    balancingMatrix.push(currentRow);
+    currentRow = [];
+  };
+  console.log(balancingMatrix);
+
+  const balancedCoff = balancingEquations(getRREF);
+
 };
 export default decompositionReaction;
