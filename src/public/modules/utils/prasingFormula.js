@@ -1,6 +1,7 @@
 export function toPubChemFormula(formula) {
 
   const counts = parseFormula(formula);
+  console.log(toHillNotation(counts));
   return toHillNotation(counts);
 };
 

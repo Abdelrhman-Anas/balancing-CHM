@@ -735,7 +735,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
     products: [
       2,
       {name: 'metal', formula: 'M', elements: [1, {symbol: 'M', charge: undefined}], quantities: {'M': 1}},
-      {name: 'halogen', formula: 'X', elements: [1, {symbol: 'X', charge: -1}], quantities: {'X': 1}},
+      {name: 'halogen', formula: 'X', elements: [1, {symbol: 'X', charge: -1}], quantities: {'X': 2}},
     ],
     method: 'electrolysis',
     exceptions: ''

@@ -1,6 +1,6 @@
-async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength, getElement, getTheCategory, decomRules, getElements, allMetals, getCompound, toPubChemFormula, getRREF, balancingEquations) {
+async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength, getElement, getTheCategory, decomRules, getElements, allMetals, getCompound, toPubChemFormula, getRREF, balancingEquations, fixingQ, tranferToFormula) {
 
-  let symbolicShape = 'NaClO4';
+  let symbolicShape = 'K2CO3';
   
   const symbolicShapeArray = symbolicShape.split('');
 
@@ -13,15 +13,6 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
   let modifiedFormula = '';
   if (symbolicShape.includes('NH4')) {
     modifiedFormula = 'NH4Z';
-    if (isNaN(Number(symbolicShape.replace('(', '').replace(')', '').replace('NH4', '')[0])) === false) {
-      symbolicShapeElementsOr[1].quantity = 
-        symbolicShapeElementsOr[1].quantity * Number(symbolicShape.replace('(', '').replace(')', '').replace('NH4', '')[0])
-      ;
-      symbolicShapeElementsOr[2].quantity = 
-        symbolicShapeElementsOr[2].quantity * Number(symbolicShape.replace('(', '').replace(')', '').replace('NH4', '')[0])
-      ;
-    };
-    console.log(symbolicShapeElementsOr);
   } else {
     for (let i = 1;i < symbolicShapeElements.length -1; i++) {
       const element = symbolicShapeElements[i].symbol;
@@ -81,7 +72,6 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
   if (!yesOrNo && modifiedFormula !== 'NH4Z') {
     modifiedFormula = symbolicShape;
   };
-
   const acceptableRules = [];
   theDecompositionRules.forEach((rule) => {
     if (rule.formula === modifiedFormula) {
@@ -279,7 +269,7 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
       
       for (let q = 1; q < aProductElements.length;q++) {
         const element = aProductElements[q];
-        console.log(allTheProducts[j]);
+
         if (allTheProducts[j].quantities[element.symbol] === undefined || allTheProducts[j].quantities[element.symbol][0] === undefined) {
 
           if (aProductElements[q + 1] === undefined) {
@@ -304,7 +294,6 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
             };
           };
         };
-        
       };
 
       let theNewFormula = '';
@@ -396,7 +385,7 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
             break;
           };
         };
-      }
+      };
 
     };
     const compoundData1 = await getCompound(toPubChemFormula(symbolicShape), symbolicShape);
@@ -421,7 +410,7 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
       };
     };
     let reactantQuantities = {};
-    
+
     for (let i = 1; i < symbolicShapeElementsOr.length - 1;i++) {
       const theElement = symbolicShapeElementsOr[i];
       reactantQuantities[theElement.symbol] = theElement.quantity;
@@ -430,12 +419,14 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
   };
   console.log(equationsProducts);
 
+
   const onlyQuantites = [];
+  let currentEquationQuantity = [];
   for (let i = 0; i < equationsProducts.length;i++) {
 
     const theProducts = equationsProducts[i].products;
     const reactantQuantities = equationsProducts[i].reactantData.quantities;
-    onlyQuantites.push(reactantQuantities);
+    currentEquationQuantity.push(reactantQuantities);
 
     for (let j = 1; j < theProducts.length;j++) {
       const aProductElements = theProducts[j].elements;
@@ -457,10 +448,10 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
           );
           const allQuantityArray = Object.entries(allQuantity);
           const finalObjectArray = Object.entries(finalObject);
-          console.log(finalObject);
+
           for (let q = 0; q < allQuantityArray.length;q++) {
             const aQuantity = allQuantityArray[q];
-            console.log(aQuantity);
+
             let thereOrNot = false;
             finalObjectArray.forEach((finalQuantity) => {
               if (finalQuantity[0] === aQuantity[0]) {
@@ -480,35 +471,97 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
             
             finalObject[entry] = theProducts[j].quantities[entry] + finalObject[entry];
           };
-          
+
         };
       };
-      onlyQuantites.push(finalObject);
+      currentEquationQuantity.push(finalObject);
     };
+    onlyQuantites.push(currentEquationQuantity);
+    currentEquationQuantity = [];
   };
-  console.log(onlyQuantites);
+
+  const symbolicFormulaArray = [];
+  let eachProduct = [];
+  for (let i = 0; i < equationsProducts.length;i++) {
+    const equation = equationsProducts[i];
+    eachProduct.push(equation.reactantData.formula);
+
+    for (let j = 1; j < (equation.products).length;j++) {
+      const product = equation.products[j];
+      eachProduct.push(product.formula);
+    };
+    symbolicFormulaArray.push(eachProduct);
+    eachProduct = [];
+  };
+  const fixedQuantities = fixingQ(getElements, symbolicFormulaArray, onlyQuantites);
+
   const balancingMatrix = [];
+  let perEQ = [];
   let currentRow = [];
-  
-  for (let i = 1; i < symbolicShapeElementsOr.length -1;i++) {
-    const elementSymbol = symbolicShapeElementsOr[i].symbol;
 
-    for (let j = 0; j < onlyQuantites.length;j++) {
-      const quantitiesQroup = onlyQuantites[j];
+  for (let k = 0; k < fixedQuantities.length;k++) {
+    const currentEquation = fixedQuantities[k];
 
-      if (j === 0) {
-        currentRow.push((quantitiesQroup[elementSymbol] === undefined ? 0 : quantitiesQroup[elementSymbol]));
-        continue;
+    for (let i = 1; i < symbolicShapeElementsOr.length -1;i++) {
+      const elementSymbol = symbolicShapeElementsOr[i].symbol;
+
+      for (let j = 0; j < currentEquation.length;j++) {
+        const quantitiesQroup = currentEquation[j];
+
+        if (j === 0) {
+          currentRow.push((quantitiesQroup[elementSymbol] === undefined ? 0 : quantitiesQroup[elementSymbol]));
+          continue;
+        };
+        currentRow.push((quantitiesQroup[elementSymbol] === undefined ? 0 : -quantitiesQroup[elementSymbol]));
+
       };
-      currentRow.push((quantitiesQroup[elementSymbol] === undefined ? 0 : -quantitiesQroup[elementSymbol]));
-
+      perEQ.push(currentRow);
+      currentRow = [];
     };
-    balancingMatrix.push(currentRow);
-    currentRow = [];
+    balancingMatrix.push(perEQ);
+    perEQ = [];
   };
-  console.log(balancingMatrix);
 
-  const balancedCoff = balancingEquations(getRREF);
 
+  const balancedCoff = [];
+  for (let i = 0; i < balancingMatrix.length;i++) {
+    const aMatrix = balancingMatrix[i];
+    
+    balancedCoff.push(await balancingEquations(getRREF, aMatrix));
+  };
+
+  const finalEquationArray = [];
+  let symbolicEquation = '\\(\\ce{ ';
+  let textedEquation = '\\(\\ce{ ';
+  for (let i = 0; i < equationsProducts.length; i++) {
+    const anEquation = equationsProducts[i];
+    const balancedCoffArray = balancedCoff[i];
+    const cidObject = {};
+
+    textedEquation += `${anEquation.reactantData.name} \\longrightarrow `;
+    symbolicEquation += 
+      `${balancedCoffArray[0] === 1 ? '': balancedCoffArray[0]}${tranferToFormula(anEquation.reactantData.formula)} \\longrightarrow `
+    ;
+    cidObject[anEquation.reactantData.name] = anEquation.reactantData.cid;
+    for (let j = 1; j < anEquation.products.length;j++) {
+      const aProduct = anEquation.products[j];
+      const theCoff = balancedCoffArray[j];
+
+      textedEquation += ` ${aProduct.name} +`;
+      symbolicEquation += ` ${theCoff === 1 ? '': theCoff}${tranferToFormula(aProduct.formula)} +`;
+      cidObject[aProduct.name] = aProduct.cid;
+    };
+
+    finalEquationArray.push([
+      textedEquation.slice(0, -1) + '}\\)',
+      symbolicEquation.slice(0, -1) + '}\\)',
+      anEquation.method,
+      cidObject
+    ]);
+    symbolicEquation = '\\(\\ce{ ';
+    textedEquation = '\\(\\ce{ ';
+  };
+  console.log(finalEquationArray);
+  
 };
 export default decompositionReaction;
