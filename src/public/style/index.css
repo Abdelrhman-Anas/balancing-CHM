@@ -1,41 +1,155 @@
-html, body {
-  height: 100%;
-  margin: 0;
+:root {
+  --color-parchment: #e0d0a0;
+  --color-terracotta: #8c4533;
+  --color-marble: #dcdcd0;
+  --color-olive: #3f3f2d;
+  --color-ink: #161616;
 }
-.main {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+
+body {
+  background-color: var(--color-marble);
+  color: var(--color-ink);
+  font-family: 'Alegreya', serif;
+  background-image: radial-gradient(circle at 2px 2px, rgba(0,0,0,0.1) 1px, transparent 0);
+  background-size: 24px 24px;
+  min-height: 100vh;
 }
-.header {
+
+.font-display { font-family: 'Cinzel', serif; }
+.font-serif { font-family: 'Alegreya', serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+.scroll-surface {
+  background-color: var(--color-parchment);
+  background-image: url("https://www.transparenttextures.com/patterns/papyros.png");
+  box-shadow: 
+    0 10px 15px -3px rgba(0, 0, 0, 0.2), 
+    0 4px 6px -2px rgba(0, 0, 0, 0.1),
+    inset 0 0 60px rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.15);
+}
+
+.stone-border {
+  border: 8px solid #b8b8b0;
+  border-image: linear-gradient(to bottom, #cbcbbd, #b8b8b0, #9a9a90) 1;
+}
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+.animate-float { animation: float 6s ease-in-out infinite; }
+
+.type-btn.active {
+  background-color: var(--color-terracotta) !important;
+  color: var(--color-parchment) !important;
+  border-color: var(--color-terracotta) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+}
+.extra-margin { margin-top: 10px;margin-bottom: 10; }
+.text-terracotta { color: var(--color-terracotta); }
+.bg-terracotta { background-color: var(--color-terracotta); }
+.text-parchment { color: var(--color-parchment); }
+.bg-parchment { background-color: var(--color-parchment); }
+.text-olive { color: var(--color-olive); }
+.bg-olive { background-color: var(--color-olive); }
+.text-ink { color: var(--color-ink); }
+.bg-ink { background-color: var(--color-ink); }
+.text-marble { color: var(--color-marble); }
+
+@keyframes parchment-reveal {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-reveal { animation: parchment-reveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+@keyframes slide-down-watermark {
+  from { transform: translateY(-15px); opacity: 0; }
+  to { transform: translateY(0); opacity: 0.05; }
+}
+@keyframes slide-down-main {
+  from { transform: translateY(-15px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.bg-title-watermark {
   position: fixed;
-  top: 0;
-  height: 80px;
-  right: 0;
+  top: 5vh;
   left: 0;
-
-  background-color:  transparent;
-  backdrop-filter: blur(2px);
-  border: none;
-
-  z-index: 200;
+  width: 100%;
+  text-align: center;
+  font-size: 15vw;
+  color: var(--color-olive);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 0;
+  animation: slide-down-watermark 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation-delay: 0.1s;
 }
-.the-result {
-  font-size: 30px;
-}
-@keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(25px); /* Start 20px down */
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0); /* End at original position */
-  }
+.main-title-outer {
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+  animation: slide-down-main 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
-.your-element {
-  animation: fadeInUp 0.8s ease forwards;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-marble);
+  border-left: 1px solid rgba(0,0,0,0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-terracotta);
+  border: 2px solid var(--color-marble);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7a3a2a;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-terracotta) var(--color-marble);
+}
+
+.transition-screen {
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stoichiometry-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(220, 220, 208, 0.2);
+  color: #dcdcd0;
+  padding: 0.5rem;
+  border-radius: 4px;
+  width: 100%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.stoichiometry-input:focus {
+  border-color: var(--color-terracotta);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.stoichiometry-input.limiting {
+  border-color: #fca311;
+  box-shadow: 0 0 8px rgba(252, 163, 17, 0.3);
+}
+
+.secondary-action-btn {
+  @apply px-4 py-2 bg-marble/10 hover:bg-marble/20 text-marble/80 border border-marble/20 rounded-full font-display text-xs tracking-widest transition-all uppercase outline-none;
 }
