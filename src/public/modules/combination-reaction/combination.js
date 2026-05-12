@@ -1,4 +1,26 @@
-function reactionByElement(element1, element2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength) {
+async function combinationReaction(getElement, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula, getElements, commonOxidationStates, combiRules, fixingQ, getRREF, balancingOtherEquations) {
+  const reactant1Symbol = 'K2O';
+  const reactant2Symbol = 'H2O';
+
+  const element1 = await getElement(reactant1Symbol);
+  const element2 = await getElement(reactant2Symbol);
+
+  if (element1 === undefined && element2 === undefined) {
+
+    return reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements, allMetals, commonOxidationStates, combiRules, fixingQ,  getRREF, balancingOtherEquations, getCompound, toPubChemFormula, tranferToFormula);
+
+  } else if (element1 !== undefined && element2 !== undefined) {
+
+    return reactionByElement(element1, element2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula);
+
+  }else {
+    console.log('ffffuckkkkkk');
+  };
+  
+};
+//--------------------------------------------------------------------------------------------------------------------------------------//
+async function reactionByElement(element1, element2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula) {
+
   //--element 1 info--//
   const eleSymbol1 = element1.symbol;
   const oxidationStates1 = gettingVelance( element1.oxidationStates );
@@ -10,13 +32,395 @@ function reactionByElement(element1, element2, is_it_possible, getTheCategory, f
 
   const reactionTesting = is_it_possible(element1, element2, getTheCategory, filterByVelance, allMetals, atomicLength);
   console.log(reactionTesting);
-  
+
   const products = getAllProducts(oxidationStates1, oxidationStates2, reactionTesting);
   console.log(products);
   const balancedEquations = balancingEquations(products, reactionTesting);
   
-  getEquationsAllInfo(balancedEquations, reactionTesting, '', eleSymbol1, eleSymbol2, elementState1, elementState2, element1, element2);
+  return await getEquationsAllInfo(balancedEquations, reactionTesting, '', eleSymbol1, eleSymbol2, elementState1, elementState2, element1, element2, getCompound, toPubChemFormula);
+}
+//--------------------------------------------------------------------------------------------------------------------------------------//
+async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements, allMetals, commonOxidationStates, combiRules, fixingQ,  getRREF, balancingOtherEquations, getCompound, toPubChemFormula, tranferToFormula) {
+  
+  const reactant1Array = reactant1Symbol.split('');
+  const reactant2Array = reactant2Symbol.split('');
+  
+  reactant1Array.forEach((le, index) => {
+    reactant1Array[index] = isNaN(Number(le)) ? le : Number(le);
+  });
 
+  reactant2Array.forEach((le, index) => {
+    reactant2Array[index] = isNaN(Number(le)) ? le : Number(le);
+  });
+  const symbolicReactant = [reactant1Symbol, reactant2Symbol]
+  const elementsArray = [ getElements(reactant1Symbol, reactant1Array),  getElements(reactant2Symbol, reactant2Array) ];
+  console.log(elementsArray);
+  let modifiedFormula = '';
+  let currentformula = '';
+  for (let q = 0; q < elementsArray.length;q++) {
+    const theReactant = symbolicReactant[q];
+    if (theReactant === 'H2O') {
+      modifiedFormula += `H2O+`;
+      continue;
+    }
+
+    for (let i = 1;i < elementsArray[q].length -1; i++) {
+      const element = elementsArray[q][i].symbol;
+      elementsArray[q][i].oxidation = commonOxidationStates[element].com;
+      
+      if (allMetals[element]) {
+        elementsArray[q][i].coSymbol = 'M';
+        continue;
+      } else {
+        elementsArray[q][i].coSymbol = elementsArray[q][i].symbol;
+      }
+
+      const nonmetals = [
+        "C", "N", "F", "P", "S", "Cl", "Se", "Br", "I"
+      ];
+
+      let inOrOut = false;
+      nonmetals.forEach((halo) => {
+        if (halo === element) {
+          inOrOut = true;
+        }
+      });
+      if (inOrOut === true) {
+        elementsArray[q][i].coSymbol = 'Q';
+      } else {
+        elementsArray[q][i].coSymbol = elementsArray[q][i].symbol;
+      };
+    };
+
+
+    for (let i = 1;i < elementsArray[q].length -1; i++) {
+      const element = elementsArray[q][i];
+      if (element.coSymbol === 'M') {
+        currentformula += element.coSymbol;
+        continue;
+      }else if (element.coSymbol === 'Q') {
+        currentformula += element.coSymbol;
+        continue;
+      }
+      if (elementsArray[q].length -2 === 2) {
+        currentformula += element.coSymbol
+      } else {
+        currentformula += element.coSymbol + (element.quantity === 1 ? '' : element.quantity);
+      };
+    };
+    modifiedFormula += `${currentformula}+`;
+    currentformula = '';
+  };
+  modifiedFormula = modifiedFormula.slice(0, -1);
+  console.log(modifiedFormula);
+
+  const rules = await combiRules();
+
+  let acceptableRule;
+  rules.forEach((rule) => {
+    if (rule.formula1 === modifiedFormula || rule.formula2 === modifiedFormula) {
+      acceptableRule = rule
+    };
+  });
+
+  if (!acceptableRule) return 'fuckkkkkkkkkkkkkkk';
+
+  console.log(elementsArray);
+
+  const theProduct = acceptableRule.product[1];
+  const ProductElements = theProduct.elements;
+
+  for (let i = 1; i < ProductElements.length;i++) {
+    const pElement = ProductElements[i];
+    
+    if (pElement.symbol === 'M' || pElement.symbol === 'Q') {
+
+      for (let j = 0; j < elementsArray.length;j++) {
+
+        for (let k = 1; k < elementsArray[j].length -1;k++) {
+          const otherElement = elementsArray[j][k];
+
+          if (otherElement.coSymbol === 'M' && pElement.symbol === 'M' ) {
+            acceptableRule.product[1].elements[i].charge = otherElement.oxidation;
+            acceptableRule.product[1].elements[i].symbol = otherElement.symbol;
+
+            acceptableRule.product[1].quantities[otherElement.symbol] = acceptableRule.product[1].quantities['M'];
+            delete  acceptableRule.product[1].quantities['M'];
+            
+          } else if (otherElement.coSymbol === 'Q' && pElement.symbol === 'Q') {
+            acceptableRule.product[1].elements[i].charge = otherElement.oxidation;
+            acceptableRule.product[1].elements[i].symbol = otherElement.symbol;
+
+            acceptableRule.product[1].quantities[otherElement.symbol] = acceptableRule.product[1].quantities['Q'];
+            delete  acceptableRule.product[1].quantities['Q'];
+          };
+        };
+      };
+    };
+  };
+
+  const quantitesArray = Object.entries(acceptableRule.product[1].quantities);
+  let howMuch = 0;
+  for (let i = 0; i < quantitesArray.length;i++) {
+    const quantity = quantitesArray[i];
+    if (quantity[1] === undefined) {
+      howMuch++;
+    };
+  };
+  if (howMuch === quantitesArray.length) {
+    let oxidationArray = [];
+
+    const imposterElements = [];
+    for (let q = 0; q < elementsArray.length;q++) {
+      const elementalArray = elementsArray[q];
+      const elementalSymbol = symbolicReactant[q];
+
+      if (elementalSymbol === 'H2O') {
+        oxidationArray.push(['H', 1]);
+      } else {
+        let centralOxidation = 0;
+        let centralElement;
+        for (let i = 1; i < elementalArray.length -1;i++) {
+          const element = elementalArray[i];
+
+          if (element.coSymbol === 'Q' || element.coSymbol === 'M') {
+            centralElement = element;
+            imposterElements.push(element);
+            continue;
+          };
+          
+          centralOxidation += -(await commonOxidationStates[element.symbol].com) * element.quantity;
+        };
+        oxidationArray.push([centralElement.symbol, centralOxidation / centralElement.quantity]);
+      };
+    };
+
+
+
+    if (oxidationArray[0][0] === oxidationArray[1][0]) {
+      oxidationArray = [[oxidationArray[0][0], (oxidationArray[0][1] + oxidationArray[1][1]) / 2]];
+    }
+
+    const productElements = acceptableRule.product[1].elements;
+
+    for (let i = 0; i < oxidationArray.length;i++) {
+      const anElement = oxidationArray[i];
+
+      for (let j = 1; j < productElements.length;j++) {
+        const neElement = productElements[j];
+        const theImposter = imposterElements.find( array => array.symbol === neElement.symbol);
+        if (anElement[0] === neElement.symbol && theImposter !== undefined) {
+          acceptableRule.product[1].elements[j].charge = anElement[1];
+        };
+      };
+    };
+    console.log(productElements);
+
+    if (productElements[0] === 2) {
+      const coffArray = [[productElements[1].charge, undefined], [productElements[2].charge, undefined]];
+
+      const nums = [...Array(10).keys()].slice(2);
+      outerloop: for (let i = 0; i < coffArray.length;i++) {
+        const aCoff = coffArray[i];
+
+        for (let j = 0; j < nums.length;j++) {
+          const num = nums[j];
+
+          if (Number.isInteger(aCoff[0] / num)) {
+
+            coffArray[i][1] = num;
+            continue outerloop;
+          };
+        };
+      };
+      let firstCoff;    let secondCoff;
+      if (coffArray[0][1] === coffArray[1][1]) {
+        firstCoff = Math.abs(coffArray[0][0] / coffArray[0][1]);
+        secondCoff = Math.abs(coffArray[1][0] / coffArray[1][1]);
+      } else {
+        firstCoff = Math.abs(coffArray[0][0]);
+        secondCoff = Math.abs(coffArray[1][0]);
+      };
+      const fristHalf = `${productElements[1].symbol}${secondCoff === 1 ? '' : secondCoff}`;
+      const secondHalf = `${productElements[2].symbol}${firstCoff === 1 ? '' : firstCoff}`;
+
+      acceptableRule.product[1].formula = fristHalf + secondHalf;
+      acceptableRule.product[1].quantities[productElements[1].symbol] = secondCoff;
+      acceptableRule.product[1].quantities[productElements[2].symbol] = firstCoff;
+    } else {
+      const fristCharge = productElements[1].charge;
+      const secondcharge = productElements[2].charge;
+      const thirdcharge = productElements[3].charge;
+
+      let X = 1;     let Y = 1;     let Z = 0;
+
+      for (let i = 0; i < 15; i++) {
+        const calc = (fristCharge*X + secondcharge*Y) / -thirdcharge;
+        if (X === Y) {
+          if (Number.isInteger(calc)) {
+            Z = calc;
+            break;
+          } else {
+            X++;
+            continue;
+          }
+        } else if (X > Y) {
+          if (Number.isInteger(calc)) {
+            Z = calc;
+            break;
+          } else {
+            X--;
+            Y++;
+            continue;
+          }
+        } else {
+          if (Number.isInteger(calc)) {
+            Z = calc;
+            break;
+          } else {
+            X++;
+            continue;
+          };
+        };
+      };
+      const fristHalf = `${productElements[2].symbol}${Y === 1 ? '' : Y}`;
+      const secondHalf = `${productElements[1].symbol}${X === 1 ? '' : X}`;
+      const thirdHalf = `${productElements[3].symbol}${Z === 1 ? '' : Z}`;
+      
+      acceptableRule.product[1].formula = fristHalf + secondHalf + thirdHalf;
+      acceptableRule.product[1].quantities[productElements[2].symbol] = Y;
+      acceptableRule.product[1].quantities[productElements[1].symbol] = X;
+      acceptableRule.product[1].quantities[productElements[3].symbol] = Z;
+    };
+    
+  } else {
+    acceptableRule.product[1].quantities['H'] = Math.abs(acceptableRule.product[1].elements[1].charge);
+    acceptableRule.product[1].quantities['O'] = Math.abs(acceptableRule.product[1].elements[1].charge);
+    delete acceptableRule.product[1].quantities['OH'];
+    const theMainProduct = acceptableRule.product[1];
+    let formula = '';
+    const fristHalf = 
+      `${theMainProduct.elements[1].symbol}${
+        theMainProduct.quantities[theMainProduct.elements[1].symbol] === 1 ?
+          '' : theMainProduct.quantities[theMainProduct.elements[1].symbol]
+      }`
+    ;
+
+    const secondHalf = 
+      `${theMainProduct.quantities['O'] === 1 ? 'OH' : `(OH)${theMainProduct.quantities['O']}`}`
+    ;
+    formula = fristHalf + secondHalf;
+    acceptableRule.product[1].formula = formula;
+  };
+  const finalResultArray = [
+    [{
+      name: '',
+      formula: symbolicReactant[0]
+    },{
+      name: '',
+      formula: symbolicReactant[1]
+    },{
+      name: '',
+      formula: acceptableRule.product[1].formula
+  }]];
+
+  //for (let i = 0; i < finalResultArray[0].length;i++) {
+  //  const elementObject = finalResultArray[0][i];
+  //  const compound1Data = await getCompound(toPubChemFormula(elementObject.formula), elementObject.formula);
+  //  if (compound1Data.success === false) {
+  //    finalResultArray[0][i].name = "couldn't fetch";
+  //  } else {
+  //    //cid: compoundData.id.id.cid
+  //    const compoundData = compoundData1.data.PC_Compounds[0];
+
+  //    finalResultArray[0][i].cid = compoundData.id.id.cid;
+
+  //    for (let h = 0;h < compoundData.props.length;h++) {
+  //      const section = compoundData.props[h];
+  //      if (section.urn.label === 'IUPAC Name') {
+  //        finalResultArray[0][i].name = (section.value.sval).replaceAll(';', ' ');
+  //        break;
+  //      };
+  //    };
+  //  };
+  //}
+
+  const formulaArray = [...symbolicReactant, acceptableRule.product[1].formula];
+  const allQuantitesArray = [];
+
+  let currentObject = {};
+  for(let i = 0; i < elementsArray.length; i++) {
+    const currentArray = elementsArray[i];
+
+    for (let j = 1;j < currentArray.length -1;j++) {
+      const element = currentArray[j];
+      currentObject[element.symbol] = element.quantity;
+    };
+    allQuantitesArray.push(currentObject);
+    currentObject = {};
+  };
+  allQuantitesArray.push(acceptableRule.product[1].quantities);
+  console.log(formulaArray);
+  console.log(allQuantitesArray);
+
+  const fixedQuantities = fixingQ(getElements, formulaArray, allQuantitesArray);
+  console.log(fixedQuantities);
+
+  const allElements = Object.entries(fixedQuantities[2]);
+  console.log(allElements);
+  const balancingMatrix = [];
+  let currentRow = [];
+
+  for (let i = 0; i < allElements.length;i++) {
+    const elementalSymbol = allElements[i][0];
+
+    for (let j = 0; j < fixedQuantities.length;j++) {
+      const quantityObject = fixedQuantities[j];
+
+      if (quantityObject[elementalSymbol] === undefined && j < fixedQuantities.length -1) {
+        currentRow.push(0);
+        continue;
+      } else if (quantityObject[elementalSymbol] !== undefined && j < fixedQuantities.length -1) {
+        currentRow.push(quantityObject[elementalSymbol]);
+        continue;
+      } else if (j === fixedQuantities.length -1) {
+        currentRow.push(-quantityObject[elementalSymbol]);
+      };
+    };
+    balancingMatrix.push(currentRow);
+    currentRow = [];
+  };
+  console.log(balancingMatrix);
+  
+  const balancedCoff = await balancingOtherEquations(getRREF, balancingMatrix);
+  console.log(balancedCoff);
+
+  let textedEquation = '\\(\\ce{ ';
+  let symboledEquation = '\\(\\ce{ ';
+  for (let i = 0; i < finalResultArray[0].length;i++) {
+    const anEquationSet = finalResultArray[0][i];
+    const equationCoff = balancedCoff[i];
+
+    if (i === finalResultArray[0].length -1) {
+      textedEquation = textedEquation.slice(0, -1);
+      symboledEquation = symboledEquation.slice(0, -1);
+
+      textedEquation += `\\longrightarrow ${anEquationSet.name} `;
+      symboledEquation += `\\longrightarrow ${equationCoff === 1? '' : equationCoff}${tranferToFormula(anEquationSet.formula)} `;
+    }else {
+      textedEquation += ` ${anEquationSet.name} +`;
+      symboledEquation += ` ${equationCoff === 1? '' : equationCoff}${tranferToFormula(anEquationSet.formula)} +`;
+    }
+  };
+  textedEquation += '}\\)';
+  symboledEquation += '}\\)';
+  finalResultArray.push({
+    textedEquation,
+    symboledEquation
+  });
+  console.log(finalResultArray);
+
+  console.log(acceptableRule);
 };
 //--------------------------------------------------------------------------------------------------------------------------------------//
 function getAllProducts(oxidations1, oxidations2, reactionTesting) {
@@ -40,16 +444,11 @@ function getAllProducts(oxidations1, oxidations2, reactionTesting) {
     
   } else if (reactionInfo.type === 'covalent' || reactionInfo.type === 'intermetallic') {
 
-    if (reactionTesting.electronegativity.deltaEN < 0.5) {
-      result.push(...positiveByNig, ...nigativeByPos);
+    if (reactionTesting.electronegativity.frist < reactionTesting.electronegativity.second) {
+      result.push(...positiveByNig);
     } else {
-      if (reactionTesting.electronegativity.frist < reactionTesting.electronegativity.second) {
-        result.push(...positiveByNig);
-      }else {
-        result.push(...nigativeByPos);
-      };
+      result.push(...nigativeByPos);
     };
-
   };
   return result;
 };
@@ -155,7 +554,7 @@ function balancingEquations(products, reactionTesting) {
   return result;
 };
 //--------------------------------------------------------------------------------------------------------------------------------------//
-function getEquationsAllInfo(equations, reactionTesting, productName, symbol1, symbol2, state1, state2, element1Info, element2Info) {
+async function getEquationsAllInfo(equations, reactionTesting, productName, symbol1, symbol2, state1, state2, element1Info, element2Info, getCompound, toPubChemFormula) {
   console.log(reactionTesting.electronegativity.deltaEN);
   const result = [
     {
@@ -206,13 +605,32 @@ function getEquationsAllInfo(equations, reactionTesting, productName, symbol1, s
       fristElementCharge = "intermetallic bonds don't have charges";
       secondElementCharge = '';
     };
+    const equationAndProduct = getTextEquation(equation, symbol1, symbol2, state1, state2);
+    const compoundData1 = await getCompound(toPubChemFormula(equationAndProduct.productEntry), equationAndProduct.productEntry);
+    if (compoundData1.success) {
+      const compoundData = compoundData1.data.PC_Compounds[0];
+      const productData = {
+        cid: compoundData.id.id.cid,
+        formula: equationAndProduct.productEntry
+      };
+
+      for (let h = 0;h < compoundData.props.length;h++) {
+        const section = compoundData.props[h];
+        if (section.urn.label === 'IUPAC Name') {
+          productData.name = (section.value.sval).replaceAll(';', ' ');
+        };
+      };
+
+      result.push({
+        equation: equationAndProduct.equation,
+        productData,
+        fristElementCharge,
+        secondElementCharge
+      });
+    } else {
+      continue;
+    }
     
-    result.push({
-      equation: getTextEquation(equation, symbol1, symbol2, state1, state2),
-      productName: '',
-      fristElementCharge,
-      secondElementCharge
-    });
   };
   console.log(result);
 };
@@ -242,6 +660,7 @@ function getTextEquation(balancingData, symbol1, symbol2, state1, state2) {
   let element1Piece = `${RC1}${symbol1}_${RQ1}_(_${state11}_)`;
   let element2Piece = `${RC2}${symbol2}_${RQ2}_(_${state22}_)`;
   let productPiece;
+  let productEntry;
   if (RQ1 === '') {
     element1Piece = `${RC1}${symbol1}_(_${state11}_)`;
   }
@@ -251,19 +670,23 @@ function getTextEquation(balancingData, symbol1, symbol2, state1, state2) {
   if (product[0] === 1) {
     if (PQ1 === '') {
       productPiece = `${PC}${symbol1}${symbol2}_${PQ2}`;
+      productEntry = `${symbol1}${symbol2}${PQ2}`;
     } else {
       productPiece = `${PC}${symbol1}_${PQ1}${symbol2}_${PQ2}`;
+      productEntry = `${symbol1}${PQ1}${symbol2}${PQ2}`;
     }
   } else {
     if (PQ2 === '') {
       productPiece = `${PC}${symbol2}${symbol1}_${PQ1}`;
+      productEntry = `${symbol2}${symbol1}${PQ1}`;
     } else {
       productPiece = `${PC}${symbol2}_${PQ2}${symbol1}_${PQ1}`;
+      productEntry = `${symbol2}${PQ2}${symbol1}${PQ1}`;
     }
   };
   symboledEquation = `\\( \\ce{${element1Piece} + ${element2Piece} \\longrightarrow ${productPiece}} \\)`;
   
-  return symboledEquation;
+  return {equation: symboledEquation, productEntry};
 };
 
-export default reactionByElement;
+export default combinationReaction;

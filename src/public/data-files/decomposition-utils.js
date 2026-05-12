@@ -222,7 +222,11 @@ export function getElements(symbolicShape, compoundArray, oneOrTwo) {
       currentElement = letter;
       if (letter2 !== undefined) {
         if (typeof letter2 === 'number') {
-          result.push({symbol: currentElement, quantity: letter2});
+          if (typeof letter3 === 'number') {
+            result.push({symbol: currentElement, quantity: Number(`${letter2}${letter3}`)});
+          } else {
+            result.push({symbol: currentElement, quantity: letter2});
+          }
         } else {
           if (letter2 === letter2.toUpperCase()) {
             result.push({symbol: currentElement, quantity: 1});

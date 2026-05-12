@@ -50,7 +50,7 @@ body {
   border-color: var(--color-terracotta) !important;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
 }
-.extra-margin { margin-top: 10px;margin-bottom: 10; }
+
 .text-terracotta { color: var(--color-terracotta); }
 .bg-terracotta { background-color: var(--color-terracotta); }
 .text-parchment { color: var(--color-parchment); }

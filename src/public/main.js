@@ -1,15 +1,21 @@
 import is_it_possible from './modules/combination-reaction/testing.js';
-import reactionByElement from './modules/combination-reaction/combination.js'
+import combinationReaction from './modules/combination-reaction/combination.js';
+import combiRules from './data-files/combination-rules.js'
+
+import { fixingQ } from './modules/utils/quantityFixation.js';
 import { filterByVelance, gettingVelance } from './modules/utils/filterByVelance.js';
 import getTheCategory from './modules/utils/getTheCategory.js';
 import { toPubChemFormula } from './modules/utils/prasingFormula.js';
 import { balancingEquations } from './modules/utils/balancing.js';
 import { allMetals } from './data-files/metals-data.js';
+import { tranferToFormula } from './modules/utils/transferFormula.js'
 
 import decompositionReaction from './modules/decomposition-reaction/decomposition.js';
 import { ammoniumProductPraser, ammoniumExceptionProduct, getElements } from './data-files/decomposition-utils.js';
 import commonOxidationStates from './data-files/commonOxidations.js';
 import decomRules from './data-files/decomposition-rules.js';
+
+import { UIComponents } from './UI/UI.js'
 
 const atomicLength = [
   ['Oxygen', 'Chlorine', 'Hydrogen', 'Iodine', 'Bromine', 'Fluorine', 'Nitrogen'],
@@ -71,7 +77,7 @@ async function getCompound(formula, formula2) {
     }
     return { success: false, data: `Network error: ${error.message}` };
   }
-}
+};
 //console.log(await getCompound('(NH4)2SO4'));
 
 async function getElement(element) {
@@ -106,7 +112,7 @@ async function getRREF(matrix) {
     
     if (!response.ok) {
       throw new Error('RREF computation failed');
-    }
+    };
     
     const data = await response.json();
     return data.result;
@@ -116,20 +122,11 @@ async function getRREF(matrix) {
   };
 };
 
-
-const submitElement1 = document.querySelector('.submiting');
-const resultElement = document.querySelector('.the-result');
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM ready!');
-
-  submitElement1.addEventListener('click', () => {
-    buttonActivaton();
-  });
-
+  UIComponents();
 });
-
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function renderChemicalEquation(formula) {
   if (resultElement && window.MathJax) {
@@ -144,20 +141,17 @@ function renderChemicalEquation(formula) {
 //  [3, -1, -2]
 //]));
 //console.log(toPubChemFormula('(NH4)2CO3'));
-balancingEquations(getRREF);
-const element1 = 'Al';
-const element2 = 'Mg';
-const infoElement1 = await getElement(element1);
-const infoElement2 = await getElement(element2);
-console.log(infoElement1);
-console.log(infoElement2);
+//await balancingEquations(getRREF);
+//fixingQ(getElements);
+//tranferToFormula();
+
 
 buttonActivaton();
 function buttonActivaton() {
-  if (false) { // combination reaction
-    const combination = reactionByElement(infoElement1, infoElement2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength);
+  if (true) { // combination reaction
+    const combination = combinationReaction(getElement, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula, getElements, commonOxidationStates, combiRules, fixingQ, getRREF, balancingEquations);
   } else if (false) { // decomposition reaction
-    const decomposition = decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength,getElement,getTheCategory, decomRules, getElements, allMetals,getCompound, toPubChemFormula, getRREF, balancingEquations);
+    const decomposition = decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength,getElement,getTheCategory, decomRules, getElements, allMetals,getCompound, toPubChemFormula, getRREF, balancingEquations, fixingQ, tranferToFormula);
   };
 };
 

@@ -1,4 +1,4 @@
-export function UIComponuts() {
+export function UIComponents() {
   const welcomeScreen = document.getElementById('welcome-screen');
     const toolScreen = document.getElementById('tool-screen');
     const btnEnter = document.getElementById('btn-enter');
