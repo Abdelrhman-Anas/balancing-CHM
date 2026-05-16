@@ -1,4 +1,4 @@
-async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength, getElement, getTheCategory, decomRules, getElements, allMetals, getCompound, toPubChemFormula, getRREF, balancingEquations, fixingQ, tranferToFormula) {
+async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength, getElement, getTheCategory, decomRules, getElements, allMetals, getCompound, toPubChemFormula, balancingEquations, fixingQ, tranferToFormula) {
 
   let symbolicShape = 'K2CO3';
   
@@ -527,7 +527,7 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
   for (let i = 0; i < balancingMatrix.length;i++) {
     const aMatrix = balancingMatrix[i];
     
-    balancedCoff.push(await balancingEquations(getRREF, aMatrix));
+    balancedCoff.push(await balancingEquations(aMatrix));
   };
 
   const finalEquationArray = [];

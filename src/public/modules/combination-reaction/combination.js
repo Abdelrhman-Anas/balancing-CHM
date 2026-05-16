@@ -1,5 +1,5 @@
-async function combinationReaction(getElement, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula, getElements, commonOxidationStates, combiRules, fixingQ, getRREF, balancingOtherEquations) {
-  const reactant1Symbol = 'K2O';
+async function combinationReaction(getElement, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula, getElements, commonOxidationStates, combiRules, fixingQ, balancingOtherEquations) {
+  const reactant1Symbol = 'Cl2O7';
   const reactant2Symbol = 'H2O';
 
   const element1 = await getElement(reactant1Symbol);
@@ -7,7 +7,7 @@ async function combinationReaction(getElement, is_it_possible, getTheCategory, f
 
   if (element1 === undefined && element2 === undefined) {
 
-    return reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements, allMetals, commonOxidationStates, combiRules, fixingQ,  getRREF, balancingOtherEquations, getCompound, toPubChemFormula, tranferToFormula);
+    return reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements, allMetals, commonOxidationStates, combiRules, fixingQ, balancingOtherEquations, getCompound, toPubChemFormula, tranferToFormula);
 
   } else if (element1 !== undefined && element2 !== undefined) {
 
@@ -40,7 +40,7 @@ async function reactionByElement(element1, element2, is_it_possible, getTheCateg
   return await getEquationsAllInfo(balancedEquations, reactionTesting, '', eleSymbol1, eleSymbol2, elementState1, elementState2, element1, element2, getCompound, toPubChemFormula);
 }
 //--------------------------------------------------------------------------------------------------------------------------------------//
-async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements, allMetals, commonOxidationStates, combiRules, fixingQ,  getRREF, balancingOtherEquations, getCompound, toPubChemFormula, tranferToFormula) {
+async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements, allMetals, commonOxidationStates, combiRules, fixingQ, balancingOtherEquations, getCompound, toPubChemFormula, tranferToFormula) {
   
   const reactant1Array = reactant1Symbol.split('');
   const reactant2Array = reactant2Symbol.split('');
@@ -52,7 +52,7 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
   reactant2Array.forEach((le, index) => {
     reactant2Array[index] = isNaN(Number(le)) ? le : Number(le);
   });
-  const symbolicReactant = [reactant1Symbol, reactant2Symbol]
+  const symbolicReactant = [reactant1Symbol, reactant2Symbol];
   const elementsArray = [ getElements(reactant1Symbol, reactant1Array),  getElements(reactant2Symbol, reactant2Array) ];
   console.log(elementsArray);
   let modifiedFormula = '';
@@ -62,7 +62,7 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
     if (theReactant === 'H2O') {
       modifiedFormula += `H2O+`;
       continue;
-    }
+    };
 
     for (let i = 1;i < elementsArray[q].length -1; i++) {
       const element = elementsArray[q][i].symbol;
@@ -73,7 +73,7 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
         continue;
       } else {
         elementsArray[q][i].coSymbol = elementsArray[q][i].symbol;
-      }
+      };
 
       const nonmetals = [
         "C", "N", "F", "P", "S", "Cl", "Se", "Br", "I"
@@ -324,26 +324,26 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
       formula: acceptableRule.product[1].formula
   }]];
 
-  //for (let i = 0; i < finalResultArray[0].length;i++) {
-  //  const elementObject = finalResultArray[0][i];
-  //  const compound1Data = await getCompound(toPubChemFormula(elementObject.formula), elementObject.formula);
-  //  if (compound1Data.success === false) {
-  //    finalResultArray[0][i].name = "couldn't fetch";
-  //  } else {
-  //    //cid: compoundData.id.id.cid
-  //    const compoundData = compoundData1.data.PC_Compounds[0];
+  for (let i = 0; i < finalResultArray[0].length;i++) {
+    const elementObject = finalResultArray[0][i];
+    const compoundData1 = await getCompound(toPubChemFormula(elementObject.formula), elementObject.formula);
+    if (compoundData1.success === false) {
+      finalResultArray[0][i].name = "couldn't fetch";
+    } else {
+      //cid: compoundData.id.id.cid
+      const compoundData = compoundData1.data.PC_Compounds[0];
 
-  //    finalResultArray[0][i].cid = compoundData.id.id.cid;
+      finalResultArray[0][i].cid = compoundData.id.id.cid;
 
-  //    for (let h = 0;h < compoundData.props.length;h++) {
-  //      const section = compoundData.props[h];
-  //      if (section.urn.label === 'IUPAC Name') {
-  //        finalResultArray[0][i].name = (section.value.sval).replaceAll(';', ' ');
-  //        break;
-  //      };
-  //    };
-  //  };
-  //}
+      for (let h = 0;h < compoundData.props.length;h++) {
+        const section = compoundData.props[h];
+        if (section.urn.label === 'IUPAC Name') {
+          finalResultArray[0][i].name = (section.value.sval).replaceAll(';', ' ');
+          break;
+        };
+      };
+    };
+  };
 
   const formulaArray = [...symbolicReactant, acceptableRule.product[1].formula];
   const allQuantitesArray = [];
@@ -392,7 +392,7 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
   };
   console.log(balancingMatrix);
   
-  const balancedCoff = await balancingOtherEquations(getRREF, balancingMatrix);
+  const balancedCoff = await balancingOtherEquations(balancingMatrix);
   console.log(balancedCoff);
 
   let textedEquation = '\\(\\ce{ ';
@@ -404,7 +404,7 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
     if (i === finalResultArray[0].length -1) {
       textedEquation = textedEquation.slice(0, -1);
       symboledEquation = symboledEquation.slice(0, -1);
-
+      console.log(balancedCoff);
       textedEquation += `\\longrightarrow ${anEquationSet.name} `;
       symboledEquation += `\\longrightarrow ${equationCoff === 1? '' : equationCoff}${tranferToFormula(anEquationSet.formula)} `;
     }else {

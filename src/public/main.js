@@ -1,6 +1,6 @@
 import is_it_possible from './modules/combination-reaction/testing.js';
 import combinationReaction from './modules/combination-reaction/combination.js';
-import combiRules from './data-files/combination-rules.js'
+import combiRules from './data-files/combination-rules.js';
 
 import { fixingQ } from './modules/utils/quantityFixation.js';
 import { filterByVelance, gettingVelance } from './modules/utils/filterByVelance.js';
@@ -14,6 +14,10 @@ import decompositionReaction from './modules/decomposition-reaction/decompositio
 import { ammoniumProductPraser, ammoniumExceptionProduct, getElements } from './data-files/decomposition-utils.js';
 import commonOxidationStates from './data-files/commonOxidations.js';
 import decomRules from './data-files/decomposition-rules.js';
+
+import single_displaceReaction from './modules/single-displacement-reaction/single-displace.js';
+import singDispRules from './data-files/single_displace-rules.js';
+import { metalic_series, halous_series } from './data-files/activity-series.js'
 
 import { UIComponents } from './UI/UI.js'
 
@@ -100,28 +104,6 @@ async function getElement(element) {
   };
 };
 
-async function getRREF(matrix) {
-  try {
-    const response = await fetch('/api/rref', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ matrix: matrix })
-    });
-    
-    if (!response.ok) {
-      throw new Error('RREF computation failed');
-    };
-    
-    const data = await response.json();
-    return data.result;
-  } catch (error) {
-    console.error('Error computing RREF:', error);
-    return null;
-  };
-};
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 document.addEventListener('DOMContentLoaded', () => {
   UIComponents();
@@ -135,13 +117,7 @@ function renderChemicalEquation(formula) {
   };
 };
 
-//console.log(await getRREF([
-//  [2, -2, 0],
-//  [1, 0, -1],
-//  [3, -1, -2]
-//]));
 //console.log(toPubChemFormula('(NH4)2CO3'));
-//await balancingEquations(getRREF);
 //fixingQ(getElements);
 //tranferToFormula();
 
@@ -149,9 +125,11 @@ function renderChemicalEquation(formula) {
 buttonActivaton();
 function buttonActivaton() {
   if (true) { // combination reaction
-    const combination = combinationReaction(getElement, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula, getElements, commonOxidationStates, combiRules, fixingQ, getRREF, balancingEquations);
+    const combination = combinationReaction(getElement, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula, getElements, commonOxidationStates, combiRules, fixingQ, balancingEquations);
   } else if (false) { // decomposition reaction
-    const decomposition = decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength,getElement,getTheCategory, decomRules, getElements, allMetals,getCompound, toPubChemFormula, getRREF, balancingEquations, fixingQ, tranferToFormula);
-  };
+    const decomposition = decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength,getElement,getTheCategory, decomRules, getElements, allMetals,getCompound, toPubChemFormula, balancingEquations, fixingQ, tranferToFormula);
+  } else if (false) {  // single displacement reaction
+    const single_displacement = single_displaceReaction(getElement, getElements, commonOxidationStates, allMetals, metalic_series, halous_series, singDispRules);
+  } 
 };
 
