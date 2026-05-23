@@ -203,7 +203,7 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
 //--------------------------------------------------------------------------------------------------------------------------------------//
 //--------------------------------------------------------------------------------------------------------------------------------------//
 
-export function getElements(symbolicShape, compoundArray, oneOrTwo) {
+export function getElements(symbolicShape, compoundArray, atomicLength) {
   const result = [
     undefined,
   ];
@@ -268,6 +268,23 @@ export function getElements(symbolicShape, compoundArray, oneOrTwo) {
 
   };
   result[0] = theSmallest.index;
+  if (result.length -2 === 1) {
+    let found = false;
+    for (let i = 0; i < atomicLength.length;i++) {
+
+      for (let q = 1; q < atomicLength[i].length;q++) {
+
+        if (atomicLength[i][q] === result[1].symbol) {
+          result[1].quantity = atomicLength[i][0];
+          found = true;
+          break;
+        };
+      };
+    };
+    if (!found) {
+      result[1].quantity = 1;
+    }
+  };
 
   return result;
 };

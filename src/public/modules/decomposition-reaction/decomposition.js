@@ -385,6 +385,8 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
             break;
           };
         };
+      } else {
+        equationsProducts[i].products[j].name = "couldn't fetch";
       };
 
     };
@@ -425,7 +427,7 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
   for (let i = 0; i < equationsProducts.length;i++) {
 
     const theProducts = equationsProducts[i].products;
-    const reactantQuantities = equationsProducts[i].reactantData.quantities;
+    const reactantQuantities = equationsProducts[i].reactantData.quantities; console.log(reactantQuantities);
     currentEquationQuantity.push(reactantQuantities);
 
     for (let j = 1; j < theProducts.length;j++) {

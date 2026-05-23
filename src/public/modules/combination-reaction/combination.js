@@ -1,6 +1,6 @@
 async function combinationReaction(getElement, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula, getElements, commonOxidationStates, combiRules, fixingQ, balancingOtherEquations) {
-  const reactant1Symbol = 'Cl2O7';
-  const reactant2Symbol = 'H2O';
+  const reactant1Symbol = 'Na';
+  const reactant2Symbol = 'O';
 
   const element1 = await getElement(reactant1Symbol);
   const element2 = await getElement(reactant2Symbol);

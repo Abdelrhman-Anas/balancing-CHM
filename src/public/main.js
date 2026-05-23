@@ -8,7 +8,7 @@ import getTheCategory from './modules/utils/getTheCategory.js';
 import { toPubChemFormula } from './modules/utils/prasingFormula.js';
 import { balancingEquations } from './modules/utils/balancing.js';
 import { allMetals } from './data-files/metals-data.js';
-import { tranferToFormula } from './modules/utils/transferFormula.js'
+import { tranferToFormula } from './modules/utils/transferFormula.js';
 
 import decompositionReaction from './modules/decomposition-reaction/decomposition.js';
 import { ammoniumProductPraser, ammoniumExceptionProduct, getElements } from './data-files/decomposition-utils.js';
@@ -17,7 +17,8 @@ import decomRules from './data-files/decomposition-rules.js';
 
 import single_displaceReaction from './modules/single-displacement-reaction/single-displace.js';
 import singDispRules from './data-files/single_displace-rules.js';
-import { metalic_series, halous_series } from './data-files/activity-series.js'
+import { metalic_series, halous_series } from './data-files/activity-series.js';
+import gettingSaltyProduct from './data-files/single_displace-utils.js'
 
 import { UIComponents } from './UI/UI.js'
 
@@ -27,6 +28,11 @@ const atomicLength = [
   ['Sulfur' ,'Selenium', 'Tellurium']
 ];
 
+const atomicLengthBySymbol = [
+  [2, 'O', 'Cl', 'H', 'I', 'Br', 'F', 'N'],
+  [4, 'P', 'As', 'Sb'],
+  [8, 'S' ,'Se', 'Te']
+];
 
 async function getCompound(formula, formula2) {
   try {
@@ -106,7 +112,7 @@ async function getElement(element) {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 document.addEventListener('DOMContentLoaded', () => {
-  UIComponents();
+  UIComponents(MathJax);
 });
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -121,15 +127,17 @@ function renderChemicalEquation(formula) {
 //fixingQ(getElements);
 //tranferToFormula();
 
+//gettingSaltyProduct();
+
 
 buttonActivaton();
 function buttonActivaton() {
-  if (true) { // combination reaction
+  if (false) { // combination reaction
     const combination = combinationReaction(getElement, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula, getElements, commonOxidationStates, combiRules, fixingQ, balancingEquations);
   } else if (false) { // decomposition reaction
     const decomposition = decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength,getElement,getTheCategory, decomRules, getElements, allMetals,getCompound, toPubChemFormula, balancingEquations, fixingQ, tranferToFormula);
-  } else if (false) {  // single displacement reaction
-    const single_displacement = single_displaceReaction(getElement, getElements, commonOxidationStates, allMetals, metalic_series, halous_series, singDispRules);
+  } else if (true) {  // single displacement reaction
+    const single_displacement = single_displaceReaction(getElement, getElements, commonOxidationStates, allMetals, metalic_series, halous_series, singDispRules, getCompound, toPubChemFormula, tranferToFormula, atomicLengthBySymbol, fixingQ, balancingEquations, gettingSaltyProduct);
   } 
 };
 

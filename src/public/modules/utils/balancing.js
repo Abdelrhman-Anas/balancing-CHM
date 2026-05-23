@@ -123,6 +123,8 @@ function getRREF(matrix) {
   const C = m[0].length;
   let pivotRow = 0;
 
+  let epsilon = 1e-10;
+
   for (let col = 0; col < C && pivotRow < R; col++) {
     let maxRow = -1, maxVal = 0;
 
@@ -134,7 +136,7 @@ function getRREF(matrix) {
       };
     };
 
-    if (maxVal < 1e-10) continue;
+    if (maxVal < epsilon) continue;
 
     [m[pivotRow], m[maxRow]] = [m[maxRow], m[pivotRow]];
 
@@ -152,5 +154,11 @@ function getRREF(matrix) {
     pivotRow++;
   };
 
-  return m;
+  return m.map(row =>
+    row.map(v => {
+      if (Math.abs(v) < epsilon) return 0;
+      if (Math.abs(v - Math.round(v)) < epsilon) return Math.round(v);
+      return v;
+    })
+  );
 };
