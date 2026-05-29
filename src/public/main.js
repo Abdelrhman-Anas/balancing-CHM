@@ -2,16 +2,24 @@ import is_it_possible from './modules/combination-reaction/testing.js';
 import combinationReaction from './modules/combination-reaction/combination.js';
 import combiRules from './data-files/combination-rules.js';
 
-import { fixingQ } from './modules/utils/quantityFixation.js';
-import { filterByVelance, gettingVelance } from './modules/utils/filterByVelance.js';
-import getTheCategory from './modules/utils/getTheCategory.js';
+import allMetals from './data-files/metals-data.js';
 import { toPubChemFormula } from './modules/utils/prasingFormula.js';
 import { balancingEquations } from './modules/utils/balancing.js';
-import { allMetals } from './data-files/metals-data.js';
-import { tranferToFormula } from './modules/utils/transferFormula.js';
+import {
+  findSimplifiedCharge,
+  fixingQ,
+  filterByVelance,
+  gettingVelance,
+  getTheCategory,
+  tranferToFormula
+} from './modules/utils/sharedFunctions.js';
 
 import decompositionReaction from './modules/decomposition-reaction/decomposition.js';
-import { ammoniumProductPraser, ammoniumExceptionProduct, getElements } from './data-files/decomposition-utils.js';
+import {
+  ammoniumProductPraser,
+  ammoniumExceptionProduct,
+  getElements
+} from './data-files/decomposition-utils.js';
 import commonOxidationStates from './data-files/commonOxidations.js';
 import decomRules from './data-files/decomposition-rules.js';
 
@@ -86,9 +94,8 @@ async function getCompound(formula, formula2) {
       return { success: false, data: "Invalid JSON response from server" };
     }
     return { success: false, data: `Network error: ${error.message}` };
-  }
+  };
 };
-//console.log(await getCompound('(NH4)2SO4'));
 
 async function getElement(element) {
   try{
@@ -110,34 +117,27 @@ async function getElement(element) {
   };
 };
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-document.addEventListener('DOMContentLoaded', () => {
-  UIComponents(MathJax);
-});
-/////////////////////////////////////////////////////////////////////////////////////////////////////
+//fixingQ(getElements, atomicLength);
+//findSimplifiedCharge();
 
-function renderChemicalEquation(formula) {
-  if (resultElement && window.MathJax) {
-    resultElement.innerHTML = formula;
-    MathJax.typesetPromise([resultElement]);
+async function buttonActivaton(theType, r1, r2) {
+
+  if (theType === 'combination') { // combination reaction
+
+    return await combinationReaction(r1, r2, getElement, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula, getElements, commonOxidationStates, combiRules, fixingQ, balancingEquations);
+
+  } else if (theType === 'decomposition') { // decomposition reaction
+
+    return await decompositionReaction(r1, ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength,getElement,getTheCategory, decomRules, getElements, allMetals,getCompound, toPubChemFormula, balancingEquations, fixingQ, tranferToFormula, atomicLengthBySymbol);
+    
+  } else if (theType === 'single_displacement') {  // single displacement reaction
+
+    return await single_displaceReaction(r1, r2, getElement, getElements, commonOxidationStates, allMetals, metalic_series, halous_series, singDispRules, getCompound, toPubChemFormula, tranferToFormula, atomicLengthBySymbol, fixingQ, balancingEquations, gettingSaltyProduct, findSimplifiedCharge);
   };
+
 };
 
-//console.log(toPubChemFormula('(NH4)2CO3'));
-//fixingQ(getElements);
-//tranferToFormula();
-
-//gettingSaltyProduct();
-
-
-buttonActivaton();
-function buttonActivaton() {
-  if (false) { // combination reaction
-    const combination = combinationReaction(getElement, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula, getElements, commonOxidationStates, combiRules, fixingQ, balancingEquations);
-  } else if (false) { // decomposition reaction
-    const decomposition = decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength,getElement,getTheCategory, decomRules, getElements, allMetals,getCompound, toPubChemFormula, balancingEquations, fixingQ, tranferToFormula);
-  } else if (true) {  // single displacement reaction
-    const single_displacement = single_displaceReaction(getElement, getElements, commonOxidationStates, allMetals, metalic_series, halous_series, singDispRules, getCompound, toPubChemFormula, tranferToFormula, atomicLengthBySymbol, fixingQ, balancingEquations, gettingSaltyProduct);
-  } 
-};
+document.addEventListener('DOMContentLoaded', () => {
+  UIComponents(MathJax, buttonActivaton);
+});
 

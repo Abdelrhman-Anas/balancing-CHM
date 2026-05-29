@@ -18,6 +18,7 @@ body {
 .font-display { font-family: 'Cinzel', serif; }
 .font-serif { font-family: 'Alegreya', serif; }
 .font-mono { font-family: 'JetBrains Mono', monospace; }
+.font-sans { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
 
 .scroll-surface {
   background-color: var(--color-parchment);
@@ -134,7 +135,7 @@ body {
   padding: 0.5rem;
   border-radius: 4px;
   width: 100%;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 0.875rem;
   outline: none;
   transition: all 0.2s;

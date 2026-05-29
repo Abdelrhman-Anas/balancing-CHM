@@ -1,6 +1,6 @@
-async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength, getElement, getTheCategory, decomRules, getElements, allMetals, getCompound, toPubChemFormula, balancingEquations, fixingQ, tranferToFormula) {
+async function decompositionReaction(r1,ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength1, getElement, getTheCategory, decomRules, getElements, allMetals, getCompound, toPubChemFormula, balancingEquations, fixingQ, tranferToFormula, atomicLength) {
 
-  let symbolicShape = 'K2CO3';
+  let symbolicShape = r1;
   
   const symbolicShapeArray = symbolicShape.split('');
 
@@ -8,8 +8,8 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
     symbolicShapeArray[index] = isNaN(Number(le)) ? le : Number(le);
   });
 
-  const symbolicShapeElements = getElements(symbolicShape, symbolicShapeArray);
-  const symbolicShapeElementsOr = getElements(symbolicShape, symbolicShapeArray);
+  const symbolicShapeElements = getElements(symbolicShape, symbolicShapeArray, atomicLength);
+  const symbolicShapeElementsOr = getElements(symbolicShape, symbolicShapeArray, atomicLength);
   let modifiedFormula = '';
   if (symbolicShape.includes('NH4')) {
     modifiedFormula = 'NH4Z';
@@ -58,7 +58,7 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
     };
   }
   
-  const theDecompositionRules = await decomRules(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength, getElement, getTheCategory, symbolicShape);
+  const theDecompositionRules = await decomRules(ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength1, getElement, getTheCategory, symbolicShape, atomicLength);
 
   const modifiedFormulaArray = modifiedFormula.split('');
   let yesOrNo = false;
@@ -495,7 +495,7 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
     symbolicFormulaArray.push(eachProduct);
     eachProduct = [];
   };
-  const fixedQuantities = fixingQ(getElements, symbolicFormulaArray, onlyQuantites);
+  const fixedQuantities = fixingQ(getElements, symbolicFormulaArray, onlyQuantites, atomicLength);
 
   const balancingMatrix = [];
   let perEQ = [];
@@ -544,14 +544,14 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
     symbolicEquation += 
       `${balancedCoffArray[0] === 1 ? '': balancedCoffArray[0]}${tranferToFormula(anEquation.reactantData.formula)} \\longrightarrow `
     ;
-    cidObject[anEquation.reactantData.name] = anEquation.reactantData.cid;
+    cidObject[anEquation.reactantData.name] = [anEquation.reactantData.cid, anEquation.reactantData.formula];
     for (let j = 1; j < anEquation.products.length;j++) {
       const aProduct = anEquation.products[j];
       const theCoff = balancedCoffArray[j];
 
       textedEquation += ` ${aProduct.name} +`;
       symbolicEquation += ` ${theCoff === 1 ? '': theCoff}${tranferToFormula(aProduct.formula)} +`;
-      cidObject[aProduct.name] = aProduct.cid;
+      cidObject[aProduct.name] = [aProduct.cid, aProduct.formula];
     };
 
     finalEquationArray.push([
@@ -564,6 +564,7 @@ async function decompositionReaction(ammoniumProductPraser, ammoniumExceptionPro
     textedEquation = '\\(\\ce{ ';
   };
   console.log(finalEquationArray);
-  
+
+  return finalEquationArray;
 };
 export default decompositionReaction;

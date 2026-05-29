@@ -1,4 +1,4 @@
-export async function UIComponents(MathJax) {
+export async function UIComponents(MathJax, buttonActivaton) {
   const welcomeScreen = document.getElementById('welcome-screen');
   const toolScreen = document.getElementById('tool-screen');
   const btnEnter = document.getElementById('btn-enter');
@@ -75,6 +75,8 @@ export async function UIComponents(MathJax) {
     }, 700);
   });
 
+  let howMuch = 2;
+
   typeSelector.addEventListener('click', (e) => {
     const target = e.target.closest('.type-btn');
     if (!target) return;
@@ -94,201 +96,461 @@ export async function UIComponents(MathJax) {
       inpReactant2.value = '';
       labelReactant2.textContent = 'Optional Context';
       inpReactant2.placeholder = 'N/A';
+      howMuch = 1;
     } else {
       inpReactant2.disabled = false;
       labelReactant2.textContent = 'Reactant Beta';
       inpReactant2.placeholder = 'e.g. O2';
+      howMuch = 2;
     }
   });
 
   btnPredict.addEventListener('click', async () => {
-      const r1 = inpReactant1.value.trim();
-      const r2 = inpReactant2.value.trim();
+    const r1 = inpReactant1.value.trim();
+    const r2 = inpReactant2.value.trim();
 
+    if (howMuch === 1) {
       if (!r1) {
-        errorMsg.textContent = 'Please enter at least one reactant formula (e.g., H2, Mg)';
+        errorMsg.textContent = 'Please enter at least one reactant formula (e.g., H, MgO)';
         errorMsg.classList.remove('hidden');
         return;
-      }
+      };
+    } else {
+      if (!r1 || !r2) {
+        errorMsg.textContent = 'Please enter two reactant formula (e.g., H, MgO)';
+        errorMsg.classList.remove('hidden');
+        return;
+      };
+    };
 
-      errorMsg.classList.add('hidden');
-      
-      outputArea.innerHTML = `
-        <div class="flex flex-col items-center justify-center p-12 space-y-6">
-          <div class="relative">
-            <div class="w-16 h-16 border-t-2 border-b-2 border-olive rounded-full animate-spin"></div>
+    errorMsg.classList.add('hidden');
+    
+    outputArea.innerHTML = `
+      <div class="flex flex-col items-center justify-center p-12 space-y-6">
+        <div class="relative">
+          <div class="w-16 h-16 border-t-2 border-b-2 border-olive rounded-full animate-spin"></div>
+        </div>
+        <p class="font-display text-olive tracking-widest uppercase text-sm">Transmuting...</p>
+      </div>
+    `;
+    outputArea.scrollIntoView({ behavior: 'smooth' });
+
+    console.log(r1, r2);
+
+    const reactionData = await buttonActivaton(currentType, r1, r2);
+    console.log(reactionData);
+
+    let equationsArray = [];
+    let dataArray = [];
+
+    
+    if (currentType === 'combination') {
+      if (Array.isArray(reactionData[0])) {
+
+        equationsArray.push(reactionData[1].symboledEquation);
+        dataArray.push(`
+          <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+            Texted Equation : ${reactionData[1].textedEquation}
           </div>
-          <p class="font-display text-olive tracking-widest uppercase text-sm">Transmuting...</p>
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal"> 
+            Reactants :
+          </div> 
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+            1) ${reactionData[0][0].formula} : <br>
+            name : ${reactionData[0][0].name} <br>
+            cid : ${reactionData[0][0].cid} <br>
+          </div>
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+            2) ${reactionData[0][1].formula} : <br>
+            name : ${reactionData[0][1].name} <br>
+            cid : ${reactionData[0][1].cid} <br>
+          </div>
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal"> 
+            Product :
+          </div> 
+          <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+            3) ${reactionData[0][2].formula} : <br>
+            name : ${reactionData[0][2].name} <br>
+            cid : ${reactionData[0][2].cid} <br>
+          </div>
+        `);
+        
+      } else {
+        const itsAllData = reactionData[0];
+
+        for (let i = 1;i < reactionData.length;i++) {
+          const anEquation = reactionData[i];
+
+          equationsArray.push(anEquation.equation);
+          dataArray.push(`
+            <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+              1) ${itsAllData.element1.symbol} : <br>
+              Name : ${itsAllData.element1.name} <br>
+              Gonfig : ${itsAllData.element1.config} <br>
+              Group : ${itsAllData.element1.group} <br>
+              Electronegativity : ${itsAllData.element1.electronegativity} <br>
+              Charge : ${anEquation.fristElementCharge} <br>
+            </div>
+            <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+            <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+            <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+              2) ${itsAllData.element2.symbol} : <br>
+              Name : ${itsAllData.element2.name} <br>
+              Gonfig : ${itsAllData.element2.config} <br>
+              Group : ${itsAllData.element2.group} <br>
+              Electronegativity : ${itsAllData.element2.electronegativity} <br>
+              Charge : ${anEquation.secondElementCharge} <br>
+            </div>
+            <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+            <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+            <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+              3) ${anEquation.productData.formula} : <br>
+              Name : ${anEquation.productData.name === undefined ? "couldn't fetch" : anEquation.productData.name} <br>
+              cid : ${anEquation.productData.cid} <br>
+            </div>
+            <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+            <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+            <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+              4) More Infomation : <br>
+              Possiblity : ${itsAllData.equationData.possiablity} <br>
+              Bond Type : ${itsAllData.equationData.bondingType} <br>
+              Change in EN : ${itsAllData.equationData.deltaEN} <br>
+              Conditions :  ${itsAllData.equationData.conditions} <br>
+            </div>
+          `);
+        };
+      };
+
+    } else if (currentType === 'decomposition') {
+      reactionData.forEach(anEquation => {
+        const compoundsData = Object.entries(anEquation[3]);
+
+        let totalresult = '';
+        compoundsData.forEach(aCompound => {
+          totalresult += `
+            <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+            <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+              ${aCompound[1][1]} : <br>
+              name : ${aCompound[0]} <br>
+              cid : ${aCompound[1][0]} <br>
+            </div>
+          `;
+        });
+
+        equationsArray.push(anEquation[1]);
+        dataArray.push(`
+          <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+            texted Equation : ${anEquation[0]} <br>
+          </div>
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+            trigger : ${anEquation[2]} <br>
+          </div>
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+            compounds information : <br>
+            ${totalresult}
+          </div>
+        `);
+      });
+
+    } else if (currentType === 'single_displacement') {
+
+      const productsData = reactionData.products;
+      const reactantsData = reactionData.reactants;
+
+      let totalproducts = '';
+      for (let i = 1; i < productsData.length;i++) {
+        const aProduct = productsData[i];
+
+        totalproducts += `
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+            ${aProduct.formula} : <br>
+            name : ${aProduct.name} <br>
+            cid : ${aProduct.cid} <br>
+          </div>
+        `;
+      };
+
+      let totalreactants = '';
+      for (let i = 0; i < reactantsData.length;i++) {
+        const aReactant = reactantsData[i];
+
+        totalreactants += `
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+            ${aReactant.formula} : <br>
+            name : ${aReactant.name} <br>
+            cid : ${aReactant.cid} <br>
+          </div>
+        `;
+      };
+
+      equationsArray.push(reactionData.equationData.symboledEquation);
+      dataArray.push(`
+        <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+          texted Equation : ${reactionData.equationData.textedEquation} <br>
+        </div>
+        <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+        <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+        <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+          (*) Reactants information : <br>
+          ${totalreactants}
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
+          (*) Products information : <br>
+          ${totalproducts}
+        </div>
+      `);
+    }
+    let allHTML = ''
+    equationsArray.forEach((anEquation, i) => {
+      const thatEquationData = dataArray[i];
+
+      allHTML += `
+        <div class="text-marble p-8 md:p-12 shadow-2xl border-4 border-terracotta/30 animate-reveal" style="border-radius: 11px; background-color: #4f654d; margin-bottom: 10px;">
+          <div class="space-y-6 main-card">
+            <div class="relative">
+              <div class="text-2xl md:text-4xl font-mono p-6 bg-white/5 rounded border overflow-x-auto scrollbar-hide text-center" style="border-color: #d6dcd0;">
+                ${anEquation}
+              </div>
+            </div>
+              
+            <div class="flex flex-wrap items-center justify-end gap-3 pt-6 border-t border-marble/10">
+              <button id="btn-toggle-info" class="secondary-action-btn btn-toggle-info" style="background-color: #8c4533; border-radius: 5px; padding: 10px 20px;">
+                Reaction Insights
+              </button>
+              <button id="btn-toggle-stoic" class="secondary-action-btn btn-toggle-stoic" style="background-color: #8c4533; border-radius: 5px; padding: 10px 20px;">
+                Stoichiometry
+              </button>
+            </div>
+
+            <div id="info-section" class="hidden mt-8 text-left space-y-3 animate-reveal p-5 rounded-lg bg-black/15 border border-white/5 info-section">
+              <h3 class="text-xs uppercase tracking-[0.2em] text-[#ffdfa9] font-sans font-bold">Reaction Info</h3>
+              <p class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+                ${thatEquationData}
+              </p>
+            </div>
+
+            <div id="stoic-calc" class="hidden mt-8 text-left space-y-6 animate-reveal p-5 rounded-lg bg-black/15 border border-white/5 font-sans stoic-calc">
+              <div class="overflow-x-auto">
+                <table class="w-full text-xs md:text-sm font-sans tracking-normal">
+                  <thead>
+                    <tr class="text-marble/70 border-b border-marble/10 font-semibold">
+                      <th class="py-3 text-left font-semibold">Compound</th>
+                      <th class="py-3 text-center px-1 font-semibold">Coeff</th>
+                      <th class="py-3 text-center px-1 font-semibold">Molar Mass</th>
+                      <th class="py-3 text-center px-2 font-semibold">Moles</th>
+                      <th class="py-3 text-center px-2 font-semibold">mass</th>
+                    </tr>
+                  </thead>
+                    
+                  <tbody>
+                    <tr class="text-[#ffdfa9]"><td colspan="5" class="py-4 font-bold border-b border-marble/5 text-xs md:text-sm uppercase tracking-wider">reactants</td></tr>
+                    ${/*data.reagents.map((r, i) => `
+                      <tr class="participant border-b border-marble/5 font-sans" data-coeff="${r.coefficient}" data-mw="${r.mw}" data-role="reagent">
+                        <td class="py-4 font-mono normal-case font-bold text-white">${r.formula}</td>
+                        <td class="py-4 text-center font-bold text-[#ffdfa9]">${r.coefficient}</td>
+                        <td class="py-4 text-center text-marble/80">${r.mw.toFixed(2)}</td>
+                        <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-moles font-sans" data-index="r${i}" placeholder="0"></td>
+                        <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-grams font-sans" data-index="r${i}" placeholder="0"></td>
+                      </tr>
+                    `).join('')*/1}
+                    <tr class="text-[#ffdfa9]"><td colspan="5" class="py-4 font-bold border-b border-marble/5 text-xs md:text-sm uppercase tracking-wider">Products</td></tr>
+                    ${/*data.products.map((p, i) => `
+                      <tr class="participant border-b border-marble/5 font-sans" data-coeff="${p.coefficient}" data-mw="${p.mw}" data-role="product">
+                        <td class="py-4 font-mono normal-case font-bold text-white">${p.formula}</td>
+                        <td class="py-4 text-center font-bold text-[#ffdfa9]">${p.coefficient}</td>
+                        <td class="py-4 text-center text-marble/80">${p.mw.toFixed(2)}</td>
+                        <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-moles font-sans" data-index="p${i}" placeholder="0"></td>
+                        <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-grams font-sans" data-index="p${i}" placeholder="0"></td>
+                      </tr>
+                    `).join('')*/1}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       `;
-      outputArea.scrollIntoView({ behavior: 'smooth' });
+    });
+    outputArea.innerHTML = allHTML;
+    let reactionInfo = '';
+    
 
-      await new Promise(res => setTimeout(res, 1500));
+   
+    outputArea.scrollIntoView({ behavior: 'smooth' });
 
-      let equation = '';
-      switch(currentType) {
-        case 'combination': equation = `2${r1} + ${r2 || 'O2'} → 2${r1}${r2 || 'O'}`; break;
-        case 'decomposition': equation = `2${r1} → 2${r1.slice(0, -1) || 'X'} + ${r1.slice(-1) || 'Y'}2`; break;
-        case 'single_displacement': equation = `${r1} + ${r2 || 'Zn'}Cl2 → ${r1}Cl2 + ${r2 || 'Zn'}`; break;
-        case 'double_replacement': equation = `${r1}Cl + Ag${r2 || 'NO3'} → ${r1}${r2 || 'NO3'} + AgCl`; break;
-      }
+    await MathJax.typesetPromise([outputArea]);
 
-      const data = parseEquation(equation);
-      const formatted = equation.split(' ').map(part => {
-        if (part === '→' || part === '+') return `<span class="text-terracotta px-2">${part}</span>`;
-        return part.split('').map(char => {
-          if (/\d/.test(char)) return `<sub class="text-xs opacity-70">${char}</sub>`;
-          return char;
-        }).join('');
-      }).join(' ');
+    const btnsToggleStoic = document.querySelectorAll('.btn-toggle-stoic');
+    const btnsToggleInfo = document.querySelectorAll('.btn-toggle-info');
 
-      let reactionInfo = '';
-      switch(currentType) {
-        case 'combination': reactionInfo = "Synergy of elements: Multiple reactants merge into a singular, more complex substance. This process often releases significant thermal energy as new bonds are established."; break;
-        case 'decomposition': reactionInfo = "Fragmentation of matter: A singular compound undergoes structural collapse into simpler constituents, typically requiring an external catalyst or energy source."; break;
-        case 'single_displacement': reactionInfo = "Atomic usurpation: A more reactive element displaces a less reactive counterpart from its molecular bond, demonstrating the hierarchy of elemental activity."; break;
-        case 'double_replacement': reactionInfo = "Ionic exchange: Two molecular pairs swap partners in a fluid medium, often resulting in the manifestation of an insoluble precipitate or a stable gas."; break;
-      }
+    btnsToggleStoic.forEach( (abutton) => {
+      abutton.addEventListener('click', (event) => {
+        const parentCard = event.currentTarget.closest('.main-card');
 
-        outputArea.innerHTML = `
-            <div class="text-marble p-8 md:p-12 shadow-2xl border-4 border-terracotta/30 animate-reveal" style="border-radius: 11px; background-color: #4f654d;">
-                <div class="space-y-6">
-                    <div class="relative">
-                        <div class="text-2xl md:text-4xl font-mono p-6 bg-white/5 rounded border overflow-x-auto scrollbar-hide text-center" style="border-color: #d6dcd0;">
-                            ${formatted}
-                        </div>
-                    </div>
-                    
-                    <div class="flex flex-wrap items-center justify-end gap-3 pt-6 border-t border-marble/10">
-                        <button id="btn-toggle-info" class="secondary-action-btn" style="background-color: #8c4533; border-radius: 5px; padding: 10px 20px;">
-                            Reaction Insights
-                        </button>
-                        <button id="btn-toggle-stoic" class="secondary-action-btn" style="background-color: #8c4533; border-radius: 5px; padding: 10px 20px;">
-                            Forge Stoichiometry
-                        </button>
-                    </div>
+        const infoSection = parentCard.querySelector('.info-section');
+        const stoicCalc = parentCard.querySelector('.stoic-calc');
+        const infoInBtn = parentCard.querySelector('.btn-toggle-info');
 
-                  <div id="info-section" class="hidden mt-8 text-left space-y-2 animate-reveal">
-                      <h3 class="text-xs uppercase tracking-[0.2em] text-terracotta font-display font-bold">Spectral Insights</h3>
-                      <p class="text-marble/80 italic text-sm leading-relaxed">${reactionInfo}</p>
-                  </div>
+        const isHidden = stoicCalc.classList.toggle('hidden');
+        if (!isHidden) infoSection.classList.add('hidden');
 
-                  <div id="stoic-calc" class="hidden mt-8 text-left space-y-6 animate-reveal">
-                        <div class="overflow-x-auto">
-                          <table class="w-full text-xs md:text-sm font-display uppercase tracking-wider">
-                              <thead>
-                                  <tr class="text-marble/40 border-b border-marble/10">
-                                      <th class="py-3 text-left">Compound</th>
-                                      <th class="py-3 text-center px-1">Coeff</th>
-                                      <th class="py-3 text-center px-1">Molar Mass</th>
-                                      <th class="py-3 text-center px-2">Moles</th>
-                                      <th class="py-3 text-center px-2">Weight (g)</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  <tr class="text-terracotta"><td colspan="5" class="py-4 font-bold border-b border-marble/5">Reagents</td></tr>
-                                  ${data.reagents.map((r, i) => `
-                                      <tr class="participant border-b border-marble/5" data-coeff="${r.coefficient}" data-mw="${r.mw}" data-role="reagent">
-                                          <td class="py-4 font-mono normal-case">${r.formula}</td>
-                                          <td class="py-4 text-center text-terracotta">${r.coefficient}</td>
-                                          <td class="py-4 text-center text-marble/60">${r.mw.toFixed(2)}</td>
-                                          <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-moles" data-index="r${i}" placeholder="0"></td>
-                                          <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-grams" data-index="r${i}" placeholder="0"></td>
-                                      </tr>
-                                  `).join('')}
-                                  <tr class="text-terracotta"><td colspan="5" class="py-4 font-bold border-b border-marble/5">Products</td></tr>
-                                  ${data.products.map((p, i) => `
-                                      <tr class="participant border-b border-marble/5" data-coeff="${p.coefficient}" data-mw="${p.mw}" data-role="product">
-                                          <td class="py-4 font-mono normal-case">${p.formula}</td>
-                                          <td class="py-4 text-center text-terracotta">${p.coefficient}</td>
-                                          <td class="py-4 text-center text-marble/60">${p.mw.toFixed(2)}</td>
-                                          <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-moles" data-index="p${i}" placeholder="0"></td>
-                                          <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-grams" data-index="p${i}" placeholder="0"></td>
-                                      </tr>
-                                  `).join('')}
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      `;
-      outputArea.scrollIntoView({ behavior: 'smooth' });
-      await MathJax.typesetPromise([outputArea]);
-      const btnToggleStoic = document.getElementById('btn-toggle-stoic');
-      const btnToggleInfo = document.getElementById('btn-toggle-info');
-      const stoicCalc = document.getElementById('stoic-calc');
-      const infoSection = document.getElementById('info-section');
+        abutton.textContent = isHidden ? 'Stoichiometry' : 'Hide Stoichiometry';
+        infoInBtn.textContent = 'Reaction Insights';
+      });
+    });
 
-      btnToggleStoic.addEventListener('click', () => {
-          const isHidden = stoicCalc.classList.toggle('hidden');
-          if (!isHidden) infoSection.classList.add('hidden');
-          btnToggleStoic.textContent = isHidden ? 'Forge Stoichiometry' : 'Hide Stoichiometry';
-          btnToggleInfo.textContent = 'Reaction Insights';
+    btnsToggleInfo.forEach( (abutton) => {
+      abutton.addEventListener('click', () => {
+        const parentCard = event.currentTarget.closest('.main-card');
+
+        const infoSection = parentCard.querySelector('.info-section');
+        const stoicCalc = parentCard.querySelector('.stoic-calc');
+        const stoicInBtn = parentCard.querySelector('.btn-toggle-stoic');
+
+        const isHidden = infoSection.classList.toggle('hidden');
+        if (!isHidden) stoicCalc.classList.add('hidden');
+        abutton.textContent = isHidden ? 'Reaction Insights' : 'Hide Insights';
+        stoicInBtn.textContent = 'Stoichiometry';
+      });
+    });
+
+    // Stoichiometry logic
+    const participants = document.querySelectorAll('.participant');
+    const moleInputs = document.querySelectorAll('.input-moles');
+    const gramInputs = document.querySelectorAll('.input-grams');
+
+    function updateFromSource(sourceIndex, isMoleInput) {
+      const inputs = Array.from(moleInputs).concat(Array.from(gramInputs));
+      const sourceInp = inputs.find(i => i.dataset.index === sourceIndex && (isMoleInput ? i.classList.contains('input-moles') : i.classList.contains('input-grams')));
+      const val = parseFloat(sourceInp.value);
+      
+      if (isNaN(val)) return;
+
+      const sourceEl = sourceInp.closest('.participant');
+      const sourceMW = parseFloat(sourceEl.dataset.mw);
+      const sourceCoeff = parseFloat(sourceEl.dataset.coeff);
+      const baseMoles = isMoleInput ? val : val / sourceMW;
+      const molesPerUnitCoeff = baseMoles / sourceCoeff;
+
+      participants.forEach(p => {
+        const mInp = p.querySelector('.input-moles');
+        const gInp = p.querySelector('.input-grams');
+        const idx = mInp.dataset.index;
+
+        if (idx === sourceIndex) {
+          if (isMoleInput) gInp.value = (val * sourceMW).toFixed(2).replace(/\.?0+$/, "");
+          else mInp.value = (val / sourceMW).toFixed(4).replace(/\.?0+$/, "");
+        } else {
+          const pCoeff = parseFloat(p.dataset.coeff);
+          const pMW = parseFloat(p.dataset.mw);
+          const pMoles = molesPerUnitCoeff * pCoeff;
+          const pGrams = pMoles * pMW;
+          mInp.value = pMoles.toFixed(4).replace(/\.?0+$/, "");
+          gInp.value = pGrams.toFixed(2).replace(/\.?0+$/, "");
+        }
       });
 
-      btnToggleInfo.addEventListener('click', () => {
-          const isHidden = infoSection.classList.toggle('hidden');
-          if (!isHidden) stoicCalc.classList.add('hidden');
-          btnToggleInfo.textContent = isHidden ? 'Reaction Insights' : 'Hide Insights';
-          btnToggleStoic.textContent = 'Forge Stoichiometry';
-      });
-
-      // Stoichiometry logic
-      const participants = document.querySelectorAll('.participant');
-      const moleInputs = document.querySelectorAll('.input-moles');
-      const gramInputs = document.querySelectorAll('.input-grams');
-
-      function updateFromSource(sourceIndex, isMoleInput) {
-          const inputs = Array.from(moleInputs).concat(Array.from(gramInputs));
-          const sourceInp = inputs.find(i => i.dataset.index === sourceIndex && (isMoleInput ? i.classList.contains('input-moles') : i.classList.contains('input-grams')));
-          const val = parseFloat(sourceInp.value);
-          
-          if (isNaN(val)) return;
-
-          const sourceEl = sourceInp.closest('.participant');
-          const sourceMW = parseFloat(sourceEl.dataset.mw);
-          const sourceCoeff = parseFloat(sourceEl.dataset.coeff);
-          const baseMoles = isMoleInput ? val : val / sourceMW;
-          const molesPerUnitCoeff = baseMoles / sourceCoeff;
-
-          participants.forEach(p => {
-              const mInp = p.querySelector('.input-moles');
-              const gInp = p.querySelector('.input-grams');
-              const idx = mInp.dataset.index;
-
-              if (idx === sourceIndex) {
-                  if (isMoleInput) gInp.value = (val * sourceMW).toFixed(2).replace(/\.?0+$/, "");
-                  else mInp.value = (val / sourceMW).toFixed(4).replace(/\.?0+$/, "");
-              } else {
-                  const pCoeff = parseFloat(p.dataset.coeff);
-                  const pMW = parseFloat(p.dataset.mw);
-                  const pMoles = molesPerUnitCoeff * pCoeff;
-                  const pGrams = pMoles * pMW;
-                  mInp.value = pMoles.toFixed(4).replace(/\.?0+$/, "");
-                  gInp.value = pGrams.toFixed(2).replace(/\.?0+$/, "");
-              }
-          });
-
-          // Highlight limiting reagent (in this simple mode, the source reagent IS the limiting assumption)
-          participants.forEach(p => p.classList.remove('bg-terracotta/10'));
-          if (sourceEl.dataset.role === 'reagent') {
-              sourceEl.classList.add('bg-terracotta/10');
-          }
+      // Highlight limiting reagent (in this simple mode, the source reagent IS the limiting assumption)
+      participants.forEach(p => p.classList.remove('bg-terracotta/10'));
+      if (sourceEl.dataset.role === 'reagent') {
+        sourceEl.classList.add('bg-terracotta/10');
       }
+    }
 
-      moleInputs.forEach(inp => {
-          inp.addEventListener('input', (e) => updateFromSource(e.target.dataset.index, true));
-      });
+    moleInputs.forEach(inp => {
+      inp.addEventListener('input', (e) => updateFromSource(e.target.dataset.index, true));
+    });
 
-      gramInputs.forEach(inp => {
-          inp.addEventListener('input', (e) => updateFromSource(e.target.dataset.index, false));
-      });
+    gramInputs.forEach(inp => {
+      inp.addEventListener('input', (e) => updateFromSource(e.target.dataset.index, false));
+    });
 
-      function clearAll() {
-          moleInputs.forEach(i => i.value = "");
-          gramInputs.forEach(i => i.value = "");
-          participants.forEach(p => p.classList.remove('bg-terracotta/10'));
-      }
+    function clearAll() {
+      moleInputs.forEach(i => i.value = "");
+      gramInputs.forEach(i => i.value = "");
+      participants.forEach(p => p.classList.remove('bg-terracotta/10'));
+    }
   });
 };
+
+/* 
+ outputArea.innerHTML = `
+    <div class="text-marble p-8 md:p-12 shadow-2xl border-4 border-terracotta/30 animate-reveal" style="border-radius: 11px; background-color: #4f654d;">
+      <div class="space-y-6">
+        <div class="relative">
+          <div class="text-2xl md:text-4xl font-mono p-6 bg-white/5 rounded border overflow-x-auto scrollbar-hide text-center" style="border-color: #d6dcd0;">
+            \\( \\ce{2Na_(_s_) + H_2_(_g_) \\longrightarrow 2NaH_} \\)
+          </div>
+        </div>
+          
+        <div class="flex flex-wrap items-center justify-end gap-3 pt-6 border-t border-marble/10">
+          <button id="btn-toggle-info" class="secondary-action-btn" style="background-color: #8c4533; border-radius: 5px; padding: 10px 20px;">
+            Reaction Insights
+          </button>
+          <button id="btn-toggle-stoic" class="secondary-action-btn" style="background-color: #8c4533; border-radius: 5px; padding: 10px 20px;">
+            Forge Stoichiometry
+          </button>
+        </div>
+
+        <div id="info-section" class="hidden mt-8 text-left space-y-3 animate-reveal p-5 rounded-lg bg-black/15 border border-white/5">
+          <h3 class="text-xs uppercase tracking-[0.2em] text-[#ffdfa9] font-sans font-bold">Reaction Info</h3>
+          <p class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
+            ${reactionInfo}
+          </p>
+        </div>
+
+        <div id="stoic-calc" class="hidden mt-8 text-left space-y-6 animate-reveal p-5 rounded-lg bg-black/15 border border-white/5 font-sans">
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs md:text-sm font-sans tracking-normal">
+              <thead>
+                <tr class="text-marble/70 border-b border-marble/10 font-semibold">
+                  <th class="py-3 text-left font-semibold">Compound</th>
+                  <th class="py-3 text-center px-1 font-semibold">Coeff</th>
+                  <th class="py-3 text-center px-1 font-semibold">Molar Mass</th>
+                  <th class="py-3 text-center px-2 font-semibold">Moles</th>
+                  <th class="py-3 text-center px-2 font-semibold">Weight (g)</th>
+                </tr>
+              </thead>
+                
+              <tbody>
+                <tr class="text-[#ffdfa9]"><td colspan="5" class="py-4 font-bold border-b border-marble/5 text-xs md:text-sm uppercase tracking-wider">reactants</td></tr>
+                ${/*data.reagents.map((r, i) => `
+                  <tr class="participant border-b border-marble/5 font-sans" data-coeff="${r.coefficient}" data-mw="${r.mw}" data-role="reagent">
+                    <td class="py-4 font-mono normal-case font-bold text-white">${r.formula}</td>
+                    <td class="py-4 text-center font-bold text-[#ffdfa9]">${r.coefficient}</td>
+                    <td class="py-4 text-center text-marble/80">${r.mw.toFixed(2)}</td>
+                    <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-moles font-sans" data-index="r${i}" placeholder="0"></td>
+                    <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-grams font-sans" data-index="r${i}" placeholder="0"></td>
+                  </tr>
+                `).join('')*/1 /* }
+                <tr class="text-[#ffdfa9]"><td colspan="5" class="py-4 font-bold border-b border-marble/5 text-xs md:text-sm uppercase tracking-wider">Products</td></tr>
+                ${/*data.products.map((p, i) => `
+                  <tr class="participant border-b border-marble/5 font-sans" data-coeff="${p.coefficient}" data-mw="${p.mw}" data-role="product">
+                    <td class="py-4 font-mono normal-case font-bold text-white">${p.formula}</td>
+                    <td class="py-4 text-center font-bold text-[#ffdfa9]">${p.coefficient}</td>
+                    <td class="py-4 text-center text-marble/80">${p.mw.toFixed(2)}</td>
+                    <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-moles font-sans" data-index="p${i}" placeholder="0"></td>
+                    <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-grams font-sans" data-index="p${i}" placeholder="0"></td>
+                  </tr>
+                `).join('')*//*1}  
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+
+*/

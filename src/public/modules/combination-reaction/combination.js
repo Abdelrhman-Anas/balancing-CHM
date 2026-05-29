@@ -1,17 +1,18 @@
-async function combinationReaction(getElement, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula, getElements, commonOxidationStates, combiRules, fixingQ, balancingOtherEquations) {
-  const reactant1Symbol = 'Na';
-  const reactant2Symbol = 'O';
+async function combinationReaction(r1, r2, getElement, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula, getElements, commonOxidationStates, combiRules, fixingQ, balancingOtherEquations) {
+
+  const reactant1Symbol = r1;
+  const reactant2Symbol = r2;
 
   const element1 = await getElement(reactant1Symbol);
   const element2 = await getElement(reactant2Symbol);
 
   if (element1 === undefined && element2 === undefined) {
 
-    return reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements, allMetals, commonOxidationStates, combiRules, fixingQ, balancingOtherEquations, getCompound, toPubChemFormula, tranferToFormula);
+    return await reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements, allMetals, commonOxidationStates, combiRules, fixingQ, balancingOtherEquations, getCompound, toPubChemFormula, tranferToFormula);
 
   } else if (element1 !== undefined && element2 !== undefined) {
 
-    return reactionByElement(element1, element2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula);
+    return await reactionByElement(element1, element2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula);
 
   }else {
     console.log('ffffuckkkkkk');
@@ -54,7 +55,6 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
   });
   const symbolicReactant = [reactant1Symbol, reactant2Symbol];
   const elementsArray = [ getElements(reactant1Symbol, reactant1Array),  getElements(reactant2Symbol, reactant2Array) ];
-  console.log(elementsArray);
   let modifiedFormula = '';
   let currentformula = '';
   for (let q = 0; q < elementsArray.length;q++) {
@@ -112,7 +112,6 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
     currentformula = '';
   };
   modifiedFormula = modifiedFormula.slice(0, -1);
-  console.log(modifiedFormula);
 
   const rules = await combiRules();
 
@@ -124,8 +123,6 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
   });
 
   if (!acceptableRule) return 'fuckkkkkkkkkkkkkkk';
-
-  console.log(elementsArray);
 
   const theProduct = acceptableRule.product[1];
   const ProductElements = theProduct.elements;
@@ -214,7 +211,6 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
         };
       };
     };
-    console.log(productElements);
 
     if (productElements[0] === 2) {
       const coffArray = [[productElements[1].charge, undefined], [productElements[2].charge, undefined]];
@@ -360,14 +356,11 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
     currentObject = {};
   };
   allQuantitesArray.push(acceptableRule.product[1].quantities);
-  console.log(formulaArray);
-  console.log(allQuantitesArray);
 
   const fixedQuantities = fixingQ(getElements, formulaArray, allQuantitesArray);
-  console.log(fixedQuantities);
 
   const allElements = Object.entries(fixedQuantities[2]);
-  console.log(allElements);
+
   const balancingMatrix = [];
   let currentRow = [];
 
@@ -420,7 +413,7 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
   });
   console.log(finalResultArray);
 
-  console.log(acceptableRule);
+  return finalResultArray;
 };
 //--------------------------------------------------------------------------------------------------------------------------------------//
 function getAllProducts(oxidations1, oxidations2, reactionTesting) {
@@ -632,7 +625,7 @@ async function getEquationsAllInfo(equations, reactionTesting, productName, symb
     }
     
   };
-  console.log(result);
+  return result;
 };
 
 function getTextEquation(balancingData, symbol1, symbol2, state1, state2) {

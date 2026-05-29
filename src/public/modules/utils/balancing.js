@@ -79,6 +79,7 @@ export async function balancingEquations(matrix) {
     result.push(variable[1][0] * theNumber);
   };
 
+  console.log(result);
   return result;  
 };
 
@@ -158,7 +159,7 @@ function getRREF(matrix) {
     row.map(v => {
       if (Math.abs(v) < epsilon) return 0;
       if (Math.abs(v - Math.round(v)) < epsilon) return Math.round(v);
-      return v;
+      return parseFloat(v.toFixed(10));
     })
   );
 };

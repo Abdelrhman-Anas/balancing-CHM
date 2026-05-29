@@ -97,7 +97,15 @@ function is_it_possible(element1, element2, getTheCategory, filterByVelance, all
     resultList.reaction.type = 'covalent';
     resultList.normal = false;
   } else if (deltaEN > 0.4 && deltaEN <= 1.7) {
-    resultList.reaction.type = 'covalent';
+
+    if ((ele1Category === 'metal' && ele2Category === 'nonmetal') ||
+    (ele1Category === 'metal' && ele2Category === 'nonmetal')) {
+
+      resultList.reaction.type = 'ionic';
+    } else {
+      resultList.reaction.type = 'covalent';
+    }
+
   } else if (deltaEN > 1.7) {
     if (deltaEN > 2) {
       let bond = 'ionic';

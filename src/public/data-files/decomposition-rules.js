@@ -1,4 +1,4 @@
-const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength, getElement, getTheCategory, symbolicShape) => {
+const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength, getElement, getTheCategory, symbolicShape, atomicLength1) => {
   return [
     {
     name: 'metal carbonate',
@@ -519,13 +519,13 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
   },{
     name: 'ammonium salt',
     formula: 'NH4Z',
-    products: await ammoniumProductPraser(commonOxidationStates, atomicLength, getElement, getTheCategory, symbolicShape),
+    products: await ammoniumProductPraser(commonOxidationStates, atomicLength, getElement, getTheCategory, symbolicShape, atomicLength1),
     method: 'thermal',
     exceptions: [
       2,
       {
         elements: ['SO4', 'PO4', 'BO3', 'SiO4', 'AsO4', 'SeO4'],
-        products: await ammoniumExceptionProduct(symbolicShape, getElement, commonOxidationStates)
+        products: await ammoniumExceptionProduct(symbolicShape, getElement, commonOxidationStates, atomicLength1)
       },{
         elements: ['CO3'],
         products: [

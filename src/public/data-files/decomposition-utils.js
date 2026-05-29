@@ -1,4 +1,4 @@
-export async function ammoniumProductPraser(commonOxidationStates, atomicLength, getElement, getTheCategory, symbolicShape) {
+export async function ammoniumProductPraser(commonOxidationStates, atomicLength, getElement, getTheCategory, symbolicShape, atomicLength1) {
 
   const acid = symbolicShape.replace('(', '').replace(')', '').replace('NH4', '');
   const acidArray = acid.split('');
@@ -7,7 +7,7 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
     acidArray[index] = isNaN(Number(le)) ? le : Number(le);
   });
 
-  const elements = getElements(symbolicShape, acidArray, 1);
+  const elements = getElements(symbolicShape, acidArray, atomicLength1);
 
   for (let i = 1; i < elements.length;i++) {
     const element = elements[i];
@@ -195,7 +195,7 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
       };
     };
   } else {
-    theProduct = ammoniumExceptionProduct(symbolicShape, getElement, commonOxidationStates);
+    theProduct = ammoniumExceptionProduct(symbolicShape, getElement, commonOxidationStates, atomicLength1);
   }
   return theProduct;
 };
@@ -203,10 +203,12 @@ export async function ammoniumProductPraser(commonOxidationStates, atomicLength,
 //--------------------------------------------------------------------------------------------------------------------------------------//
 //--------------------------------------------------------------------------------------------------------------------------------------//
 
-export function getElements(symbolicShape, compoundArray, atomicLength) {
+export function getElements(symbolicShape, compoundArray, atomicLength, yesOrNo) {
   const result = [
     undefined,
   ];
+
+  if (yesOrNo === undefined) yesOrNo = true;
 
   let currentElement = '';
   
@@ -268,7 +270,7 @@ export function getElements(symbolicShape, compoundArray, atomicLength) {
 
   };
   result[0] = theSmallest.index;
-  if (result.length -2 === 1) {
+  if (result.length -2 === 1 && yesOrNo) {
     let found = false;
     for (let i = 0; i < atomicLength.length;i++) {
 
@@ -291,7 +293,7 @@ export function getElements(symbolicShape, compoundArray, atomicLength) {
 //--------------------------------------------------------------------------------------------------------------------------------------//
 //--------------------------------------------------------------------------------------------------------------------------------------//
 //--------------------------------------------------------------------------------------------------------------------------------------//
-export async function ammoniumExceptionProduct(symbolicShape, getElement, commonOxidationStates) {
+export async function ammoniumExceptionProduct(symbolicShape, getElement, commonOxidationStates, atomicLength1) {
   let result;
 
   const acid = symbolicShape.replace('(', '').replace(')', '').replace('NH4', '');
@@ -301,7 +303,7 @@ export async function ammoniumExceptionProduct(symbolicShape, getElement, common
     acidArray[index] = isNaN(Number(le)) ? le : Number(le);
   });
 
-  const elements = getElements(symbolicShape, acidArray);
+  const elements = getElements(symbolicShape, acidArray, atomicLength1, false);
   for (let i = 1;i < elements.length -1;i++) {
     const theElement = elements[i];
     const elementData = await getElement(elements[i].symbol);

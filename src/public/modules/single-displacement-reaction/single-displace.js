@@ -1,6 +1,7 @@
-async function single_displaceReaction(getElement, getElements, commonOxidationStates, allMetals, metalic_series, halous_series, singDispRules, getCompound, toPubChemFormula, tranferToFormula, atomicLengthBySymbol, fixingQ, balancingEquations, gettingSaltyProduct) {
-  const reactant1Symbol = 'Zn';
-  const reactant2Symbol = 'CuSO4';
+async function single_displaceReaction(r1, r2, getElement, getElements, commonOxidationStates, allMetals, metalic_series, halous_series, singDispRules, getCompound, toPubChemFormula, tranferToFormula, atomicLengthBySymbol, fixingQ, balancingEquations, gettingSaltyProduct, findSimplifiedCharge) {
+  
+  const reactant1Symbol = r1;
+  const reactant2Symbol = r2;
 
   const reactant1Array = reactant1Symbol.split('');
   const reactant2Array = reactant2Symbol.split('');
@@ -234,6 +235,8 @@ async function single_displaceReaction(getElement, getElements, commonOxidationS
 
   for (let j = 1; j< allTheProducts.length; j++) {
     const aProductElements = allTheProducts[j].elements;
+    console.log();
+    acceptableRule.products[j] = findSimplifiedCharge(acceptableRule.products[j]);
     
     for (let q = 1; q < aProductElements.length;q++) {
       const element = aProductElements[q];
@@ -315,7 +318,7 @@ async function single_displaceReaction(getElement, getElements, commonOxidationS
     acceptableRule.products[j].formula = theNewFormula;
 
     const theproduct = allTheProducts[j];
-    
+    console.log(theproduct.formula);
     const compoundData1 = await getCompound(toPubChemFormula(theproduct.formula), theproduct.formula);
     if (compoundData1.success === false) {
       return compoundData.data
@@ -441,7 +444,9 @@ async function single_displaceReaction(getElement, getElements, commonOxidationS
     onlyQuantites.push(finalObject);
   };
 
-  const fixedQuantities = fixingQ(getElements, formulaArray, onlyQuantites);
+  const fixedQuantities = fixingQ(getElements, [formulaArray], [onlyQuantites])[0];
+  console.log(fixedQuantities);
+
 
   const allElements = Object.entries({...fixedQuantities[0], ...fixedQuantities[1]});
 
@@ -501,5 +506,7 @@ async function single_displaceReaction(getElement, getElements, commonOxidationS
 
   console.log(finalEquationObject);
   console.log(acceptableRule);
+
+  return finalEquationObject;
 };
 export default single_displaceReaction;

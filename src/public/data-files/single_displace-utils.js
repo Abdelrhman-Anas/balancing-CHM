@@ -16,9 +16,35 @@ function gettingSaltyProduct(elementsArray, symbolicReactant) {
       continue;
     };
   };
+  
+  let totalQuantity = 1;
+  let bracket = 0;
+  if (symbolicReactant[mIndex].includes(')')) {
+
+    for (let i = 0; i < symbolicReactant[mIndex].length;i++) {
+      const aletter = symbolicReactant[mIndex][i];
+
+      if (aletter === ')') {
+        bracket = i;
+      }
+    };
+    totalQuantity = 
+      symbolicReactant[mIndex][bracket + 1] === undefined ? 1 : Number(symbolicReactant[mIndex][bracket + 1])
+    ;
+  } else {
+
+    if (
+      !isNaN(Number(symbolicReactant[mIndex][symbolicReactant[mIndex].length -1])) &&
+      elementsArray[mIndex].length - 3 === 1
+    ) {
+
+      totalQuantity = Number(symbolicReactant[mIndex][symbolicReactant[mIndex].length -1]);
+    };
+  };
 
   const secondHalfData = [];
   let totalOxidation = 0;
+  console.log(elementsArray[mIndex]);
   for (let i = 1; i < elementsArray[mIndex].length;i++) {
     const anElement = elementsArray[mIndex][i];
 
@@ -28,13 +54,13 @@ function gettingSaltyProduct(elementsArray, symbolicReactant) {
     }
 
     if (anElement.coSymbol === 'A' || anElement.coSymbol === 'M') {
-      totalOxidation = -anElement.oxidation;
+      totalOxidation = -(anElement.oxidation * anElement.quantity) / totalQuantity;
       continue;
     };
 
     secondHalfData.push(anElement);
   };
-
+  console.log(secondHalfData);
   const theSaltyProduct = {
     name: 'salt',
     formula: '***',
@@ -43,7 +69,7 @@ function gettingSaltyProduct(elementsArray, symbolicReactant) {
       {symbol: elementsArray[sIndex][1].coSymbol, charge: undefined}
     ],
     quantities: {
-      [elementsArray[sIndex][1].coSymbol]: -secondHalfData[secondHalfData.length -1]
+      [elementsArray[sIndex][1].coSymbol]: undefined
     }
   };
 
