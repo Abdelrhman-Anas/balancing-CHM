@@ -1,7 +1,4 @@
-import is_it_possible from './modules/combination-reaction/testing.js';
-import combinationReaction from './modules/combination-reaction/combination.js';
-import combiRules from './data-files/combination-rules.js';
-
+// common functions
 import allMetals from './data-files/metals-data.js';
 import { toPubChemFormula } from './modules/utils/prasingFormula.js';
 import { balancingEquations } from './modules/utils/balancing.js';
@@ -14,6 +11,12 @@ import {
   tranferToFormula
 } from './modules/utils/sharedFunctions.js';
 
+// combination reaction files
+import is_it_possible from './modules/combination-reaction/testing.js';
+import combinationReaction from './modules/combination-reaction/combination.js';
+import combiRules from './data-files/combination-rules.js';
+
+// decomposition reaction files
 import decompositionReaction from './modules/decomposition-reaction/decomposition.js';
 import {
   ammoniumProductPraser,
@@ -23,12 +26,22 @@ import {
 import commonOxidationStates from './data-files/commonOxidations.js';
 import decomRules from './data-files/decomposition-rules.js';
 
+// single displacement reaction files
 import single_displaceReaction from './modules/single-displacement-reaction/single-displace.js';
 import singDispRules from './data-files/single_displace-rules.js';
 import { metalic_series, halous_series } from './data-files/activity-series.js';
 import gettingSaltyProduct from './data-files/single_displace-utils.js'
 
-import { UIComponents } from './UI/UI.js'
+// double displacement reaction files
+import doubleDispRules from './data-files/double_displace-rules.js';
+import double_displaceReaction from './modules/double-displacement-reaction/double-displace.js';
+import { getDoubleSaltyProducts, getAcidicPartedProduct } from './data-files/double_displace-utils.js';
+
+// UI components file
+import { UIComponents } from './UI/UI.js';
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 const atomicLength = [
   ['Oxygen', 'Chlorine', 'Hydrogen', 'Iodine', 'Bromine', 'Fluorine', 'Nitrogen'],
@@ -81,7 +94,6 @@ async function getCompound(formula, formula2) {
 
     const data = await response.json();
 
-    // Step 3: Check if PubChem returned actual compounds
     if (!data.PC_Compounds || data.PC_Compounds.length === 0) {
       return { success: false, data: "No compounds found for this formula" };
     };
@@ -89,7 +101,7 @@ async function getCompound(formula, formula2) {
     return { success: true, data: data };
 
   } catch (error) {
-    // Step 4: Catch network errors or JSON parse failures
+
     if (error.name === "SyntaxError") {
       return { success: false, data: "Invalid JSON response from server" };
     }
@@ -117,8 +129,10 @@ async function getElement(element) {
   };
 };
 
-//fixingQ(getElements, atomicLength);
-//findSimplifiedCharge();
+await double_displaceReaction(doubleDispRules, commonOxidationStates, allMetals, getElements, atomicLengthBySymbol, getDoubleSaltyProducts, getAcidicPartedProduct, getCompound, toPubChemFormula, findSimplifiedCharge, fixingQ, balancingEquations, tranferToFormula);
+
+//getDoubleSaltyProducts();
+//getAcidicPartedProduct();
 
 async function buttonActivaton(theType, r1, r2) {
 
@@ -138,6 +152,6 @@ async function buttonActivaton(theType, r1, r2) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  UIComponents(MathJax, buttonActivaton);
+  //UIComponents(MathJax, buttonActivaton);
 });
 

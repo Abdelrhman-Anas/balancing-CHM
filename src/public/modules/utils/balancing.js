@@ -5,10 +5,9 @@ export async function balancingEquations(matrix) {
   //  [8, 11, 14]
   //];
   console.log(matrix);
-  const RREFMatrix = getRREF(matrix);
-  const REFMatrix = getREF(matrix);
+  const RREFMatrix = getRREF(matrix)
 
-  console.log(RREFMatrix);  console.log(REFMatrix);
+  console.log(RREFMatrix);
   
   const coffObject = {};
   coffObject['coffNum'] = RREFMatrix[0].length;
@@ -84,82 +83,55 @@ export async function balancingEquations(matrix) {
 };
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-function getREF(matrix) {
-  const m = matrix.map(row => [...row]); 
-  const rows = m.length;
-  const cols = m[0].length;
-  let pivot = 0;
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+const fsub = (a, b) => frac(a.n * b.d - b.n * a.d, a.d * b.d);
+const fmul = (a, b) => frac(a.n * b.n, a.d * b.d);
+const fdiv = (a, b) => frac(a.n * b.d, a.d * b.n);
 
-  for (let col = 0; col < cols && pivot < rows; col++) {
-
-    let nonZeroRow = -1;
-    for (let row = pivot; row < rows; row++) {
-      if (Math.abs(m[row][col]) > 1e-10) {
-        nonZeroRow = row;
-        break;
-      };
-    };
-    if (nonZeroRow === -1) continue;
-
-    [m[pivot], m[nonZeroRow]] = [m[nonZeroRow], m[pivot]];
-
-    for (let row = pivot + 1; row < rows; row++) {
-      const factor = m[row][col] / m[pivot][col];
-
-      for (let j = col; j < cols; j++) {
-
-        m[row][j] -= factor * m[pivot][j];
-        if (Math.abs(m[row][j]) < 1e-10) m[row][j] = 0;
-      };
-    };
-    pivot++;
-  };
-  return m;
-};
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getRREF(matrix) {
-  const m = matrix.map(row => [...row]);
+  let m = matrix.map(row => row.map(v => frac(v)));
   const R = m.length;
   const C = m[0].length;
   let pivotRow = 0;
 
-  let epsilon = 1e-10;
-
   for (let col = 0; col < C && pivotRow < R; col++) {
-    let maxRow = -1, maxVal = 0;
-
+    let maxRow = -1;
     for (let r = pivotRow; r < R; r++) {
-
-      if (Math.abs(m[r][col]) > maxVal) {
-        maxVal = Math.abs(m[r][col]);
-        maxRow = r;
-      };
+      if (m[r][col].n !== 0) { maxRow = r; break; }
     };
 
-    if (maxVal < epsilon) continue;
+    if (maxRow === -1) continue;
 
     [m[pivotRow], m[maxRow]] = [m[maxRow], m[pivotRow]];
 
-    const scale = m[pivotRow][col];
-    for (let c = 0; c < C; c++) m[pivotRow][c] /= scale;
+    const pivot = m[pivotRow][col];
+    m[pivotRow] = m[pivotRow].map(v => fdiv(v, pivot));
 
     for (let r = 0; r < R; r++) {
-
       if (r === pivotRow) continue;
-
       const factor = m[r][col];
-      for (let c = 0; c < C; c++) m[r][c] -= factor * m[pivotRow][c];
+      m[r] = m[r].map((v, c) => fsub(v, fmul(factor, m[pivotRow][c])));
     };
 
     pivotRow++;
   };
 
   return m.map(row =>
-    row.map(v => {
-      if (Math.abs(v) < epsilon) return 0;
-      if (Math.abs(v - Math.round(v)) < epsilon) return Math.round(v);
-      return parseFloat(v.toFixed(10));
+    row.map(({ n, d }) => {
+      if (n === 0) return 0;
+      if (d === 1) return n;
+      return n / d;
     })
   );
+};
+
+function gcd(a, b) {
+  return b === 0 ? a : gcd(b, a % b);
+};
+
+function frac(n, d = 1) {
+  const g = gcd(Math.abs(n), Math.abs(d));
+  const sign = d < 0 ? -1 : 1;
+  return { n: (sign * n) / g, d: (sign * d) / g };
 };
