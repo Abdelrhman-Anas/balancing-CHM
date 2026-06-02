@@ -331,11 +331,18 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
 
       finalResultArray[0][i].cid = compoundData.id.id.cid;
 
+      let nameClear = false;
+      let weightClear = false;
       for (let h = 0;h < compoundData.props.length;h++) {
         const section = compoundData.props[h];
-        if (section.urn.label === 'IUPAC Name') {
+        if (nameClear && weightClear) break;
+
+        if (section.urn.label === 'IUPAC Name' && !nameClear) {
           finalResultArray[0][i].name = (section.value.sval).replaceAll(';', ' ');
-          break;
+          nameClear = true;
+        } else if (section.urn.label === 'Molecular Weight' && !weightClear) {
+          finalResultArray[0][i].weight = Number(section.value.sval);
+          weightClear = true;
         };
       };
     };
@@ -394,6 +401,8 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
     const anEquationSet = finalResultArray[0][i];
     const equationCoff = balancedCoff[i];
 
+    finalResultArray[0][i].coefficient = equationCoff;
+
     if (i === finalResultArray[0].length -1) {
       textedEquation = textedEquation.slice(0, -1);
       symboledEquation = symboledEquation.slice(0, -1);
@@ -412,6 +421,7 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
     symboledEquation
   });
   console.log(finalResultArray);
+  console.log(acceptableRule);
 
   return finalResultArray;
 };
@@ -558,6 +568,7 @@ async function getEquationsAllInfo(equations, reactionTesting, productName, symb
         config: element1Info.electronicConfiguration,
         state: element1Info.standardState,
         group: element1Info.groupBlock,
+        weight: element1Info.atomicMass.at(-1) === ')' ? Number(element1Info.atomicMass.slice(0, -3)) : Number(element1Info.atomicMass),
         electronegativity: reactionTesting.electronegativity.frist
       },
       element2: {
@@ -567,6 +578,7 @@ async function getEquationsAllInfo(equations, reactionTesting, productName, symb
         config: element2Info.electronicConfiguration,
         state: element2Info.standardState,
         group: element2Info.groupBlock,
+        weight: element2Info.atomicMass.at(-1) === ')' ? Number(element2Info.atomicMass.slice(0, -3)) : Number(element2Info.atomicMass),
         electronegativity: reactionTesting.electronegativity.second
       },
       equationData: {
@@ -588,12 +600,12 @@ async function getEquationsAllInfo(equations, reactionTesting, productName, symb
     const fristCharge = product[0] === 1 ? '+' : '-';
     const secondCharge = product[0] === 1 ? '-' : '+';
 
-    let fristElementCharge = `\\(\\ce{${symbol1}^${fristCharge}^${reactant1ChargeNum}}\\)`;
-    let secondElementCharge = `\\(\\ce{${symbol2}^${secondCharge}^${reactant2ChargeNum}}\\)`;
+    let fristElementCharge = `\\(\\ce{${fristCharge}${reactant1ChargeNum}}\\)`;
+    let secondElementCharge = `\\(\\ce{${secondCharge}${reactant2ChargeNum}}\\)`;
     
     if (reactionTesting.reaction.type === 'covalent') {
-      fristElementCharge = `\\(\\overset{\\delta${fristCharge}${reactant2ChargeNum}}{${symbol1}}\\)`;
-      secondElementCharge =  `\\(\\overset{\\delta${secondCharge}${reactant1ChargeNum}}{${symbol2}}\\)`;
+      fristElementCharge = `\\(\\delta${fristCharge}${reactant2ChargeNum}\\)`;
+      secondElementCharge =  `\\(\\delta${secondCharge}${reactant1ChargeNum}\\)`;
     } else if (reactionTesting.reaction.type === 'intermetallic') {
       fristElementCharge = "intermetallic bonds don't have charges";
       secondElementCharge = '';
@@ -604,13 +616,25 @@ async function getEquationsAllInfo(equations, reactionTesting, productName, symb
       const compoundData = compoundData1.data.PC_Compounds[0];
       const productData = {
         cid: compoundData.id.id.cid,
-        formula: equationAndProduct.productEntry
+        formula: equationAndProduct.productEntry,
+        coff: [equation.elementOne.reactantCoff, equation.elementTwo.reactantCoff, equation.productInfo.productCoff]
       };
+      let nameClear = false;
+      let weightClear = false;
 
       for (let h = 0;h < compoundData.props.length;h++) {
         const section = compoundData.props[h];
-        if (section.urn.label === 'IUPAC Name') {
+
+        if (nameClear && weightClear) break;
+
+        if (section.urn.label === 'IUPAC Name' && !nameClear) {
           productData.name = (section.value.sval).replaceAll(';', ' ');
+          nameClear = true;
+
+        } else if (section.urn.label === 'Molecular Weight' && !weightClear) {
+
+          productData.weight = Number(section.value.sval);
+          weightClear = true;
         };
       };
 
@@ -622,7 +646,7 @@ async function getEquationsAllInfo(equations, reactionTesting, productName, symb
       });
     } else {
       continue;
-    }
+    };
     
   };
   return result;

@@ -73,8 +73,8 @@ const doubleDispRules = (getDoubleSaltyProducts, getAcidicPartedProduct, symboli
       ]
     },{
       name: 'metal sulfide + acid',
-      formula: 'S+H',
-      formula: 'H+S',
+      formula1: 'S+H',
+      formula2: 'H+S',
       products: [
         2,
         getAcidicPartedProduct(elementsArray),

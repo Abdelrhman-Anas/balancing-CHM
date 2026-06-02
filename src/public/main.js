@@ -129,11 +129,6 @@ async function getElement(element) {
   };
 };
 
-await double_displaceReaction(doubleDispRules, commonOxidationStates, allMetals, getElements, atomicLengthBySymbol, getDoubleSaltyProducts, getAcidicPartedProduct, getCompound, toPubChemFormula, findSimplifiedCharge, fixingQ, balancingEquations, tranferToFormula);
-
-//getDoubleSaltyProducts();
-//getAcidicPartedProduct();
-
 async function buttonActivaton(theType, r1, r2) {
 
   if (theType === 'combination') { // combination reaction
@@ -147,11 +142,15 @@ async function buttonActivaton(theType, r1, r2) {
   } else if (theType === 'single_displacement') {  // single displacement reaction
 
     return await single_displaceReaction(r1, r2, getElement, getElements, commonOxidationStates, allMetals, metalic_series, halous_series, singDispRules, getCompound, toPubChemFormula, tranferToFormula, atomicLengthBySymbol, fixingQ, balancingEquations, gettingSaltyProduct, findSimplifiedCharge);
-  };
+
+  }else if (theType === 'double_displacement') {  // double displacement reaction
+
+    return await double_displaceReaction(r1, r2, doubleDispRules, commonOxidationStates, allMetals, getElements, atomicLengthBySymbol, getDoubleSaltyProducts, getAcidicPartedProduct, getCompound, toPubChemFormula, findSimplifiedCharge, fixingQ, balancingEquations, tranferToFormula);
+  }
 
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  //UIComponents(MathJax, buttonActivaton);
+  UIComponents(MathJax, buttonActivaton);
 });
 

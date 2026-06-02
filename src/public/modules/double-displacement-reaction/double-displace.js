@@ -1,7 +1,7 @@
-async function double_displaceReaction(doubleDispRules, commonOxidationStates, allMetals, getElements, atomicLengthBySymbol, getDoubleSaltyProducts, getAcidicPartedProduct, getCompound, toPubChemFormula, findSimplifiedCharge, fixingQ, balancingEquations, tranferToFormula) {
+async function double_displaceReaction(r1, r2, doubleDispRules, commonOxidationStates, allMetals, getElements, atomicLengthBySymbol, getDoubleSaltyProducts, getAcidicPartedProduct, getCompound, toPubChemFormula, findSimplifiedCharge, fixingQ, balancingEquations, tranferToFormula) {
 
-  const reactant1Symbol = 'Na2S';
-  const reactant2Symbol = 'BiCl3';
+  const reactant1Symbol = r1;
+  const reactant2Symbol = r2;
 
   const reactant1Array = reactant1Symbol.split('');
   const reactant2Array = reactant2Symbol.split('');
@@ -370,5 +370,7 @@ async function double_displaceReaction(doubleDispRules, commonOxidationStates, a
   finalEquationObject.equationData.symboledEquation = symboledEquation +  '}\\)';
 
   console.log(finalEquationObject);
+
+  return finalEquationObject;
 };
 export default double_displaceReaction;
