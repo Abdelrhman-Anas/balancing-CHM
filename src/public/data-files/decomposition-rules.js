@@ -14,7 +14,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'O', charge: -2}
         ],
         quantities: {
-          'M': 2,
+          'M': undefined,
           'O': undefined
         }
       },{
@@ -47,7 +47,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'CO3', charge: -2},
         ],
         quantities: {
-          'M': 2,
+          'M': undefined,
           'CO3': [undefined, {
             'C': 1,
             'O': 3
@@ -157,7 +157,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'O', charge: -2}
         ],
         quantities: {
-          'M': 2,
+          'M': undefined,
           'O': undefined,
         }
       },{
@@ -269,7 +269,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'O', charge: -2}
         ],
         quantities: {
-          'M': 2,
+          'M': undefined,
           'O': undefined
         }
       },{
@@ -331,7 +331,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'O', charge: -2}
         ],
         quantities: {
-          'M': 2,
+          'M': undefined,
           'O': undefined
         }
       },{
@@ -364,7 +364,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'O', charge: -2}
         ],
         quantities: {
-          'M': 2,
+          'M': undefined,
           'O': undefined
         }
       },{
@@ -466,7 +466,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'O', charge: -2}
         ],
         quantities: {
-          'M': 2,
+          'M': undefined,
           'O': undefined
         }
       },{
@@ -497,7 +497,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'O', charge: -2}
         ],
         quantities: {
-          'M': 2,
+          'M': undefined,
           "O": undefined
         }
       },{
@@ -802,7 +802,7 @@ const decomRules = async (ammoniumProductPraser, ammoniumExceptionProduct, commo
           {symbol: 'O', charge: -2}
         ],
         quantities: {
-          'M': 2,
+          'M': undefined,
           'O': undefined
         }
       },{

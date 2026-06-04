@@ -84,6 +84,9 @@ export async function UIComponents(MathJax, buttonActivaton) {
       };
     };
 
+    inpReactant1.value = '';
+    inpReactant2.value = '';
+
     errorMsg.classList.add('hidden');
     
     const loaderCard = document.createElement('div');
@@ -230,7 +233,24 @@ export async function UIComponents(MathJax, buttonActivaton) {
         const compoundsData = Object.entries(anEquation[3]);
 
         let totalresult = '';
-        compoundsData.forEach(aCompound => {
+        const thisStoic = {
+          products: [],
+          reactants: []
+        };
+        compoundsData.forEach((aCompound, i) => {
+          if (i === 0) {
+            thisStoic.reactants.push({
+              coefficient: aCompound[1][3],
+              mw: aCompound[1][2],
+              formula: aCompound[1][1]
+            });
+          } else {
+            thisStoic.products.push({
+              coefficient: aCompound[1][3],
+              mw: aCompound[1][2],
+              formula: aCompound[1][1]
+            });
+          }
           totalresult += `
             <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
             <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
@@ -258,6 +278,8 @@ export async function UIComponents(MathJax, buttonActivaton) {
             ${totalresult}
           </div>
         `);
+        stociData.push(thisStoic);
+
       });
 
     } else if (currentType === 'single_displacement' || currentType === 'double_displacement') {
@@ -266,6 +288,7 @@ export async function UIComponents(MathJax, buttonActivaton) {
       const reactantsData = reactionData.reactants;
 
       let totalproducts = '';
+      let productsStoic = [];
       for (let i = 1; i < productsData.length;i++) {
         const aProduct = productsData[i];
 
@@ -277,9 +300,15 @@ export async function UIComponents(MathJax, buttonActivaton) {
             cid : ${aProduct.cid} <br>
           </div>
         `;
+        productsStoic.push({
+          formula: aProduct.formula,
+          coefficient: aProduct.coff,
+          mw: aProduct.weight
+        });
       };
 
       let totalreactants = '';
+      let reactantsStoic = [];
       for (let i = 0; i < reactantsData.length;i++) {
         const aReactant = reactantsData[i];
 
@@ -291,7 +320,17 @@ export async function UIComponents(MathJax, buttonActivaton) {
             cid : ${aReactant.cid} <br>
           </div>
         `;
+        reactantsStoic.push({
+          formula: aReactant.formula,
+          coefficient: aReactant.coff,
+          mw: aReactant.weight
+        });
       };
+      
+      stociData.push({
+        reactants: reactantsStoic,
+        products: productsStoic
+      });
 
       equationsArray.push(reactionData.equationData.symboledEquation);
       dataArray.push(`
@@ -316,11 +355,12 @@ export async function UIComponents(MathJax, buttonActivaton) {
       const thatEquationData = dataArray[i];
       const thatStoicData = stociData[i];
 
-      
       const card = document.createElement('div');
       card.className = "reaction-card text-marble p-8 md:p-12 shadow-2xl border-4 border-terracotta/30 animate-reveal mb-6 relative";
       card.style.borderRadius = "11px";
       card.style.backgroundColor = "#4f654d";
+
+      const hasStoic = !!(thatStoicData && thatStoicData.reactants && thatStoicData.products);
 
       card.innerHTML = `
         <div class="space-y-6">
@@ -341,9 +381,11 @@ export async function UIComponents(MathJax, buttonActivaton) {
             <button class="btn-toggle-info secondary-action-btn font-sans cursor-pointer" style="background-color: #8c4533; border-radius: 5px; padding: 10px 20px;">
               Reaction Insights
             </button>
+            ${hasStoic ? `
             <button class="btn-toggle-stoic secondary-action-btn font-sans cursor-pointer" style="background-color: #8c4533; border-radius: 5px; padding: 10px 20px;">
               Stoichiometry
             </button>
+            ` : ''}
           </div>
 
           <div class="info-section hidden mt-8 text-left space-y-3 animate-reveal p-5 rounded-lg bg-black/15 border border-white/5">
@@ -351,6 +393,7 @@ export async function UIComponents(MathJax, buttonActivaton) {
             <p class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">${thatEquationData}</p>
           </div>
 
+          ${hasStoic ? `
           <div class="stoic-calc hidden mt-8 text-left space-y-6 animate-reveal p-5 rounded-lg bg-black/15 border border-white/5 font-sans">
             <div class="overflow-x-auto">
               <table class="w-full text-xs md:text-sm font-sans tracking-normal">
@@ -364,160 +407,170 @@ export async function UIComponents(MathJax, buttonActivaton) {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr class="text-[#ffdfa9]"><td colspan="5" class="py-4 font-bold border-b border-marble/5 text-xs md:text-sm uppercase tracking-wider">Reagents</td></tr>
-                  ${thatStoicData.reactants.map((r, i) => `
+                  <tr class="text-[#ffdfa9]"><td colspan="5" class="py-4 font-bold border-b border-marble/5 text-xs md:text-sm uppercase tracking-wider">Reactants</td></tr>
+                  ${thatStoicData.reactants.map((r, idx) => `
                       <tr class="participant border-b border-marble/5 font-sans" data-coeff="${r.coefficient}" data-mw="${r.mw}" data-role="reagent">
                           <td class="py-4 font-mono normal-case font-bold text-white">${r.formula}</td>
                           <td class="py-4 text-center font-bold text-[#ffdfa9]">${r.coefficient}</td>
                           <td class="py-4 text-center text-marble/80">${r.mw.toFixed(2)}</td>
-                          <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-moles font-sans" data-index="r${i}" placeholder="0"></td>
-                          <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-grams font-sans" data-index="r${i}" placeholder="0"></td>
+                          <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-moles font-sans" data-index="r${idx}" placeholder="0"></td>
+                          <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-grams font-sans" data-index="r${idx}" placeholder="0"></td>
                       </tr>
                   `).join('')}
                   <tr class="text-[#ffdfa9]"><td colspan="5" class="py-4 font-bold border-b border-marble/5 text-xs md:text-sm uppercase tracking-wider">Products</td></tr>
-                  ${thatStoicData.products.map((p, i) => `
+                  ${thatStoicData.products.map((p, idx) => `
                       <tr class="participant border-b border-marble/5 font-sans" data-coeff="${p.coefficient}" data-mw="${p.mw}" data-role="product">
                           <td class="py-4 font-mono normal-case font-bold text-white">${p.formula}</td>
                           <td class="py-4 text-center font-bold text-[#ffdfa9]">${p.coefficient}</td>
                           <td class="py-4 text-center text-marble/80">${p.mw.toFixed(2)}</td>
-                          <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-moles font-sans" data-index="p${i}" placeholder="0"></td>
-                          <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-grams font-sans" data-index="p${i}" placeholder="0"></td>
+                          <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-moles font-sans" data-index="p${idx}" placeholder="0"></td>
+                          <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-grams font-sans" data-index="p${idx}" placeholder="0"></td>
                       </tr>
                   `).join('')}
                 </tbody>
               </table>
             </div>
           </div>
+          ` : ''}
         </div>
       `;
+
       if (loodingHere) {
         outputArea.replaceChild(card, loaderCard);
         loodingHere = false;
       } else {
         outputArea.prepend(card);
       };
-      outputArea.scrollIntoView({ behavior: 'smooth' });
-    });
 
-    await MathJax.typesetPromise([outputArea]);
+      // Set up interactive features specifically for this *single* card
+      const btnToggleStoic = card.querySelector('.btn-toggle-stoic');
+      const btnToggleInfo = card.querySelector('.btn-toggle-info');
+      const stoicCalc = card.querySelector('.stoic-calc');
+      const infoSection = card.querySelector('.info-section');
+      const btnCloseCard = card.querySelector('.btn-close-card');
 
-    const btnToggleStoic = card.querySelector('.btn-toggle-stoic');
-        const btnToggleInfo = card.querySelector('.btn-toggle-info');
-        const stoicCalc = card.querySelector('.stoic-calc');
-        const infoSection = card.querySelector('.info-section');
-        const btnCloseCard = card.querySelector('.btn-close-card');
+      btnCloseCard.addEventListener('click', () => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(10px)';
+        card.style.transition = 'all 0.3s ease-out';
+        setTimeout(() => {
+          card.remove();
+        }, 300);
+      });
 
-        btnCloseCard.addEventListener('click', () => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(10px)';
-            card.style.transition = 'all 0.3s ease-out';
-            setTimeout(() => {
-                card.remove();
-            }, 300);
-        });
-
+      if (btnToggleStoic && stoicCalc) {
         btnToggleStoic.addEventListener('click', () => {
-            const isHidden = stoicCalc.classList.toggle('hidden');
-            if (!isHidden) infoSection.classList.add('hidden');
-            btnToggleStoic.textContent = isHidden ? 'Forge Stoichiometry' : 'Hide Stoichiometry';
-            btnToggleInfo.textContent = 'Reaction Insights';
+          const isHidden = stoicCalc.classList.toggle('hidden');
+          if (!isHidden) infoSection.classList.add('hidden');
+          btnToggleStoic.textContent = isHidden ? 'Stoichiometry' : 'Hide Stoichiometry';
+          btnToggleInfo.textContent = 'Reaction Insights';
         });
+      }
 
-        btnToggleInfo.addEventListener('click', () => {
-            const isHidden = infoSection.classList.toggle('hidden');
-            if (!isHidden) stoicCalc.classList.add('hidden');
-            btnToggleInfo.textContent = isHidden ? 'Reaction Insights' : 'Hide Insights';
-            btnToggleStoic.textContent = 'Forge Stoichiometry';
-        });
+      btnToggleInfo.addEventListener('click', () => {
+        const isHidden = infoSection.classList.toggle('hidden');
+        if (!isHidden && stoicCalc) stoicCalc.classList.add('hidden');
+        btnToggleInfo.textContent = isHidden ? 'Reaction Insights' : 'Hide Insights';
+        if (btnToggleStoic) btnToggleStoic.textContent = 'Stoichiometry';
+      });
 
-        // Stoichiometry logic
+      // Stoichiometry math logic for this specific card
+      if (hasStoic) {
         const participants = card.querySelectorAll('.participant');
         const moleInputs = card.querySelectorAll('.input-moles');
         const gramInputs = card.querySelectorAll('.input-grams');
 
         function formatVal(num, isMole) {
-            if (isNaN(num) || num === null || num === undefined) return "";
-            if (num <= 0) return "0";
-            if (num < 0.0001) {
-                return num.toExponential(4).replace(/e\+0/, 'e').replace(/e-0/, 'e-');
-            }
-            const d = isMole ? 5 : 3;
-            let str = num.toFixed(d);
-            if (str.includes('.')) {
-                str = str.replace(/0+$/, '').replace(/\.$/, '');
-            }
-            return str;
+          if (isNaN(num) || num === null || num === undefined) return "";
+          if (num <= 0) return "0";
+          if (num < 0.0001) {
+              return num.toExponential(4).replace(/e\+0/, 'e').replace(/e-0/, 'e-');
+          }
+          const d = isMole ? 5 : 3;
+          let str = num.toFixed(d);
+          if (str.includes('.')) {
+              str = str.replace(/0+$/, '').replace(/\.$/, '');
+          }
+          return str;
         }
 
         function updateFromSource(sourceIndex, isMoleInput) {
-            const inputs = Array.from(moleInputs).concat(Array.from(gramInputs));
-            const sourceInp = inputs.find(i => i.dataset.index === sourceIndex && (isMoleInput ? i.classList.contains('input-moles') : i.classList.contains('input-grams')));
-            
-            if (!sourceInp || sourceInp.value.trim() === "") {
-                clearAll();
-                return;
+          const inputs = Array.from(moleInputs).concat(Array.from(gramInputs));
+          const sourceInp = inputs.find(i => i.dataset.index === sourceIndex && (isMoleInput ? i.classList.contains('input-moles') : i.classList.contains('input-grams')));
+          
+          if (!sourceInp || sourceInp.value.trim() === "") {
+            clearAll();
+            return;
+          }
+
+          let val = parseFloat(sourceInp.value);
+          if (isNaN(val)) {
+            clearAll();
+            return;
+          }
+
+          if (val < 0) {
+            val = Math.abs(val);
+            sourceInp.value = val;
+          }
+
+          const sourceEl = sourceInp.closest('.participant');
+          const sourceMW = parseFloat(sourceEl.dataset.mw) || 50.0;
+          const sourceCoeff = parseFloat(sourceEl.dataset.coeff) || 1.0;
+          const baseMoles = isMoleInput ? val : val / sourceMW;
+          const molesPerUnitCoeff = baseMoles / sourceCoeff;
+
+          participants.forEach(p => {
+            const mInp = p.querySelector('.input-moles');
+            const gInp = p.querySelector('.input-grams');
+            const idx = mInp.dataset.index;
+
+            if (idx === sourceIndex) {
+              if (isMoleInput) gInp.value = formatVal(val * sourceMW, false);
+              else mInp.value = formatVal(val / sourceMW, true);
+            } else {
+              const pCoeff = parseFloat(p.dataset.coeff) || 1.0;
+              const pMW = parseFloat(p.dataset.mw) || 50.0;
+              const pMoles = molesPerUnitCoeff * pCoeff;
+              const pGrams = pMoles * pMW;
+              mInp.value = formatVal(pMoles, true);
+              gInp.value = formatVal(pGrams, false);
             }
+          });
 
-            let val = parseFloat(sourceInp.value);
-            if (isNaN(val)) {
-                clearAll();
-                return;
-            }
-
-            if (val < 0) {
-                val = Math.abs(val);
-                sourceInp.value = val;
-            }
-
-            const sourceEl = sourceInp.closest('.participant');
-            const sourceMW = parseFloat(sourceEl.dataset.mw) || 50.0;
-            const sourceCoeff = parseFloat(sourceEl.dataset.coeff) || 1.0;
-            const baseMoles = isMoleInput ? val : val / sourceMW;
-            const molesPerUnitCoeff = baseMoles / sourceCoeff;
-
-            participants.forEach(p => {
-                const mInp = p.querySelector('.input-moles');
-                const gInp = p.querySelector('.input-grams');
-                const idx = mInp.dataset.index;
-
-                if (idx === sourceIndex) {
-                    if (isMoleInput) gInp.value = formatVal(val * sourceMW, false);
-                    else mInp.value = formatVal(val / sourceMW, true);
-                } else {
-                    const pCoeff = parseFloat(p.dataset.coeff) || 1.0;
-                    const pMW = parseFloat(p.dataset.mw) || 50.0;
-                    const pMoles = molesPerUnitCoeff * pCoeff;
-                    const pGrams = pMoles * pMW;
-                    mInp.value = formatVal(pMoles, true);
-                    gInp.value = formatVal(pGrams, false);
-                }
-            });
-
-            // Beautiful golden glowing active-driver indicators
-            participants.forEach(p => {
-                p.style.backgroundColor = "transparent";
-                p.style.borderLeft = "none";
-                p.style.transition = "all 0.3s ease";
-            });
-            sourceEl.style.backgroundColor = "rgba(255, 255, 255, 0.08)";
-            sourceEl.style.borderLeft = "4px solid #ffdfa9";
+          // Beautiful golden glowing active-driver indicators
+          participants.forEach(p => {
+            p.style.backgroundColor = "transparent";
+            p.style.borderLeft = "none";
+            p.style.transition = "all 0.3s ease";
+          });
+          sourceEl.style.backgroundColor = "rgba(255, 255, 255, 0.08)";
+          sourceEl.style.borderLeft = "4px solid #ffdfa9";
         }
 
         moleInputs.forEach(inp => {
-            inp.addEventListener('input', (e) => updateFromSource(e.target.dataset.index, true));
+          inp.addEventListener('input', (e) => updateFromSource(e.target.dataset.index, true));
         });
 
         gramInputs.forEach(inp => {
-            inp.addEventListener('input', (e) => updateFromSource(e.target.dataset.index, false));
+          inp.addEventListener('input', (e) => updateFromSource(e.target.dataset.index, false));
         });
 
         function clearAll() {
-            moleInputs.forEach(i => i.value = "");
-            gramInputs.forEach(i => i.value = "");
-            participants.forEach(p => {
-                p.style.backgroundColor = "transparent";
-                p.style.borderLeft = "none";
-            });
-        }
+          moleInputs.forEach(i => i.value = "");
+          gramInputs.forEach(i => i.value = "");
+          participants.forEach(p => {
+            p.style.backgroundColor = "transparent";
+            p.style.borderLeft = "none";
+          });
+        };
+      };
+
+      outputArea.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    if (MathJax && MathJax.typesetPromise) {
+      await MathJax.typesetPromise([outputArea]);
+    };
   });
 };

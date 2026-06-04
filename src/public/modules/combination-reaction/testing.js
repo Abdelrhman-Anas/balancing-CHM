@@ -125,8 +125,15 @@ function is_it_possible(element1, element2, getTheCategory, filterByVelance, all
       };
       resultList.reaction.type = bond;
     }else {
+      if (ele1Category === 'nonmetal' && ele2Category === 'nonmetal') {
+      resultList.reaction.type = 'covalent';
+      }
       resultList.reaction.type = 'ionic';
     };
+  };
+
+  if (ele1Category === 'nonmetal' && ele2Category === 'nonmetal') {
+    resultList.reaction.type = 'covalent';
   };
 
   if (ele1Category === ele2Category && ele2Category === 'metal') {

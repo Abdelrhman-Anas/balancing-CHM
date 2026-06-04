@@ -6,6 +6,11 @@
   --color-ink: #161616;
 }
 
+::selection {
+  background-color: var(--color-terracotta);
+  color: var(--color-parchment);
+}
+
 body {
   background-color: var(--color-marble);
   color: var(--color-ink);

@@ -24,9 +24,8 @@ export function getDoubleSaltyProducts(symbolicReactant, elementsArray)  {
     } else {
 
       if (
-        !isNaN(Number(symbolicReactant[j][symbolicReactant[j].length -1])) &&
-        elementsArray[j].length - 3 === 1
-      ) {
+        !isNaN(Number(symbolicReactant[j][symbolicReactant[j].length -1])) && elementsArray[j].length - 3 === 1
+        ) {
 
         totalQuantity[j] = Number(symbolicReactant[j][symbolicReactant[j].length -1]);
       };
@@ -60,7 +59,7 @@ export function getDoubleSaltyProducts(symbolicReactant, elementsArray)  {
 
   for (let i = 0; i < cationsInfoArray.length;i++) {
     const currentCation = cationsInfoArray[i];
-
+    console.log(currentCation);
     let currentformula = '';
     for (let j = 0; j < currentCation.length -1; j++) {
       const anElement = currentCation[j];

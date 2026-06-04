@@ -329,12 +329,22 @@ async function single_displaceReaction(r1, r2, getElement, getElements, commonOx
 
       acceptableRule.products[j].cid = compoundData.id.id.cid;
 
+      let nameClear = false;
+      let weightClear = false;
       for (let h = 0;h < compoundData.props.length;h++) {
         const section = compoundData.props[h];
 
-        if (section.urn.label === 'IUPAC Name') {
+        if (nameClear && weightClear) break;
+
+        if (section.urn.label === 'IUPAC Name' && !nameClear) {
+
           acceptableRule.products[j].name = (section.value.sval).replaceAll(';', ' ');
-          break;
+          nameClear = true;
+
+        } else if (section.urn.label === 'Molecular Weight' && !weightClear) {
+
+          acceptableRule.products[j].weight = Number(section.value.sval);
+          weightClear = true;
         };
       };
     } else {
@@ -370,11 +380,18 @@ async function single_displaceReaction(r1, r2, getElement, getElements, commonOx
         cid: compoundData.id.id.cid,
         formula: aReactant
       });
+      let nameClear = false;
+      let weightClear = false;
       for (let h = 0;h < compoundData.props.length;h++) {
         const section = compoundData.props[h];
-        if (section.urn.label === 'IUPAC Name') {
+        if (nameClear && weightClear) break;
+
+        if (section.urn.label === 'IUPAC Name' && !nameClear) {
           finalEquationObject.reactants[finalEquationObject.reactants.length -1].name = (section.value.sval).replaceAll(';', ' ');
-          break;
+          nameClear = true;
+        } else if (section.urn.label === 'Molecular Weight' && !weightClear) {
+          finalEquationObject.reactants[finalEquationObject.reactants.length -1].weight = Number(section.value.sval);
+          weightClear = true;
         };
       };
     };
@@ -483,6 +500,8 @@ async function single_displaceReaction(r1, r2, getElement, getElements, commonOx
   for (let i = 0; i < finalEquationObject.reactants.length;i++) {
     const aReactant = finalEquationObject.reactants[i];
 
+    finalEquationObject.reactants[i].coff = balancedCoff[i];
+
     textedEquation += ` ${aReactant.name} +`
     symboledEquation += ` ${balancedCoff[i] === 1 ? '' : balancedCoff[i]}${tranferToFormula(aReactant.formula)} +`
   };
@@ -494,6 +513,8 @@ async function single_displaceReaction(r1, r2, getElement, getElements, commonOx
 
   for (let i = 1; i < finalEquationObject.products.length;i++) {
     const aProduct = finalEquationObject.products[i];
+
+    finalEquationObject.products[i].coff = balancedCoff[i + 1];
 
     textedEquation += ` ${aProduct.name} +`;
     symboledEquation += ` ${balancedCoff[i + 1] === 1 ? '' : balancedCoff[i + 1]}${tranferToFormula(aProduct.formula)} +`;

@@ -137,7 +137,7 @@ async function buttonActivaton(theType, r1, r2) {
 
   } else if (theType === 'decomposition') { // decomposition reaction
 
-    return await decompositionReaction(r1, ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength,getElement,getTheCategory, decomRules, getElements, allMetals,getCompound, toPubChemFormula, balancingEquations, fixingQ, tranferToFormula, atomicLengthBySymbol);
+    return await decompositionReaction(r1, ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength,getElement,getTheCategory, decomRules, getElements, allMetals,getCompound, toPubChemFormula, balancingEquations, fixingQ, tranferToFormula, atomicLengthBySymbol, findSimplifiedCharge);
     
   } else if (theType === 'single_displacement') {  // single displacement reaction
 

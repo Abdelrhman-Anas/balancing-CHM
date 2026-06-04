@@ -64,6 +64,9 @@ export function findSimplifiedCharge(aproduct) {
   aproduct.elements[1].charge = aproduct.elements[1].charge / finalCoff;
   aproduct.elements[2].charge = aproduct.elements[2].charge / finalCoff;
 
+  //aproduct.quantities[aproduct.elements[1].symbol] = undefined;
+  //aproduct.quantities[aproduct.elements[2].symbol] = undefined;
+
   return aproduct;
 };
 

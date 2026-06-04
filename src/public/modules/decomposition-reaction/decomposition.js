@@ -1,4 +1,4 @@
-async function decompositionReaction(r1,ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength1, getElement, getTheCategory, decomRules, getElements, allMetals, getCompound, toPubChemFormula, balancingEquations, fixingQ, tranferToFormula, atomicLength) {
+async function decompositionReaction(r1,ammoniumProductPraser, ammoniumExceptionProduct, commonOxidationStates, atomicLength1, getElement, getTheCategory, decomRules, getElements, allMetals, getCompound, toPubChemFormula, balancingEquations, fixingQ, tranferToFormula, atomicLength, findSimplifiedCharge) {
 
   let symbolicShape = r1;
   
@@ -251,6 +251,10 @@ async function decompositionReaction(r1,ammoniumProductPraser, ammoniumException
         const element = elements[k];
         const elementData = await getElement(elements[k].symbol);
 
+        if (!(allMetals[element.symbol] === undefined)) {
+          equationsProducts[i].products[j] = findSimplifiedCharge(equationsProducts[i].products[j]);
+        };
+
         if (elementData === undefined) {
           equationsProducts[i].products[j].elements[k].name = undefined;
           continue;
@@ -377,14 +381,20 @@ async function decompositionReaction(r1,ammoniumProductPraser, ammoniumException
 
         equationsProducts[i].products[j].cid = compoundData.id.id.cid;
 
-        for (let h = 0;h < compoundData.props.length;h++) {
-          const section = compoundData.props[h];
+        let nameClear = false;
+      let weightClear = false;
+      for (let h = 0;h < compoundData.props.length;h++) {
+        const section = compoundData.props[h];
+        if (nameClear && weightClear) break;
 
-          if (section.urn.label === 'IUPAC Name') {
-            equationsProducts[i].products[j].name = (section.value.sval).replaceAll(';', ' ');
-            break;
-          };
+        if (section.urn.label === 'IUPAC Name' && !nameClear) {
+          equationsProducts[i].products[j].name = (section.value.sval).replaceAll(';', ' ');
+          nameClear = true;
+        } else if (section.urn.label === 'Molecular Weight' && !weightClear) {
+          equationsProducts[i].products[j].weight = Number(section.value.sval);
+          weightClear = true;
         };
+      };
       } else {
         equationsProducts[i].products[j].name = "couldn't fetch";
       };
@@ -403,11 +413,18 @@ async function decompositionReaction(r1,ammoniumProductPraser, ammoniumException
         cid: compoundData.id.id.cid,
         formula: symbolicShape
       };
+      let nameClear = false;
+      let weightClear = false;
       for (let h = 0;h < compoundData.props.length;h++) {
         const section = compoundData.props[h];
-        if (section.urn.label === 'IUPAC Name') {
+        if (nameClear && weightClear) break;
+
+        if (section.urn.label === 'IUPAC Name' && !nameClear) {
           equationsProducts[i].reactantData.name = (section.value.sval).replaceAll(';', ' ');
-          break;
+          nameClear = true;
+        } else if (section.urn.label === 'Molecular Weight' && !weightClear) {
+          equationsProducts[i].reactantData.weight = Number(section.value.sval);
+          weightClear = true;
         };
       };
     };
@@ -544,14 +561,19 @@ async function decompositionReaction(r1,ammoniumProductPraser, ammoniumException
     symbolicEquation += 
       `${balancedCoffArray[0] === 1 ? '': balancedCoffArray[0]}${tranferToFormula(anEquation.reactantData.formula)} \\longrightarrow `
     ;
-    cidObject[anEquation.reactantData.name] = [anEquation.reactantData.cid, anEquation.reactantData.formula];
+    cidObject[anEquation.reactantData.name] = [
+      anEquation.reactantData.cid,
+      anEquation.reactantData.formula,
+      anEquation.reactantData.weight,
+      balancedCoffArray[0]
+    ];
     for (let j = 1; j < anEquation.products.length;j++) {
       const aProduct = anEquation.products[j];
       const theCoff = balancedCoffArray[j];
 
       textedEquation += ` ${aProduct.name} +`;
       symbolicEquation += ` ${theCoff === 1 ? '': theCoff}${tranferToFormula(aProduct.formula)} +`;
-      cidObject[aProduct.name] = [aProduct.cid, aProduct.formula];
+      cidObject[aProduct.name] = [aProduct.cid, aProduct.formula, aProduct.weight, theCoff];
     };
 
     finalEquationArray.push([
