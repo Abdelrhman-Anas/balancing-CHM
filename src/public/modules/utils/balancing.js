@@ -4,10 +4,10 @@ export async function balancingEquations(matrix) {
   //  [5, 19 , 2],
   //  [8, 11, 14]
   //];
-  console.log(matrix);
+  //console.log(matrix);
   const RREFMatrix = getRREF(matrix)
 
-  console.log(RREFMatrix);
+  //console.log(RREFMatrix);
   
   const coffObject = {};
   coffObject['coffNum'] = RREFMatrix[0].length;
@@ -78,7 +78,7 @@ export async function balancingEquations(matrix) {
     result.push(variable[1][0] * theNumber);
   };
 
-  console.log(result);
+  //console.log(result);
   return result;  
 };
 

@@ -15,7 +15,7 @@ async function combinationReaction(r1, r2, getElement, is_it_possible, getTheCat
     return await reactionByElement(element1, element2, is_it_possible, getTheCategory, filterByVelance, gettingVelance, allMetals, atomicLength, getCompound, toPubChemFormula, tranferToFormula);
 
   }else {
-    console.log('ffffuckkkkkk');
+    return [undefined, {symboledEquation: 'No reation or need higher tools to predict'}];
   };
   
 };
@@ -32,10 +32,10 @@ async function reactionByElement(element1, element2, is_it_possible, getTheCateg
   const elementState2 = element2.standardState
 
   const reactionTesting = is_it_possible(element1, element2, getTheCategory, filterByVelance, allMetals, atomicLength);
-  console.log(reactionTesting);
+  //console.log(reactionTesting);
 
   const products = getAllProducts(oxidationStates1, oxidationStates2, reactionTesting);
-  console.log(products);
+  //console.log(products);
   const balancedEquations = balancingEquations(products, reactionTesting);
   
   return await getEquationsAllInfo(balancedEquations, reactionTesting, '', eleSymbol1, eleSymbol2, elementState1, elementState2, element1, element2, getCompound, toPubChemFormula);
@@ -122,7 +122,7 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
     };
   });
 
-  if (!acceptableRule) return 'fuckkkkkkkkkkkkkkk';
+  if (!acceptableRule) return [undefined, {symboledEquation: 'No reation or need higher tools to predict'}];
 
   const theProduct = acceptableRule.product[1];
   const ProductElements = theProduct.elements;
@@ -390,10 +390,10 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
     balancingMatrix.push(currentRow);
     currentRow = [];
   };
-  console.log(balancingMatrix);
+  //console.log(balancingMatrix);
   
   const balancedCoff = await balancingOtherEquations(balancingMatrix);
-  console.log(balancedCoff);
+  //console.log(balancedCoff);
 
   let textedEquation = '\\(\\ce{ ';
   let symboledEquation = '\\(\\ce{ ';
@@ -406,7 +406,7 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
     if (i === finalResultArray[0].length -1) {
       textedEquation = textedEquation.slice(0, -1);
       symboledEquation = symboledEquation.slice(0, -1);
-      console.log(balancedCoff);
+      //console.log(balancedCoff);
       textedEquation += `\\longrightarrow ${anEquationSet.name} `;
       symboledEquation += `\\longrightarrow ${equationCoff === 1? '' : equationCoff}${tranferToFormula(anEquationSet.formula)} `;
     }else {
@@ -420,8 +420,8 @@ async function reactionByCompounds(reactant1Symbol, reactant2Symbol, getElements
     textedEquation,
     symboledEquation
   });
-  console.log(finalResultArray);
-  console.log(acceptableRule);
+  //console.log(finalResultArray);
+  //console.log(acceptableRule);
 
   return finalResultArray;
 };
@@ -431,7 +431,7 @@ function getAllProducts(oxidations1, oxidations2, reactionTesting) {
   const oxidationOneNe = oxidations1.filter(oxi => oxi < 0);
   const oxidationTwoPo = oxidations2.filter(oxi => oxi > 0);
   const oxidationTwoNe = oxidations2.filter(oxi => oxi < 0);
-  console.log(oxidationOnePo, oxidationOneNe);   console.log(oxidationTwoPo, oxidationTwoNe);
+  //console.log(oxidationOnePo, oxidationOneNe);   console.log(oxidationTwoPo, oxidationTwoNe);
   const reactionInfo = reactionTesting.reaction;
 
   const positiveByNig = posNig(oxidationOnePo, oxidationTwoNe);
@@ -558,7 +558,7 @@ function balancingEquations(products, reactionTesting) {
 };
 //--------------------------------------------------------------------------------------------------------------------------------------//
 async function getEquationsAllInfo(equations, reactionTesting, productName, symbol1, symbol2, state1, state2, element1Info, element2Info, getCompound, toPubChemFormula) {
-  console.log(reactionTesting.electronegativity.deltaEN);
+  //console.log(reactionTesting.electronegativity.deltaEN);
   const result = [
     {
       element1: {
@@ -645,7 +645,9 @@ async function getEquationsAllInfo(equations, reactionTesting, productName, symb
         secondElementCharge
       });
     } else {
-      continue;
+      result.push({
+        equation: equationAndProduct.equation,
+      });
     };
     
   };

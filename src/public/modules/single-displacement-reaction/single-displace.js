@@ -102,7 +102,7 @@ async function single_displaceReaction(r1, r2, getElement, getElements, commonOx
   if (modifiedFormula.includes('M') && modifiedFormula.includes('A')) {
     modifiedFormula = 'M+AA'
   }
-  console.log(elementsArray);
+  //console.log(elementsArray);
   const rules = await singDispRules(gettingSaltyProduct, elementsArray, symbolicReactant);
 
   let acceptableRule;
@@ -112,7 +112,7 @@ async function single_displaceReaction(r1, r2, getElement, getElements, commonOx
     };
   });
 
-  if (!acceptableRule) return 'fuckkkkkkkkkkkkkkk';
+  if (!acceptableRule) return {equationData: {symboledEquation: 'No reation or need higher tools to predict'}};
 
   for (let a = 1; a < acceptableRule.products.length;a++) {
     const theProduct = acceptableRule.products[a];
@@ -235,7 +235,7 @@ async function single_displaceReaction(r1, r2, getElement, getElements, commonOx
 
   for (let j = 1; j< allTheProducts.length; j++) {
     const aProductElements = allTheProducts[j].elements;
-    console.log();
+    
     acceptableRule.products[j] = findSimplifiedCharge(acceptableRule.products[j]);
     
     for (let q = 1; q < aProductElements.length;q++) {
@@ -318,7 +318,7 @@ async function single_displaceReaction(r1, r2, getElement, getElements, commonOx
     acceptableRule.products[j].formula = theNewFormula;
 
     const theproduct = allTheProducts[j];
-    console.log(theproduct.formula);
+    //console.log(theproduct.formula);
     const compoundData1 = await getCompound(toPubChemFormula(theproduct.formula), theproduct.formula);
     if (compoundData1.success === false) {
       return compoundData.data
@@ -462,7 +462,7 @@ async function single_displaceReaction(r1, r2, getElement, getElements, commonOx
   };
 
   const fixedQuantities = fixingQ(getElements, [formulaArray], [onlyQuantites])[0];
-  console.log(fixedQuantities);
+  //console.log(fixedQuantities);
 
 
   const allElements = Object.entries({...fixedQuantities[0], ...fixedQuantities[1]});
@@ -525,8 +525,8 @@ async function single_displaceReaction(r1, r2, getElement, getElements, commonOx
   finalEquationObject.equationData.textedEquation = textedEquation + '}\\)';
   finalEquationObject.equationData.symboledEquation = symboledEquation +  '}\\)';
 
-  console.log(finalEquationObject);
-  console.log(acceptableRule);
+  //console.log(finalEquationObject);
+  //console.log(acceptableRule);
 
   return finalEquationObject;
 };

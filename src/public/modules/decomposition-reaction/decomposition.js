@@ -78,6 +78,10 @@ async function decompositionReaction(r1,ammoniumProductPraser, ammoniumException
       acceptableRules.push(rule);
     };
   });
+
+  if (acceptableRules.length === 0) {
+    return [[undefined, 'No reation or need higher tools to predict']]
+  }
   
   let metalIndex = 0;
   for (let i = 1;i < symbolicShapeElements.length -1;i++) {
@@ -372,42 +376,41 @@ async function decompositionReaction(r1,ammoniumProductPraser, ammoniumException
       const theproduct = allTheProducts[j];
 
       const compoundData1 = await getCompound(toPubChemFormula(theproduct.formula), theproduct.formula);
+      
       if (compoundData1.success === false) {
-        return compoundData.data
-      };
-
-      const compoundData = compoundData1.data.PC_Compounds[0];
-      if (compoundData !== undefined) {
+        const compoundData = compoundData1.data.PC_Compounds[0];
 
         equationsProducts[i].products[j].cid = compoundData.id.id.cid;
 
         let nameClear = false;
-      let weightClear = false;
-      for (let h = 0;h < compoundData.props.length;h++) {
-        const section = compoundData.props[h];
-        if (nameClear && weightClear) break;
+        let weightClear = false;
+        for (let h = 0;h < compoundData.props.length;h++) {
+          const section = compoundData.props[h];
+          if (nameClear && weightClear) break;
 
-        if (section.urn.label === 'IUPAC Name' && !nameClear) {
-          equationsProducts[i].products[j].name = (section.value.sval).replaceAll(';', ' ');
-          nameClear = true;
-        } else if (section.urn.label === 'Molecular Weight' && !weightClear) {
-          equationsProducts[i].products[j].weight = Number(section.value.sval);
-          weightClear = true;
+          if (section.urn.label === 'IUPAC Name' && !nameClear) {
+            equationsProducts[i].products[j].name = (section.value.sval).replaceAll(';', ' ');
+            nameClear = true;
+          } else if (section.urn.label === 'Molecular Weight' && !weightClear) {
+            equationsProducts[i].products[j].weight = Number(section.value.sval);
+            weightClear = true;
+          };
         };
-      };
       } else {
         equationsProducts[i].products[j].name = "couldn't fetch";
       };
 
     };
     const compoundData1 = await getCompound(toPubChemFormula(symbolicShape), symbolicShape);
-    if (compoundData1.success === false) {
-      return compoundData1.data;
-    }
-
     const compoundData = compoundData1.data.PC_Compounds[0];
-    if (compoundData === undefined) {
-      equationsProducts[i].reactantData = {};
+
+    if (compoundData1.success === false) {
+      
+      equationsProducts[i].reactantData = {
+        cid: undefined,
+        formula: symbolicShape,
+        name: "couldn't fetch"
+      };
     } else {
       equationsProducts[i].reactantData = {
         cid: compoundData.id.id.cid,
@@ -436,7 +439,7 @@ async function decompositionReaction(r1,ammoniumProductPraser, ammoniumException
     };
     equationsProducts[i].reactantData.quantities = reactantQuantities;
   };
-  console.log(equationsProducts);
+  //console.log(equationsProducts);
 
 
   const onlyQuantites = [];
@@ -444,7 +447,7 @@ async function decompositionReaction(r1,ammoniumProductPraser, ammoniumException
   for (let i = 0; i < equationsProducts.length;i++) {
 
     const theProducts = equationsProducts[i].products;
-    const reactantQuantities = equationsProducts[i].reactantData.quantities; console.log(reactantQuantities);
+    const reactantQuantities = equationsProducts[i].reactantData.quantities;
     currentEquationQuantity.push(reactantQuantities);
 
     for (let j = 1; j < theProducts.length;j++) {
@@ -585,7 +588,7 @@ async function decompositionReaction(r1,ammoniumProductPraser, ammoniumException
     symbolicEquation = '\\(\\ce{ ';
     textedEquation = '\\(\\ce{ ';
   };
-  console.log(finalEquationArray);
+  //console.log(finalEquationArray);
 
   return finalEquationArray;
 };

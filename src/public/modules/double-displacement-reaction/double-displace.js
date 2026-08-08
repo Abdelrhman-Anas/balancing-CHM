@@ -80,7 +80,7 @@ async function double_displaceReaction(r1, r2, doubleDispRules, commonOxidationS
   };
   modifiedFormula = modifiedFormula.slice(0, -1);
 
-  console.log(modifiedFormula);
+  //console.log(modifiedFormula);
 
   const rules = await doubleDispRules(getDoubleSaltyProducts, getAcidicPartedProduct, symbolicReactant, elementsArray);
 
@@ -91,7 +91,7 @@ async function double_displaceReaction(r1, r2, doubleDispRules, commonOxidationS
     };
   });
 
-  if (!acceptableRule) return 'fuckkkkkkkkkkkkkkk';
+  if (!acceptableRule) return {equationData: {symboledEquation: 'No reation or need higher tools to predict'}};
 
   const allTheProducts = acceptableRule.products;
 
@@ -209,7 +209,7 @@ async function double_displaceReaction(r1, r2, doubleDispRules, commonOxidationS
       acceptableRule.products[j].name = "couldn't fetch";
     };
   };
-  console.log(acceptableRule);
+  //console.log(acceptableRule);
 
   const finalEquationObject = {
     products: acceptableRule.products,
@@ -321,7 +321,7 @@ async function double_displaceReaction(r1, r2, doubleDispRules, commonOxidationS
   };
 
   const fixedQuantities = fixingQ(getElements, [formulaArray], [onlyQuantites])[0];
-  console.log(fixedQuantities);
+  //console.log(fixedQuantities);
 
 
   const allElements = Object.entries({...fixedQuantities[0], ...fixedQuantities[1]});
@@ -352,7 +352,7 @@ async function double_displaceReaction(r1, r2, doubleDispRules, commonOxidationS
     currentRow = [];
   };
 
-  console.log(balancingMatrix);
+  //console.log(balancingMatrix);
 
   const balancedCoff = await balancingEquations(balancingMatrix);
 
@@ -386,7 +386,7 @@ async function double_displaceReaction(r1, r2, doubleDispRules, commonOxidationS
   finalEquationObject.equationData.textedEquation = textedEquation + '}\\)';
   finalEquationObject.equationData.symboledEquation = symboledEquation +  '}\\)';
 
-  console.log(finalEquationObject);
+  //console.log(finalEquationObject);
 
   return finalEquationObject;
 };

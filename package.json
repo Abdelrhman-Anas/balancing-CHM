@@ -1,7 +1,7 @@
 {
   "name": "balancing-chm",
   "version": "1.0.0",
-  "description": "a tool that balance chemical equations between two elements",
+  "description": "a tool that balance chemical equations between two compounds",
   "main": "./src/scripts/main.js",
   "scripts": {
     "start": "node src/scripts/server.js",
@@ -12,8 +12,8 @@
     "url": "git+https://github.com/Abdelrhman-Anas/balancing-CHM.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Abdelrhman Anas",
+  "license": "MIT",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/Abdelrhman-Anas/balancing-CHM/issues"
