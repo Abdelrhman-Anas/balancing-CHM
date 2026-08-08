@@ -1,96 +1,108 @@
-export async function UIComponents(MathJax, buttonActivaton) {
-  const welcomeScreen = document.getElementById('welcome-screen');
-  const toolScreen = document.getElementById('tool-screen');
-  const btnEnter = document.getElementById('btn-enter');
-  const btnBack = document.getElementById('btn-back');
-  const btnPredict = document.getElementById('btn-predict');
-  const typeSelector = document.getElementById('type-selector');
-  const inpReactant1 = document.getElementById('inp-reactant-1');
-  const inpReactant2 = document.getElementById('inp-reactant-2');
-  const labelReactant2 = document.getElementById('label-reactant-2');
-  const errorMsg = document.getElementById('error-msg');
-  const outputArea = document.getElementById('output-area');
+export async function UIComponents(MathJax, predictEquation) {
+  const welcomeScreen = document.getElementById("welcome-screen");
+  const toolScreen = document.getElementById("tool-screen");
+  const btnEnter = document.getElementById("btn-enter");
+  const btnBack = document.getElementById("btn-back");
+  const btnPredict = document.getElementById("btn-predict");
+  const typeSelector = document.getElementById("type-selector");
+  const inpReactant1 = document.getElementById("inp-reactant-1");
+  const inpReactant2 = document.getElementById("inp-reactant-2");
+  const labelReactant2 = document.getElementById("label-reactant-2");
+  const errorMsg = document.getElementById("error-msg");
+  const outputArea = document.getElementById("output-area");
 
-  let currentType = 'combination';
+  let currentType = "combination";
 
-
-  btnEnter.addEventListener('click', () => {
-    welcomeScreen.classList.add('opacity-0', '-translate-y-10');
+  btnEnter.addEventListener("click", () => {
+    welcomeScreen.classList.add("opacity-0", "-translate-y-10");
     setTimeout(() => {
-      welcomeScreen.classList.add('hidden');
-      toolScreen.classList.remove('hidden');
+      welcomeScreen.classList.add("hidden");
+      toolScreen.classList.remove("hidden");
       setTimeout(() => {
-        toolScreen.classList.remove('opacity-0', 'translate-y-10');
+        toolScreen.classList.remove("opacity-0", "translate-y-10");
       }, 50);
     }, 700);
   });
 
-  btnBack.addEventListener('click', () => {
-    toolScreen.classList.add('opacity-0', 'translate-y-10');
+  btnBack.addEventListener("click", () => {
+    toolScreen.classList.add("opacity-0", "translate-y-10");
     setTimeout(() => {
-      toolScreen.classList.add('hidden');
-      welcomeScreen.classList.remove('hidden');
+      toolScreen.classList.add("hidden");
+      welcomeScreen.classList.remove("hidden");
       setTimeout(() => {
-        welcomeScreen.classList.remove('opacity-0', '-translate-y-10');
+        welcomeScreen.classList.remove("opacity-0", "-translate-y-10");
       }, 50);
     }, 700);
   });
 
   let howMuch = 2;
 
-  typeSelector.addEventListener('click', (e) => {
-    const target = e.target.closest('.type-btn');
+  typeSelector.addEventListener("click", (e) => {
+    const target = e.target.closest(".type-btn");
     if (!target) return;
 
-    document.querySelectorAll('.type-btn').forEach(btn => {
-      btn.classList.remove('active');
-      btn.classList.add('bg-white/50', 'border-olive/20', 'text-olive', 'hover:bg-white/80');
+    document.querySelectorAll(".type-btn").forEach((btn) => {
+      btn.classList.remove("active");
+      btn.classList.add(
+        "bg-white/50",
+        "border-olive/20",
+        "text-olive",
+        "hover:bg-white/80",
+      );
     });
 
-    target.classList.add('active');
-    target.classList.remove('bg-white/50', 'border-olive/20', 'text-olive', 'hover:bg-white/80');
+    target.classList.add("active");
+    target.classList.remove(
+      "bg-white/50",
+      "border-olive/20",
+      "text-olive",
+      "hover:bg-white/80",
+    );
 
-    currentType = target.getAttribute('data-type');
+    currentType = target.getAttribute("data-type");
 
-    if (currentType === 'decomposition') {
+    if (currentType === "decomposition") {
       inpReactant2.disabled = true;
-      inpReactant2.value = '';
-      labelReactant2.textContent = 'Optional Context';
-      inpReactant2.placeholder = 'N/A';
+      inpReactant2.value = "";
+      labelReactant2.textContent = "Optional Context";
+      inpReactant2.placeholder = "N/A";
       howMuch = 1;
     } else {
       inpReactant2.disabled = false;
-      labelReactant2.textContent = 'Reactant Beta';
-      inpReactant2.placeholder = 'e.g. O2';
+      labelReactant2.textContent = "Reactant Beta";
+      inpReactant2.placeholder = "e.g. O2";
       howMuch = 2;
     }
   });
 
-  btnPredict.addEventListener('click', async () => {
+  btnPredict.addEventListener("click", async () => {
     const r1 = inpReactant1.value.trim();
     const r2 = inpReactant2.value.trim();
 
     if (howMuch === 1) {
       if (!r1) {
-        errorMsg.textContent = 'Please enter at least one reactant formula (e.g., H, MgO)';
-        errorMsg.classList.remove('hidden');
+        errorMsg.textContent =
+          "Please enter at least one reactant formula (e.g., H, MgO)";
+        errorMsg.classList.remove("hidden");
         return;
-      };
+      }
     } else {
       if (!r1 || !r2) {
-        errorMsg.textContent = 'Please enter two reactant formulas (e.g., H, MgO)';
-        errorMsg.classList.remove('hidden');
+        errorMsg.textContent =
+          "Please enter two reactant formulas (e.g., H, MgO)";
+        errorMsg.classList.remove("hidden");
         return;
-      };
-    };
+      }
+    }
 
-    inpReactant1.value = '';
-    inpReactant2.value = '';
+    inpReactant1.value = "";
+    inpReactant2.value = "";
 
-    errorMsg.classList.add('hidden');
-    
-    const loaderCard = document.createElement('div');
-    loaderCard.className = "flex flex-col items-center justify-center p-12 space-y-6 text-marble shadow-2xl border-4 border-terracotta/20 animate-reveal mb-6 relative";
+    errorMsg.classList.add("hidden");
+
+    const loaderCard = document.createElement("div");
+    loaderCard.className =
+      "flex flex-col items-center justify-center p-12 space-y-6 text-marble shadow-2xl border-4 border-terracotta/20 animate-reveal mb-6 relative";
     loaderCard.style.borderRadius = "11px";
     loaderCard.style.backgroundColor = "#4f654d";
     loaderCard.innerHTML = `
@@ -100,22 +112,23 @@ export async function UIComponents(MathJax, buttonActivaton) {
       <p class="font-display text-white tracking-widest uppercase text-sm">Transmuting...</p>
     `;
     outputArea.prepend(loaderCard);
-    outputArea.scrollIntoView({ behavior: 'smooth' });
+    outputArea.scrollIntoView({ behavior: "smooth" });
 
     console.log(r1, r2);
 
-    const reactionData = await buttonActivaton(currentType, r1, r2);
+    const reactionData = await predictEquation(currentType, r1, r2);
     console.log(reactionData);
 
     let equationsArray = [];
     let dataArray = [];
     let stociData = [];
-    
-    if (currentType === 'combination') {
-      if (Array.isArray(reactionData[0])) {
-
-        equationsArray.push(reactionData[1].symboledEquation);
-        dataArray.push(`
+    if (reactionData[0] === undefined) {
+      equationsArray.push(reactionData[1].symboledEquation);
+    } else {
+      if (currentType === "combination") {
+        if (Array.isArray(reactionData[0])) {
+          equationsArray.push(reactionData[1].symboledEquation);
+          dataArray.push(`
           <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
             Texted Equation : ${reactionData[1].textedEquation}
           </div>
@@ -147,33 +160,32 @@ export async function UIComponents(MathJax, buttonActivaton) {
             cid : ${reactionData[0][2].cid} <br>
           </div>
         `);
-        let thatStoicData = {
-          reactants: [],
-          products: []
-        };
-        for (let i = 0; i < reactionData[0].length -1; i++) {
-          const aReactant = reactionData[0][i];
-          thatStoicData.reactants.push({
-            formula: aReactant.formula,
-            coefficient: aReactant.coefficient,
-            mw: aReactant.weight
+          let thatStoicData = {
+            reactants: [],
+            products: [],
+          };
+          for (let i = 0; i < reactionData[0].length - 1; i++) {
+            const aReactant = reactionData[0][i];
+            thatStoicData.reactants.push({
+              formula: aReactant.formula,
+              coefficient: aReactant.coefficient,
+              mw: aReactant.weight,
+            });
+          }
+          thatStoicData.products.push({
+            formula: reactionData[0].at(-1).formula,
+            coefficient: reactionData[0].at(-1).coefficient,
+            mw: reactionData[0].at(-1).weight,
           });
-        };
-        thatStoicData.products.push({
-          formula: reactionData[0].at(-1).formula,
-          coefficient: reactionData[0].at(-1).coefficient,
-          mw: reactionData[0].at(-1).weight
-        });
-        stociData.push(thatStoicData);
-        
-      } else {
-        const itsAllData = reactionData[0];
+          stociData.push(thatStoicData);
+        } else {
+          const itsAllData = reactionData[0];
 
-        for (let i = 1;i < reactionData.length;i++) {
-          const anEquation = reactionData[i];
+          for (let i = 1; i < reactionData.length; i++) {
+            const anEquation = reactionData[i];
 
-          equationsArray.push(anEquation.equation);
-          dataArray.push(`
+            equationsArray.push(anEquation.equation);
+            dataArray.push(`
             <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
               1) ${itsAllData.element1.symbol} : <br>
               Name : ${itsAllData.element1.name} <br>
@@ -209,49 +221,53 @@ export async function UIComponents(MathJax, buttonActivaton) {
               Conditions :  ${itsAllData.equationData.conditions} <br>
             </div>
           `);
-          stociData.push({
-            reactants: [{
-              coefficient: anEquation.productData.coff[0],
-              formula: itsAllData.element1.symbol,
-              mw: itsAllData.element1.weight
-            },{
-              coefficient: anEquation.productData.coff[1],
-              formula: itsAllData.element2.symbol,
-              mw: itsAllData.element2.weight
-            }],
-            products: [{
-              coefficient: anEquation.productData.coff[2],
-              formula: anEquation.productData.formula,
-              mw: anEquation.productData.weight
-            }]
-          });
-        };
-      };
-
-    } else if (currentType === 'decomposition') {
-      reactionData.forEach(anEquation => {
-        const compoundsData = Object.entries(anEquation[3]);
-
-        let totalresult = '';
-        const thisStoic = {
-          products: [],
-          reactants: []
-        };
-        compoundsData.forEach((aCompound, i) => {
-          if (i === 0) {
-            thisStoic.reactants.push({
-              coefficient: aCompound[1][3],
-              mw: aCompound[1][2],
-              formula: aCompound[1][1]
-            });
-          } else {
-            thisStoic.products.push({
-              coefficient: aCompound[1][3],
-              mw: aCompound[1][2],
-              formula: aCompound[1][1]
+            stociData.push({
+              reactants: [
+                {
+                  coefficient: anEquation.productData.coff[0],
+                  formula: itsAllData.element1.symbol,
+                  mw: itsAllData.element1.weight,
+                },
+                {
+                  coefficient: anEquation.productData.coff[1],
+                  formula: itsAllData.element2.symbol,
+                  mw: itsAllData.element2.weight,
+                },
+              ],
+              products: [
+                {
+                  coefficient: anEquation.productData.coff[2],
+                  formula: anEquation.productData.formula,
+                  mw: anEquation.productData.weight,
+                },
+              ],
             });
           }
-          totalresult += `
+        }
+      } else if (currentType === "decomposition") {
+        reactionData.forEach((anEquation) => {
+          const compoundsData = Object.entries(anEquation[3]);
+
+          let totalresult = "";
+          const thisStoic = {
+            products: [],
+            reactants: [],
+          };
+          compoundsData.forEach((aCompound, i) => {
+            if (i === 0) {
+              thisStoic.reactants.push({
+                coefficient: aCompound[1][3],
+                mw: aCompound[1][2],
+                formula: aCompound[1][1],
+              });
+            } else {
+              thisStoic.products.push({
+                coefficient: aCompound[1][3],
+                mw: aCompound[1][2],
+                formula: aCompound[1][1],
+              });
+            }
+            totalresult += `
             <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
             <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
               ${aCompound[1][1]} : <br>
@@ -259,10 +275,10 @@ export async function UIComponents(MathJax, buttonActivaton) {
               cid : ${aCompound[1][0]} <br>
             </div>
           `;
-        });
+          });
 
-        equationsArray.push(anEquation[1]);
-        dataArray.push(`
+          equationsArray.push(anEquation[1]);
+          dataArray.push(`
           <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
             texted Equation : ${anEquation[0]} <br>
           </div>
@@ -278,21 +294,21 @@ export async function UIComponents(MathJax, buttonActivaton) {
             ${totalresult}
           </div>
         `);
-        stociData.push(thisStoic);
+          stociData.push(thisStoic);
+        });
+      } else if (
+        currentType === "single_displacement" ||
+        currentType === "double_displacement"
+      ) {
+        const productsData = reactionData.products;
+        const reactantsData = reactionData.reactants;
 
-      });
+        let totalproducts = "";
+        let productsStoic = [];
+        for (let i = 1; i < productsData.length; i++) {
+          const aProduct = productsData[i];
 
-    } else if (currentType === 'single_displacement' || currentType === 'double_displacement') {
-
-      const productsData = reactionData.products;
-      const reactantsData = reactionData.reactants;
-
-      let totalproducts = '';
-      let productsStoic = [];
-      for (let i = 1; i < productsData.length;i++) {
-        const aProduct = productsData[i];
-
-        totalproducts += `
+          totalproducts += `
           <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
           <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
             ${aProduct.formula} : <br>
@@ -300,19 +316,19 @@ export async function UIComponents(MathJax, buttonActivaton) {
             cid : ${aProduct.cid} <br>
           </div>
         `;
-        productsStoic.push({
-          formula: aProduct.formula,
-          coefficient: aProduct.coff,
-          mw: aProduct.weight
-        });
-      };
+          productsStoic.push({
+            formula: aProduct.formula,
+            coefficient: aProduct.coff,
+            mw: aProduct.weight,
+          });
+        }
 
-      let totalreactants = '';
-      let reactantsStoic = [];
-      for (let i = 0; i < reactantsData.length;i++) {
-        const aReactant = reactantsData[i];
+        let totalreactants = "";
+        let reactantsStoic = [];
+        for (let i = 0; i < reactantsData.length; i++) {
+          const aReactant = reactantsData[i];
 
-        totalreactants += `
+          totalreactants += `
           <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
           <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
             ${aReactant.formula} : <br>
@@ -320,20 +336,20 @@ export async function UIComponents(MathJax, buttonActivaton) {
             cid : ${aReactant.cid} <br>
           </div>
         `;
-        reactantsStoic.push({
-          formula: aReactant.formula,
-          coefficient: aReactant.coff,
-          mw: aReactant.weight
-        });
-      };
-      
-      stociData.push({
-        reactants: reactantsStoic,
-        products: productsStoic
-      });
+          reactantsStoic.push({
+            formula: aReactant.formula,
+            coefficient: aReactant.coff,
+            mw: aReactant.weight,
+          });
+        }
 
-      equationsArray.push(reactionData.equationData.symboledEquation);
-      dataArray.push(`
+        stociData.push({
+          reactants: reactantsStoic,
+          products: productsStoic,
+        });
+
+        equationsArray.push(reactionData.equationData.symboledEquation);
+        dataArray.push(`
         <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
           texted Equation : ${reactionData.equationData.textedEquation} <br>
         </div>
@@ -348,19 +364,25 @@ export async function UIComponents(MathJax, buttonActivaton) {
           ${totalproducts}
         </div>
       `);
-    };
+      }
+    }
 
     let loodingHere = true;
     equationsArray.forEach((anEquation, i) => {
       const thatEquationData = dataArray[i];
       const thatStoicData = stociData[i];
 
-      const card = document.createElement('div');
-      card.className = "reaction-card text-marble p-8 md:p-12 shadow-2xl border-4 border-terracotta/30 animate-reveal mb-6 relative";
+      const card = document.createElement("div");
+      card.className =
+        "reaction-card text-marble p-8 md:p-12 shadow-2xl border-4 border-terracotta/30 animate-reveal mb-6 relative";
       card.style.borderRadius = "11px";
       card.style.backgroundColor = "#4f654d";
 
-      const hasStoic = !!(thatStoicData && thatStoicData.reactants && thatStoicData.products);
+      const hasStoic = !!(
+        thatStoicData &&
+        thatStoicData.reactants &&
+        thatStoicData.products
+      );
 
       card.innerHTML = `
         <div class="space-y-6">
@@ -381,11 +403,15 @@ export async function UIComponents(MathJax, buttonActivaton) {
             <button class="btn-toggle-info secondary-action-btn font-sans cursor-pointer" style="background-color: #8c4533; border-radius: 5px; padding: 10px 20px;">
               Reaction Insights
             </button>
-            ${hasStoic ? `
+            ${
+              hasStoic
+                ? `
             <button class="btn-toggle-stoic secondary-action-btn font-sans cursor-pointer" style="background-color: #8c4533; border-radius: 5px; padding: 10px 20px;">
               Stoichiometry
             </button>
-            ` : ''}
+            `
+                : ""
+            }
           </div>
 
           <div class="info-section hidden mt-8 text-left space-y-3 animate-reveal p-5 rounded-lg bg-black/15 border border-white/5">
@@ -393,7 +419,9 @@ export async function UIComponents(MathJax, buttonActivaton) {
             <p class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">${thatEquationData}</p>
           </div>
 
-          ${hasStoic ? `
+          ${
+            hasStoic
+              ? `
           <div class="stoic-calc hidden mt-8 text-left space-y-6 animate-reveal p-5 rounded-lg bg-black/15 border border-white/5 font-sans">
             <div class="overflow-x-auto">
               <table class="w-full text-xs md:text-sm font-sans tracking-normal">
@@ -408,7 +436,9 @@ export async function UIComponents(MathJax, buttonActivaton) {
                 </thead>
                 <tbody>
                   <tr class="text-[#ffdfa9]"><td colspan="5" class="py-4 font-bold border-b border-marble/5 text-xs md:text-sm uppercase tracking-wider">Reactants</td></tr>
-                  ${thatStoicData.reactants.map((r, idx) => `
+                  ${thatStoicData.reactants
+                    .map(
+                      (r, idx) => `
                       <tr class="participant border-b border-marble/5 font-sans" data-coeff="${r.coefficient}" data-mw="${r.mw}" data-role="reagent">
                           <td class="py-4 font-mono normal-case font-bold text-white">${r.formula}</td>
                           <td class="py-4 text-center font-bold text-[#ffdfa9]">${r.coefficient}</td>
@@ -416,9 +446,13 @@ export async function UIComponents(MathJax, buttonActivaton) {
                           <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-moles font-sans" data-index="r${idx}" placeholder="0"></td>
                           <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-grams font-sans" data-index="r${idx}" placeholder="0"></td>
                       </tr>
-                  `).join('')}
+                  `,
+                    )
+                    .join("")}
                   <tr class="text-[#ffdfa9]"><td colspan="5" class="py-4 font-bold border-b border-marble/5 text-xs md:text-sm uppercase tracking-wider">Products</td></tr>
-                  ${thatStoicData.products.map((p, idx) => `
+                  ${thatStoicData.products
+                    .map(
+                      (p, idx) => `
                       <tr class="participant border-b border-marble/5 font-sans" data-coeff="${p.coefficient}" data-mw="${p.mw}" data-role="product">
                           <td class="py-4 font-mono normal-case font-bold text-white">${p.formula}</td>
                           <td class="py-4 text-center font-bold text-[#ffdfa9]">${p.coefficient}</td>
@@ -426,12 +460,16 @@ export async function UIComponents(MathJax, buttonActivaton) {
                           <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-moles font-sans" data-index="p${idx}" placeholder="0"></td>
                           <td class="py-4 px-2"><input type="number" step="any" class="stoichiometry-input input-grams font-sans" data-index="p${idx}" placeholder="0"></td>
                       </tr>
-                  `).join('')}
+                  `,
+                    )
+                    .join("")}
                 </tbody>
               </table>
             </div>
           </div>
-          ` : ''}
+          `
+              : ""
+          }
         </div>
       `;
 
@@ -440,64 +478,77 @@ export async function UIComponents(MathJax, buttonActivaton) {
         loodingHere = false;
       } else {
         outputArea.prepend(card);
-      };
+      }
 
       // Set up interactive features specifically for this *single* card
-      const btnToggleStoic = card.querySelector('.btn-toggle-stoic');
-      const btnToggleInfo = card.querySelector('.btn-toggle-info');
-      const stoicCalc = card.querySelector('.stoic-calc');
-      const infoSection = card.querySelector('.info-section');
-      const btnCloseCard = card.querySelector('.btn-close-card');
+      const btnToggleStoic = card.querySelector(".btn-toggle-stoic");
+      const btnToggleInfo = card.querySelector(".btn-toggle-info");
+      const stoicCalc = card.querySelector(".stoic-calc");
+      const infoSection = card.querySelector(".info-section");
+      const btnCloseCard = card.querySelector(".btn-close-card");
 
-      btnCloseCard.addEventListener('click', () => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(10px)';
-        card.style.transition = 'all 0.3s ease-out';
+      btnCloseCard.addEventListener("click", () => {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(10px)";
+        card.style.transition = "all 0.3s ease-out";
         setTimeout(() => {
           card.remove();
         }, 300);
       });
 
       if (btnToggleStoic && stoicCalc) {
-        btnToggleStoic.addEventListener('click', () => {
-          const isHidden = stoicCalc.classList.toggle('hidden');
-          if (!isHidden) infoSection.classList.add('hidden');
-          btnToggleStoic.textContent = isHidden ? 'Stoichiometry' : 'Hide Stoichiometry';
-          btnToggleInfo.textContent = 'Reaction Insights';
+        btnToggleStoic.addEventListener("click", () => {
+          const isHidden = stoicCalc.classList.toggle("hidden");
+          if (!isHidden) infoSection.classList.add("hidden");
+          btnToggleStoic.textContent = isHidden
+            ? "Stoichiometry"
+            : "Hide Stoichiometry";
+          btnToggleInfo.textContent = "Reaction Insights";
         });
       }
 
-      btnToggleInfo.addEventListener('click', () => {
-        const isHidden = infoSection.classList.toggle('hidden');
-        if (!isHidden && stoicCalc) stoicCalc.classList.add('hidden');
-        btnToggleInfo.textContent = isHidden ? 'Reaction Insights' : 'Hide Insights';
-        if (btnToggleStoic) btnToggleStoic.textContent = 'Stoichiometry';
+      btnToggleInfo.addEventListener("click", () => {
+        const isHidden = infoSection.classList.toggle("hidden");
+        if (!isHidden && stoicCalc) stoicCalc.classList.add("hidden");
+        btnToggleInfo.textContent = isHidden
+          ? "Reaction Insights"
+          : "Hide Insights";
+        if (btnToggleStoic) btnToggleStoic.textContent = "Stoichiometry";
       });
 
       // Stoichiometry math logic for this specific card
       if (hasStoic) {
-        const participants = card.querySelectorAll('.participant');
-        const moleInputs = card.querySelectorAll('.input-moles');
-        const gramInputs = card.querySelectorAll('.input-grams');
+        const participants = card.querySelectorAll(".participant");
+        const moleInputs = card.querySelectorAll(".input-moles");
+        const gramInputs = card.querySelectorAll(".input-grams");
 
         function formatVal(num, isMole) {
           if (isNaN(num) || num === null || num === undefined) return "";
           if (num <= 0) return "0";
           if (num < 0.0001) {
-              return num.toExponential(4).replace(/e\+0/, 'e').replace(/e-0/, 'e-');
+            return num
+              .toExponential(4)
+              .replace(/e\+0/, "e")
+              .replace(/e-0/, "e-");
           }
           const d = isMole ? 5 : 3;
           let str = num.toFixed(d);
-          if (str.includes('.')) {
-              str = str.replace(/0+$/, '').replace(/\.$/, '');
+          if (str.includes(".")) {
+            str = str.replace(/0+$/, "").replace(/\.$/, "");
           }
           return str;
         }
 
         function updateFromSource(sourceIndex, isMoleInput) {
           const inputs = Array.from(moleInputs).concat(Array.from(gramInputs));
-          const sourceInp = inputs.find(i => i.dataset.index === sourceIndex && (isMoleInput ? i.classList.contains('input-moles') : i.classList.contains('input-grams')));
-          
+          const sourceInp = inputs.find(
+            (i) =>
+              i.dataset.index === sourceIndex &&
+              (isMoleInput
+                ? i.classList.contains("input-moles")
+                : i.classList.contains("input-grams")),
+          );
+
           if (!sourceInp || sourceInp.value.trim() === "") {
             clearAll();
             return;
@@ -514,15 +565,15 @@ export async function UIComponents(MathJax, buttonActivaton) {
             sourceInp.value = val;
           }
 
-          const sourceEl = sourceInp.closest('.participant');
+          const sourceEl = sourceInp.closest(".participant");
           const sourceMW = parseFloat(sourceEl.dataset.mw) || 50.0;
           const sourceCoeff = parseFloat(sourceEl.dataset.coeff) || 1.0;
           const baseMoles = isMoleInput ? val : val / sourceMW;
           const molesPerUnitCoeff = baseMoles / sourceCoeff;
 
-          participants.forEach(p => {
-            const mInp = p.querySelector('.input-moles');
-            const gInp = p.querySelector('.input-grams');
+          participants.forEach((p) => {
+            const mInp = p.querySelector(".input-moles");
+            const gInp = p.querySelector(".input-grams");
             const idx = mInp.dataset.index;
 
             if (idx === sourceIndex) {
@@ -539,7 +590,7 @@ export async function UIComponents(MathJax, buttonActivaton) {
           });
 
           // Beautiful golden glowing active-driver indicators
-          participants.forEach(p => {
+          participants.forEach((p) => {
             p.style.backgroundColor = "transparent";
             p.style.borderLeft = "none";
             p.style.transition = "all 0.3s ease";
@@ -548,29 +599,33 @@ export async function UIComponents(MathJax, buttonActivaton) {
           sourceEl.style.borderLeft = "4px solid #ffdfa9";
         }
 
-        moleInputs.forEach(inp => {
-          inp.addEventListener('input', (e) => updateFromSource(e.target.dataset.index, true));
+        moleInputs.forEach((inp) => {
+          inp.addEventListener("input", (e) =>
+            updateFromSource(e.target.dataset.index, true),
+          );
         });
 
-        gramInputs.forEach(inp => {
-          inp.addEventListener('input', (e) => updateFromSource(e.target.dataset.index, false));
+        gramInputs.forEach((inp) => {
+          inp.addEventListener("input", (e) =>
+            updateFromSource(e.target.dataset.index, false),
+          );
         });
 
         function clearAll() {
-          moleInputs.forEach(i => i.value = "");
-          gramInputs.forEach(i => i.value = "");
-          participants.forEach(p => {
+          moleInputs.forEach((i) => (i.value = ""));
+          gramInputs.forEach((i) => (i.value = ""));
+          participants.forEach((p) => {
             p.style.backgroundColor = "transparent";
             p.style.borderLeft = "none";
           });
-        };
-      };
+        }
+      }
 
-      outputArea.scrollIntoView({ behavior: 'smooth' });
+      outputArea.scrollIntoView({ behavior: "smooth" });
     });
 
     if (MathJax && MathJax.typesetPromise) {
       await MathJax.typesetPromise([outputArea]);
-    };
+    }
   });
-};
+}
