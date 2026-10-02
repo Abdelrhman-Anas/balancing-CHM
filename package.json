@@ -1,7 +1,7 @@
 {
   "name": "balancing-chm",
   "version": "1.0.0",
-  "description": "a tool that balance chemical equations between two compounds",
+  "description": "a tool that predict and balance chemical equations with high accuracy",
   "main": "./src/scripts/main.js",
   "scripts": {
     "start": "nodemon src/scripts/server.js",
@@ -23,6 +23,7 @@
   "dependencies": {
     "@jeremyqzt/nodestats": "^2.0.1",
     "axios": "^1.15.2",
+    "dotenv": "^18.0.5",
     "express": "^5.2.1",
     "node-cache": "^5.1.2",
     "periodic-table": "^0.0.8"
