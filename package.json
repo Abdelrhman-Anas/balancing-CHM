@@ -4,8 +4,9 @@
   "description": "a tool that balance chemical equations between two compounds",
   "main": "./src/scripts/main.js",
   "scripts": {
-    "start": "node src/scripts/server.js",
-    "dev": "node src/scripts/server.js"
+    "start": "nodemon src/scripts/server.js",
+    "dev": "node src/scripts/server.js",
+    "debug": "node --inspect src/scripts/server.js"
   },
   "repository": {
     "type": "git",

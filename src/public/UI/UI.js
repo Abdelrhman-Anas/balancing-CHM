@@ -122,13 +122,13 @@ export async function UIComponents(MathJax, predictEquation) {
     let equationsArray = [];
     let dataArray = [];
     let stociData = [];
-    if (reactionData[0] === undefined) {
+    console.log(reactionData[0]);
+    if (Array.isArray(reactionData) && reactionData[0] === undefined) {
       equationsArray.push(reactionData[1].symboledEquation);
-    } else {
-      if (currentType === "combination") {
-        if (Array.isArray(reactionData[0])) {
-          equationsArray.push(reactionData[1].symboledEquation);
-          dataArray.push(`
+    } else if (currentType === "combination") {
+      if (Array.isArray(reactionData[0])) {
+        equationsArray.push(reactionData[1].symboledEquation);
+        dataArray.push(`
           <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
             Texted Equation : ${reactionData[1].textedEquation}
           </div>
@@ -160,32 +160,32 @@ export async function UIComponents(MathJax, predictEquation) {
             cid : ${reactionData[0][2].cid} <br>
           </div>
         `);
-          let thatStoicData = {
-            reactants: [],
-            products: [],
-          };
-          for (let i = 0; i < reactionData[0].length - 1; i++) {
-            const aReactant = reactionData[0][i];
-            thatStoicData.reactants.push({
-              formula: aReactant.formula,
-              coefficient: aReactant.coefficient,
-              mw: aReactant.weight,
-            });
-          }
-          thatStoicData.products.push({
-            formula: reactionData[0].at(-1).formula,
-            coefficient: reactionData[0].at(-1).coefficient,
-            mw: reactionData[0].at(-1).weight,
+        let thatStoicData = {
+          reactants: [],
+          products: [],
+        };
+        for (let i = 0; i < reactionData[0].length - 1; i++) {
+          const aReactant = reactionData[0][i];
+          thatStoicData.reactants.push({
+            formula: aReactant.formula,
+            coefficient: aReactant.coefficient,
+            mw: aReactant.weight,
           });
-          stociData.push(thatStoicData);
-        } else {
-          const itsAllData = reactionData[0];
+        }
+        thatStoicData.products.push({
+          formula: reactionData[0].at(-1).formula,
+          coefficient: reactionData[0].at(-1).coefficient,
+          mw: reactionData[0].at(-1).weight,
+        });
+        stociData.push(thatStoicData);
+      } else {
+        const itsAllData = reactionData[0];
 
-          for (let i = 1; i < reactionData.length; i++) {
-            const anEquation = reactionData[i];
+        for (let i = 1; i < reactionData.length; i++) {
+          const anEquation = reactionData[i];
 
-            equationsArray.push(anEquation.equation);
-            dataArray.push(`
+          equationsArray.push(anEquation.equation);
+          dataArray.push(`
             <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
               1) ${itsAllData.element1.symbol} : <br>
               Name : ${itsAllData.element1.name} <br>
@@ -221,53 +221,53 @@ export async function UIComponents(MathJax, predictEquation) {
               Conditions :  ${itsAllData.equationData.conditions} <br>
             </div>
           `);
-            stociData.push({
-              reactants: [
-                {
-                  coefficient: anEquation.productData.coff[0],
-                  formula: itsAllData.element1.symbol,
-                  mw: itsAllData.element1.weight,
-                },
-                {
-                  coefficient: anEquation.productData.coff[1],
-                  formula: itsAllData.element2.symbol,
-                  mw: itsAllData.element2.weight,
-                },
-              ],
-              products: [
-                {
-                  coefficient: anEquation.productData.coff[2],
-                  formula: anEquation.productData.formula,
-                  mw: anEquation.productData.weight,
-                },
-              ],
+          stociData.push({
+            reactants: [
+              {
+                coefficient: anEquation.productData.coff[0],
+                formula: itsAllData.element1.symbol,
+                mw: itsAllData.element1.weight,
+              },
+              {
+                coefficient: anEquation.productData.coff[1],
+                formula: itsAllData.element2.symbol,
+                mw: itsAllData.element2.weight,
+              },
+            ],
+            products: [
+              {
+                coefficient: anEquation.productData.coff[2],
+                formula: anEquation.productData.formula,
+                mw: anEquation.productData.weight,
+              },
+            ],
+          });
+        }
+      }
+    } else if (currentType === "decomposition") {
+      reactionData.forEach((anEquation) => {
+        const compoundsData = Object.entries(anEquation[3]);
+
+        let totalresult = "";
+        const thisStoic = {
+          products: [],
+          reactants: [],
+        };
+        compoundsData.forEach((aCompound, i) => {
+          if (i === 0) {
+            thisStoic.reactants.push({
+              coefficient: aCompound[1][3],
+              mw: aCompound[1][2],
+              formula: aCompound[1][1],
+            });
+          } else {
+            thisStoic.products.push({
+              coefficient: aCompound[1][3],
+              mw: aCompound[1][2],
+              formula: aCompound[1][1],
             });
           }
-        }
-      } else if (currentType === "decomposition") {
-        reactionData.forEach((anEquation) => {
-          const compoundsData = Object.entries(anEquation[3]);
-
-          let totalresult = "";
-          const thisStoic = {
-            products: [],
-            reactants: [],
-          };
-          compoundsData.forEach((aCompound, i) => {
-            if (i === 0) {
-              thisStoic.reactants.push({
-                coefficient: aCompound[1][3],
-                mw: aCompound[1][2],
-                formula: aCompound[1][1],
-              });
-            } else {
-              thisStoic.products.push({
-                coefficient: aCompound[1][3],
-                mw: aCompound[1][2],
-                formula: aCompound[1][1],
-              });
-            }
-            totalresult += `
+          totalresult += `
             <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
             <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
               ${aCompound[1][1]} : <br>
@@ -275,10 +275,10 @@ export async function UIComponents(MathJax, predictEquation) {
               cid : ${aCompound[1][0]} <br>
             </div>
           `;
-          });
+        });
 
-          equationsArray.push(anEquation[1]);
-          dataArray.push(`
+        equationsArray.push(anEquation[1]);
+        dataArray.push(`
           <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
             texted Equation : ${anEquation[0]} <br>
           </div>
@@ -294,21 +294,21 @@ export async function UIComponents(MathJax, predictEquation) {
             ${totalresult}
           </div>
         `);
-          stociData.push(thisStoic);
-        });
-      } else if (
-        currentType === "single_displacement" ||
-        currentType === "double_displacement"
-      ) {
-        const productsData = reactionData.products;
-        const reactantsData = reactionData.reactants;
+        stociData.push(thisStoic);
+      });
+    } else if (
+      currentType === "single_displacement" ||
+      currentType === "double_displacement"
+    ) {
+      const productsData = reactionData.products;
+      const reactantsData = reactionData.reactants;
 
-        let totalproducts = "";
-        let productsStoic = [];
-        for (let i = 1; i < productsData.length; i++) {
-          const aProduct = productsData[i];
+      let totalproducts = "";
+      let productsStoic = [];
+      for (let i = 1; i < productsData.length; i++) {
+        const aProduct = productsData[i];
 
-          totalproducts += `
+        totalproducts += `
           <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
           <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
             ${aProduct.formula} : <br>
@@ -316,19 +316,19 @@ export async function UIComponents(MathJax, predictEquation) {
             cid : ${aProduct.cid} <br>
           </div>
         `;
-          productsStoic.push({
-            formula: aProduct.formula,
-            coefficient: aProduct.coff,
-            mw: aProduct.weight,
-          });
-        }
+        productsStoic.push({
+          formula: aProduct.formula,
+          coefficient: aProduct.coff,
+          mw: aProduct.weight,
+        });
+      }
 
-        let totalreactants = "";
-        let reactantsStoic = [];
-        for (let i = 0; i < reactantsData.length; i++) {
-          const aReactant = reactantsData[i];
+      let totalreactants = "";
+      let reactantsStoic = [];
+      for (let i = 0; i < reactantsData.length; i++) {
+        const aReactant = reactantsData[i];
 
-          totalreactants += `
+        totalreactants += `
           <hr style="border-color: transparent;margin-top: 5px; margin-bottom: 5px; ">
           <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
             ${aReactant.formula} : <br>
@@ -336,20 +336,20 @@ export async function UIComponents(MathJax, predictEquation) {
             cid : ${aReactant.cid} <br>
           </div>
         `;
-          reactantsStoic.push({
-            formula: aReactant.formula,
-            coefficient: aReactant.coff,
-            mw: aReactant.weight,
-          });
-        }
-
-        stociData.push({
-          reactants: reactantsStoic,
-          products: productsStoic,
+        reactantsStoic.push({
+          formula: aReactant.formula,
+          coefficient: aReactant.coff,
+          mw: aReactant.weight,
         });
+      }
 
-        equationsArray.push(reactionData.equationData.symboledEquation);
-        dataArray.push(`
+      stociData.push({
+        reactants: reactantsStoic,
+        products: productsStoic,
+      });
+
+      equationsArray.push(reactionData.equationData.symboledEquation);
+      dataArray.push(`
         <div class="text-[#f5f1e6] font-sans text-sm md:text-[15px] leading-relaxed font-normal">
           texted Equation : ${reactionData.equationData.textedEquation} <br>
         </div>
@@ -364,8 +364,8 @@ export async function UIComponents(MathJax, predictEquation) {
           ${totalproducts}
         </div>
       `);
-      }
     }
+    //}
 
     let loodingHere = true;
     equationsArray.forEach((anEquation, i) => {

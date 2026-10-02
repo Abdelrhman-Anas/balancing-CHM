@@ -74,15 +74,26 @@ async function getCompound(formula, formula2) {
     const response = await fetch(
       `/api/pubchem/compound/fastformula/${formula}/JSON`,
     );
+    console.log(
+      `FETCHED: 1) http://localHost:3000/api/pubchem/compound/fastformula/${formula}/JSON : ${response.ok}`,
+    );
 
     if (!response.ok) {
       const response2 = await fetch(
         `/api/pubchem/compound/name/${formula2}/JSON`,
       );
+      console.log(
+        `FETCHED: 2) http://localHost:3000/api/pubchem/compound/name/${formula2}/JSON : ${response2.ok}`,
+      );
+
       if (!response2.ok) {
         const response3 = await fetch(
           `/api/pubchem/compound/fastformula/${formula2}/JSON`,
         );
+        console.log(
+          `FETCHED: 3) http://localHost:3000/api/pubchem/compound/fastformula/${formula2}/JSON : ${response3.ok}`,
+        );
+
         if (!response3.ok) {
           return { success: false, data: `HTTP: ${response3.status}` };
         }
