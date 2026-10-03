@@ -40,8 +40,8 @@ import {
   getAcidicPartedProduct,
 } from "./data-files/double_displace-utils.js";
 
-import EqReactant from "./testing/equations.js";
-import test from "./testing/testing-reactions.js";
+//import EqReactant from "./testing/equations.js";
+//import test from "./testing/testing-reactions.js";
 
 // UI components file
 import { UIComponents } from "./UI/UI.js";
