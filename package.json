@@ -4,7 +4,7 @@
   "description": "a tool that predict and balance chemical equations with high accuracy",
   "main": "./src/scripts/main.js",
   "scripts": {
-    "start": "nodemon src/scripts/server.js",
+    "start": "node src/scripts/server.js",
     "dev": "node src/scripts/server.js",
     "debug": "node --inspect src/scripts/server.js"
   },
