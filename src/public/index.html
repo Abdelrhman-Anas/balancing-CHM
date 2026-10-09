@@ -1,102 +1,227 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js" defer></script>
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="5e09529a-62a5-498d-a541-1d6db4b80061"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"
+      defer
+    ></script>
     <script>
       window.MathJax = {
         tex: {
-          packages: {'[+]': ['mhchem']}
+          packages: { "[+]": ["mhchem"] },
         },
         loader: {
-          load: ['[tex]/mhchem']
-        }
+          load: ["[tex]/mhchem"],
+        },
       };
     </script>
 
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Alegreya:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Alegreya:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
+      rel="stylesheet"
+    />
 
-    <link rel="stylesheet" href="./UI/style/index.css">
+    <link rel="stylesheet" href="./UI/style/index.css" />
     <title>Alchemists' Crucible</title>
-
   </head>
   <body>
     <div id="app" class="min-h-screen">
-      <div class="bg-title-watermark font-display uppercase tracking-[0.2em]">Alchemists' Crucible</div>
+      <div class="bg-title-watermark font-display uppercase tracking-[0.2em]">
+        Alchemists' Crucible
+      </div>
       <!-- Screen 1: Welcome -->
-      <div id="welcome-screen" class="transition-screen min-h-screen flex flex-col items-center py-24 px-6 md:px-12 relative z-10">
+      <div
+        id="welcome-screen"
+        class="transition-screen min-h-screen flex flex-col items-center py-24 px-6 md:px-12 relative z-10"
+      >
         <div class="main-title-outer mb-12">
-          <h1 class="text-4xl md:text-6xl font-display text-terracotta">Alchemists' Crucible</h1>
+          <h1 class="text-4xl md:text-6xl font-display text-terracotta">
+            Alchemists' Crucible
+          </h1>
         </div>
-        <button id="btn-enter" class="fixed top-6 right-6 md:top-10 md:right-10 flex items-center gap-2 px-6 py-4 bg-terracotta text-parchment rounded-full font-display text-sm tracking-widest shadow-2xl transition-all hover:scale-105 active:scale-95 group z-50 overflow-hidden outline-none">
+        <button
+          id="btn-enter"
+          class="fixed top-6 right-6 md:top-10 md:right-10 flex items-center gap-2 px-6 py-4 bg-terracotta text-parchment rounded-full font-display text-sm tracking-widest shadow-2xl transition-all hover:scale-105 active:scale-95 group z-50 overflow-hidden outline-none"
+        >
           <span class="relative z-10">Start now</span>
-          <svg class="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          <div class="absolute inset-0 bg-black opacity-10 group-hover:opacity-20 transition-opacity"></div>
+          <svg
+            class="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+          <div
+            class="absolute inset-0 bg-black opacity-10 group-hover:opacity-20 transition-opacity"
+          ></div>
         </button>
 
-        <div class="max-w-[95vw] w-full scroll-surface p-8 md:p-12 space-y-12 relative overflow-hidden rounded-lg">
+        <div
+          class="max-w-[95vw] w-full scroll-surface p-8 md:p-12 space-y-12 relative overflow-hidden rounded-lg"
+        >
           <!-- Stacked Branches -->
           <div class="flex flex-col gap-12 pb-8">
             <div class="space-y-6 p-6 border-b border-olive/10 last:border-b-0">
-              <div class="flex items-center gap-3 text-olive font-display text-2xl md:text-3xl">
-                <svg class="w-8 h-8 text-terracotta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5V4.5z"/></svg>
+              <div
+                class="flex items-center gap-3 text-olive font-display text-2xl md:text-3xl"
+              >
+                <svg
+                  class="w-8 h-8 text-terracotta"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5V4.5z"
+                  />
+                </svg>
                 <h2 class="font-display">What is it?</h2>
               </div>
-              <div class="text-lg md:text-xl text-olive/80 font-serif leading-relaxed italic border-l-2 border-terracotta/20 pl-4">
-                <p>The Alchemists' Crucible is a chemistry tool that can predict chemical equations with high Accuracy giving you almost the right equation balanced and with its stoichiometry calculator.</p>
+              <div
+                class="text-lg md:text-xl text-olive/80 font-serif leading-relaxed italic border-l-2 border-terracotta/20 pl-4"
+              >
+                <p>
+                  The Alchemists' Crucible is a chemistry tool that can predict
+                  chemical equations with high Accuracy giving you almost the
+                  right equation balanced and with its stoichiometry calculator.
+                </p>
               </div>
             </div>
 
             <div class="space-y-6 p-6 border-b border-olive/10 last:border-b-0">
-              <div class="flex items-center gap-3 text-olive font-display text-2xl md:text-3xl">
-                <svg class="w-8 h-8 text-terracotta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <div
+                class="flex items-center gap-3 text-olive font-display text-2xl md:text-3xl"
+              >
+                <svg
+                  class="w-8 h-8 text-terracotta"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
                 <h2 class="font-display">How to Use</h2>
               </div>
-              <div class="text-lg md:text-xl text-olive/80 font-serif leading-relaxed italic border-l-2 border-terracotta/20 pl-4">
+              <div
+                class="text-lg md:text-xl text-olive/80 font-serif leading-relaxed italic border-l-2 border-terracotta/20 pl-4"
+              >
                 <p>
-                  using this tool is just so simple and stright forward.<br>
-                  1) choose what type of reaction you want <br>
-                  2) put your reactants, two or just one reactant for decomposition <br>
-                  make sure you write the correct Molecular formula with all its numbers and parentheses like this "Fe2(CO3)3" <br>
+                  using this tool is just so simple and stright forward.<br />
+                  1) choose what type of reaction you want <br />
+                  2) put your reactants, two or just one reactant for
+                  decomposition <br />
+                  make sure you write the correct Molecular formula with all its
+                  numbers and parentheses like this "Fe2(CO3)3" <br />
                   3) submit your reactants to the tool and enjoy you reaction
                 </p>
               </div>
             </div>
 
-            <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 py-8 border-b border-olive/10">
+            <div
+              class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 py-8 border-b border-olive/10"
+            >
               <div class="text-center group">
-                <div class="text-lg md:text-xl tracking-[0.4em] text-olive/60 font-display mb-2 uppercase font-bold">Accuracy</div>
-                <div class="text-4xl md:text-6xl font-display text-terracotta transition-transform group-hover:scale-110 duration-500">[98%]</div>
+                <div
+                  class="text-lg md:text-xl tracking-[0.4em] text-olive/60 font-display mb-2 uppercase font-bold"
+                >
+                  Accuracy
+                </div>
+                <div
+                  class="text-4xl md:text-6xl font-display text-terracotta transition-transform group-hover:scale-110 duration-500"
+                >
+                  [98%]
+                </div>
               </div>
               <div class="w-px h-16 bg-olive/10 hidden md:block"></div>
               <div class="text-center group">
-                <div class="text-lg md:text-xl tracking-[0.4em] text-olive/60 font-display mb-2 uppercase font-bold">Scope</div>
-                <div class="text-4xl md:text-6xl font-display text-terracotta transition-transform group-hover:scale-110 duration-500">[500+]</div>
+                <div
+                  class="text-lg md:text-xl tracking-[0.4em] text-olive/60 font-display mb-2 uppercase font-bold"
+                >
+                  Scope
+                </div>
+                <div
+                  class="text-4xl md:text-6xl font-display text-terracotta transition-transform group-hover:scale-110 duration-500"
+                >
+                  [500+]
+                </div>
               </div>
             </div>
 
             <div class="space-y-6 p-6 border-b border-olive/10 last:border-b-0">
-              <div class="flex items-center gap-3 text-olive font-display text-2xl md:text-3xl">
-                <svg class="w-8 h-8 text-terracotta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              <div
+                class="flex items-center gap-3 text-olive font-display text-2xl md:text-3xl"
+              >
+                <svg
+                  class="w-8 h-8 text-terracotta"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                  />
+                </svg>
                 <h2 class="font-display">Capabilities</h2>
               </div>
-              <div class="text-lg md:text-xl text-olive/80 font-serif leading-relaxed italic border-l-2 border-terracotta/20 pl-4">
-                <p>Predicts products for the four major reaction types, handles stoichiometry for basic elemental interactions, and provides real-time balanced chemical formulas.</p>
+              <div
+                class="text-lg md:text-xl text-olive/80 font-serif leading-relaxed italic border-l-2 border-terracotta/20 pl-4"
+              >
+                <p>
+                  Predicts products for the four major reaction types, handles
+                  stoichiometry for basic elemental interactions, and provides
+                  real-time balanced chemical formulas.
+                </p>
               </div>
             </div>
 
             <div class="space-y-6 p-6">
-              <div class="flex items-center gap-3 text-olive font-display text-2xl md:text-3xl">
-                <svg class="w-8 h-8 text-terracotta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+              <div
+                class="flex items-center gap-3 text-olive font-display text-2xl md:text-3xl"
+              >
+                <svg
+                  class="w-8 h-8 text-terracotta"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                  />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                </svg>
                 <h2 class="font-display">Limitations</h2>
               </div>
-              <div class="text-lg md:text-xl text-olive/80 font-serif leading-relaxed italic border-l-2 border-terracotta/20 pl-4">
-                <p>Currently limited to inorganic transformations. Complex organometallic pathways and advanced redox balancing beyond basic displacement are not supported in the current forge version.</p>
+              <div
+                class="text-lg md:text-xl text-olive/80 font-serif leading-relaxed italic border-l-2 border-terracotta/20 pl-4"
+              >
+                <p>
+                  Currently limited to inorganic transformations. Complex
+                  organometallic pathways and advanced redox balancing beyond
+                  basic displacement are not supported in the current forge
+                  version.
+                </p>
               </div>
             </div>
           </div>
@@ -104,54 +229,127 @@
       </div>
 
       <!-- Screen 2: Real Tool -->
-      <div id="tool-screen" class="transition-screen hidden min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto opacity-0 translate-y-10">
+      <div
+        id="tool-screen"
+        class="transition-screen hidden min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto opacity-0 translate-y-10"
+      >
         <header class="text-center mb-16 relative">
-          <button id="btn-back" class="absolute left-0 top-0 text-olive/40 hover:text-terracotta transition-colors flex items-center gap-2 font-display text-xs tracking-widest uppercase outline-none">
-            <svg class="w-4 h-4 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <button
+            id="btn-back"
+            class="absolute left-0 top-0 text-olive/40 hover:text-terracotta transition-colors flex items-center gap-2 font-display text-xs tracking-widest uppercase outline-none"
+          >
+            <svg
+              class="w-4 h-4 rotate-180"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
             Back to Hall
           </button>
-          <h1 class="text-5xl md:text-7xl font-display text-terracotta tracking-tighter">The Crucible</h1>
+          <h1
+            class="text-5xl md:text-7xl font-display text-terracotta tracking-tighter"
+          >
+            The Crucible
+          </h1>
         </header>
 
-        <section class="scroll-surface p-8 md:p-12 rounded-lg relative overflow-hidden space-y-8">
+        <section
+          class="scroll-surface p-8 md:p-12 rounded-lg relative overflow-hidden space-y-8"
+        >
           <div>
-            <label class="block text-sm font-display text-olive mb-4">Select Reaction Path</label>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="type-selector">
-              <button data-type="combination" class="type-btn active flex items-center justify-between p-4 rounded border font-display text-sm uppercase">
+            <label class="block text-sm font-display text-olive mb-4"
+              >Select Reaction Path</label
+            >
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 gap-3"
+              id="type-selector"
+            >
+              <button
+                data-type="combination"
+                class="type-btn active flex items-center justify-between p-4 rounded border font-display text-sm uppercase"
+              >
                 <span>Combination</span>
-                <span class="text-[10px] opacity-60 font-mono lowercase tracking-tighter">A + B → AB</span>
+                <span
+                  class="text-[10px] opacity-60 font-mono lowercase tracking-tighter"
+                  >A + B → AB</span
+                >
               </button>
-              <button data-type="decomposition" class="type-btn flex items-center justify-between p-4 rounded border font-display text-sm uppercase bg-white/50 border-olive/20 text-olive hover:bg-white/80">
+              <button
+                data-type="decomposition"
+                class="type-btn flex items-center justify-between p-4 rounded border font-display text-sm uppercase bg-white/50 border-olive/20 text-olive hover:bg-white/80"
+              >
                 <span>Decomposition</span>
-                <span class="text-[10px] opacity-60 font-mono lowercase tracking-tighter">AB → A + B</span>
+                <span
+                  class="text-[10px] opacity-60 font-mono lowercase tracking-tighter"
+                  >AB → A + B</span
+                >
               </button>
-              <button data-type="single_displacement" class="type-btn flex items-center justify-between p-4 rounded border font-display text-sm uppercase bg-white/50 border-olive/20 text-olive hover:bg-white/80">
+              <button
+                data-type="single_displacement"
+                class="type-btn flex items-center justify-between p-4 rounded border font-display text-sm uppercase bg-white/50 border-olive/20 text-olive hover:bg-white/80"
+              >
                 <span>Single Displacement</span>
-                <span class="text-[10px] opacity-60 font-mono lowercase tracking-tighter">A + BC → AC + B</span>
+                <span
+                  class="text-[10px] opacity-60 font-mono lowercase tracking-tighter"
+                  >A + BC → AC + B</span
+                >
               </button>
-              <button data-type="double_displacement" class="type-btn flex items-center justify-between p-4 rounded border font-display text-sm uppercase bg-white/50 border-olive/20 text-olive hover:bg-white/80">
+              <button
+                data-type="double_displacement"
+                class="type-btn flex items-center justify-between p-4 rounded border font-display text-sm uppercase bg-white/50 border-olive/20 text-olive hover:bg-white/80"
+              >
                 <span>Double displacement</span>
-                <span class="text-[10px] opacity-60 font-mono lowercase tracking-tighter">AB + CD → AD + CB</span>
+                <span
+                  class="text-[10px] opacity-60 font-mono lowercase tracking-tighter"
+                  >AB + CD → AD + CB</span
+                >
               </button>
             </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
-              <label class="block text-sm font-display text-olive">Reactant Alpha</label>
-              <input id="inp-reactant-1" type="text" placeholder="e.g. Mg" class="w-full bg-white/60 border-b-2 border-olive/30 focus:border-terracotta p-3 font-mono text-lg outline-none transition-colors">
+              <label class="block text-sm font-display text-olive"
+                >Reactant Alpha</label
+              >
+              <input
+                id="inp-reactant-1"
+                type="text"
+                placeholder="e.g. Mg"
+                class="w-full bg-white/60 border-b-2 border-olive/30 focus:border-terracotta p-3 font-mono text-lg outline-none transition-colors"
+              />
             </div>
             <div class="space-y-2">
-              <label class="block text-sm font-display text-olive" id="label-reactant-2">Reactant Beta</label>
-              <input id="inp-reactant-2" type="text" placeholder="e.g. O2" class="w-full bg-white/60 border-b-2 border-olive/30 focus:border-terracotta p-3 font-mono text-lg outline-none transition-colors disabled:opacity-30">
+              <label
+                class="block text-sm font-display text-olive"
+                id="label-reactant-2"
+                >Reactant Beta</label
+              >
+              <input
+                id="inp-reactant-2"
+                type="text"
+                placeholder="e.g. O2"
+                class="w-full bg-white/60 border-b-2 border-olive/30 focus:border-terracotta p-3 font-mono text-lg outline-none transition-colors disabled:opacity-30"
+              />
             </div>
           </div>
 
-          <div id="error-msg" class="hidden bg-red-50 border-l-4 border-red-500 p-4 text-red-700 text-sm font-serif italic"></div>
+          <div
+            id="error-msg"
+            class="hidden bg-red-50 border-l-4 border-red-500 p-4 text-red-700 text-sm font-serif italic"
+          ></div>
 
-          <button id="btn-predict" class="w-full bg-olive hover:bg-olive/90 text-parchment p-5 rounded-full font-display text-lg tracking-widest transition-all shadow-xl group overflow-hidden relative outline-none">
+          <button
+            id="btn-predict"
+            class="w-full bg-olive hover:bg-olive/90 text-parchment p-5 rounded-full font-display text-lg tracking-widest transition-all shadow-xl group overflow-hidden relative outline-none"
+          >
             <span class="relative z-10">Predict Reaction</span>
-            <div class="absolute inset-0 bg-black opacity-10 group-hover:opacity-20 transition-opacity"></div>
+            <div
+              class="absolute inset-0 bg-black opacity-10 group-hover:opacity-20 transition-opacity"
+            ></div>
           </button>
         </section>
 
@@ -159,11 +357,13 @@
       </div>
 
       <!-- Credit Footer -->
-      <div class="fixed bottom-4 right-4 text-[10px] font-display text-olive/40 tracking-widest uppercase z-[100]">
+      <div
+        class="fixed bottom-4 right-4 text-[10px] font-display text-olive/40 tracking-widest uppercase z-[100]"
+      >
         Powered by PubChem Database
       </div>
     </div>
-    
+
     <script type="module" src="./main.js"></script>
   </body>
 </html>
